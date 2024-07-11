@@ -16,7 +16,13 @@ jobs:
           node-version: "20"
 
       - name: Install Node.js dependencies
-        run: cd app && npm install
+        working-directory: ./app
+        run: npm install
 
-      - name: Build React Native App
-        run: cd app && npm build
+      - name: Run Lint
+        working-directory: ./app
+        run: npm run lint:fix
+
+      - name: Run Prettier
+        working-directory: ./app
+        run: npm run prettier:fix
