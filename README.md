@@ -1,1 +1,3 @@
-# AI chatbot app built with React Native and Golang
+# AI Chatbot
+
+AI Chatbot app built with React Native and Golang
