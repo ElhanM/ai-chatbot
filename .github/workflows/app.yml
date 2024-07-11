@@ -16,13 +16,13 @@ jobs:
           node-version: "20"
 
       - name: Install Node.js dependencies
-        working-directory: ./app
+        working-directory: app
         run: npm install
 
       - name: Run Lint
-        working-directory: ./app
+        working-directory: app
         run: npm run lint:fix
 
       - name: Run Prettier
-        working-directory: ./app
+        working-directory: app
         run: npm run prettier:fix
