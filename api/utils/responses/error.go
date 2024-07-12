@@ -6,12 +6,11 @@ type ErrorResponse struct {
 }
 
 // NewErrorResponse creates a new ErrorResponse
-func NewErrorResponse(message string, statusCode int) ErrorResponse {
+func NewErrorResponse(message string) ErrorResponse {
 	return ErrorResponse{
 		ServiceResponse: ServiceResponse[any]{
-			Success:    false,
-			Message:    message,
-			StatusCode: statusCode,
+			Success: false,
+			Message: message,
 		},
 	}
 }

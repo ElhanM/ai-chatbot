@@ -10,8 +10,7 @@ import (
 func HealthRoute(r *gin.RouterGroup) {
 	// Health check
 	r.GET("/health", func(c *gin.Context) {
-		response := responses.NewServiceResponse(responses.Success, "Server is healthy", struct{}{}, http.StatusOK, nil)
+		response := responses.NewServiceResponse(responses.Success, "Server is healthy", struct{}{}, nil)
 		c.JSON(http.StatusOK, response)
 	})
-
 }

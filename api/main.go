@@ -1,34 +1,28 @@
 package main
 
 import (
-	"github.com/ElhanM/ai-chatbot/db"
+	"fmt"
+	"time"
+
+	gormDB "github.com/ElhanM/ai-chatbot/db"
 	"github.com/ElhanM/ai-chatbot/envs"
+	"github.com/ElhanM/ai-chatbot/models"
 	"github.com/ElhanM/ai-chatbot/routes"
 	"github.com/gin-gonic/gin"
+	_ "github.com/joho/godotenv/autoload" // autoload package to load .env file
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
-type User struct {
-	gorm.Model
-	Name     string
-	Email    string `gorm:"unique"`
-	Password string
-}
-
 func init() {
-	envs.LoadEnv()
-
-	db, err := gorm.Open(postgres.Open(db.GetGormConnectionString()), &gorm.Config{})
+	var err error
+	gormDB.DB, err = gorm.Open(postgres.Open(gormDB.GetGormConnectionString()), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect to database")
 	}
 
 	// Migrate the schema
-	db.AutoMigrate(&User{})
-
-	// Create
-	// db.Create(&User{Name: "Elhan", Email: "elhan.mahmutovic03@gmail.com", Password: "1234"})
+	gormDB.DB.AutoMigrate(&models.User{})
 }
 
 func setupRouter() *gin.Engine {
@@ -41,6 +35,8 @@ func setupRouter() *gin.Engine {
 }
 
 func main() {
+	fmt.Println(time.Hour * 1)
+
 	port := envs.GetPort()
 
 	r := setupRouter()

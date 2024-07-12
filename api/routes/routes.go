@@ -19,6 +19,7 @@ func SetupRouter(r *gin.Engine) {
 		HealthRoute(api)
 		SuccessRoute(api)
 		ErrorRoute(api)
+		CookiesRoute(api)
 
 		// Define the auth subgroup
 		auth := api.Group("/auth")
@@ -29,7 +30,7 @@ func SetupRouter(r *gin.Engine) {
 
 	// Catch all route
 	r.NoRoute(func(c *gin.Context) {
-		response := responses.NewErrorResponse("Route not found", http.StatusNotFound)
+		response := responses.NewErrorResponse("Route not found")
 		c.JSON(http.StatusNotFound, response)
 	})
 }

@@ -10,7 +10,7 @@ import (
 func ErrorRoute(r *gin.RouterGroup) {
 	// Error route
 	r.GET("/error", func(c *gin.Context) {
-		response := responses.NewErrorResponse("Internal server error", http.StatusInternalServerError)
+		response := responses.NewErrorResponse("Internal server error")
 		c.JSON(http.StatusInternalServerError, response)
 	})
 }

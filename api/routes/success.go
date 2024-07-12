@@ -12,7 +12,7 @@ func SuccessRoute(r *gin.RouterGroup) {
 	r.GET("/success", func(c *gin.Context) {
 		data := map[string]interface{}{"id": 1, "name": "Example"}
 		count := 1
-		response := responses.NewServiceResponse(responses.Success, "Request was successful", data, http.StatusOK, &count)
+		response := responses.NewServiceResponse(responses.Success, "Request was successful", data, &count)
 		c.JSON(http.StatusOK, response)
 	})
 }

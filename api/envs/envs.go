@@ -1,25 +1,13 @@
 package envs
 
 import (
-	"log"
 	"os"
-
-	"github.com/joho/godotenv"
 )
 
-// LoadEnv loads the environment variables from .env file
-func LoadEnv() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-}
-
-// GetPort returns the PORT environment variable
 func GetPort() string {
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "8080"
+		port = "5019"
 	}
 	return port
 }
@@ -54,4 +42,29 @@ func GetDBPort() string {
 		panic("DB_PORT environment variable is not set")
 	}
 	return dbPort
+}
+
+func GetAccessTokenSecret() string {
+	accessTokenSecret := os.Getenv("ACCESS_TOKEN_SECRET")
+
+	if accessTokenSecret == "" {
+		panic("ACCESS_TOKEN_SECRET environment variable is not set")
+	}
+	return accessTokenSecret
+}
+
+func GetRefreshTokenSecret() string {
+	refreshTokenSecret := os.Getenv("REFRESH_TOKEN_SECRET")
+	if refreshTokenSecret == "" {
+		panic("REFRESH_TOKEN_SECRET environment variable is not set")
+	}
+	return refreshTokenSecret
+}
+
+func GetEnvirontment() string {
+	env := os.Getenv("ENVIRONMENT")
+	if env == "" {
+		env = "development"
+	}
+	return env
 }
