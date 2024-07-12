@@ -6,12 +6,15 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
 
 1. Install dependencies
 
-   ```bash
-   npm install
-   ```
+```bash
+npm install
+```
 
 2. Start the app
-   To run your project, run one of the following npm commands.
+
+First run `nvm use` to use the correct node version.
+
+To run your project, run one of the following npm commands.
 
 - npm run android
 - npm run ios # you need to use macOS to build the iOS project - use the Expo app if you need to do iOS development without a Mac
