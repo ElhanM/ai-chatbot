@@ -1,13 +1,13 @@
 .PHONY: ai-chatbot infra app api
 
 # make ai-chatbot
-ai-chatbot: infra app api
+ai-chatbot: infra api app 
 
 infra:
 	cd infra && docker compose up -d
 
-app:
-	cd app && . ~/.nvm/nvm.sh && nvm use && npm run start &
-
 api:
-	cd api && air
+	cd api && air &
+
+app:
+	cd app && . ~/.nvm/nvm.sh && nvm use && npm run start
