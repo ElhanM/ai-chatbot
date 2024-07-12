@@ -35,4 +35,10 @@ func SetupRouter(r *gin.Engine) {
 			c.JSON(http.StatusInternalServerError, response)
 		})
 	}
+
+	// Catch all route
+	r.NoRoute(func(c *gin.Context) {
+		response := responses.NewErrorResponse("Route not found", http.StatusNotFound)
+		c.JSON(http.StatusNotFound, response)
+	})
 }
