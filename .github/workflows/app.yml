@@ -1,4 +1,4 @@
-name: React Native APP CI
+name: React Native App
 
 on:
   push:
