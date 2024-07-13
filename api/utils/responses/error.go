@@ -1,8 +1,8 @@
 package responses
 
-// ErrorResponse represents an error response
 type ErrorResponse struct {
 	ServiceResponse[any]
+	ErrorCode string `json:"errorCode,omitempty"`
 }
 
 // NewErrorResponse creates a new ErrorResponse

@@ -20,7 +20,9 @@ func GuardMiddleware() gin.HandlerFunc {
 		data, err := jwts.CheckJWTs(userId)
 		if err != nil {
 			errMsg := fmt.Sprintf("Unauthorized: %s", err.Error())
-			c.AbortWithStatusJSON(http.StatusUnauthorized, responses.NewErrorResponse(errMsg))
+			errorResponse := responses.NewErrorResponse(errMsg)
+			errorResponse.ErrorCode = "GUARD_FAILURE" // Unique error code to differentiate from other errors on the client side
+			c.AbortWithStatusJSON(http.StatusUnauthorized, errorResponse)
 			return
 		}
 
