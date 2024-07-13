@@ -61,7 +61,7 @@ func GetRefreshTokenSecret() string {
 	return refreshTokenSecret
 }
 
-func GetEnvirontment() string {
+func GetEnvironment() string {
 	env := os.Getenv("ENVIRONMENT")
 	if env == "" {
 		env = "development"

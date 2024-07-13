@@ -21,8 +21,13 @@ func init() {
 		panic("failed to connect to database")
 	}
 
+	// TODO: Move to a separate package
 	// Migrate the schema
-	gormDB.DB.AutoMigrate(&models.User{})
+	err = gormDB.DB.AutoMigrate(&models.User{})
+	if err != nil {
+		errMsg := fmt.Sprintf("failed to migrate schema: %v", err)
+		panic(errMsg)
+	}
 }
 
 func setupRouter() *gin.Engine {

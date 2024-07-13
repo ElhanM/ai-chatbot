@@ -3,7 +3,9 @@ package routes
 import (
 	"net/http"
 
-	routes "github.com/ElhanM/ai-chatbot/routes/auth"
+	"github.com/ElhanM/ai-chatbot/middleware"
+	authRoutes "github.com/ElhanM/ai-chatbot/routes/auth"
+	protectedRoutes "github.com/ElhanM/ai-chatbot/routes/protected"
 	"github.com/ElhanM/ai-chatbot/utils/responses"
 	"github.com/gin-gonic/gin"
 )
@@ -19,12 +21,17 @@ func SetupRouter(r *gin.Engine) {
 		HealthRoute(api)
 		SuccessRoute(api)
 		ErrorRoute(api)
-		CookiesRoute(api)
+		JwtsRoute(api)
 
 		// Define the auth subgroup
 		auth := api.Group("/auth")
 		{
-			routes.AuthRoutes(auth)
+			authRoutes.AuthRoutes(auth)
+		}
+
+		protected := api.Group("/protected").Use(middleware.GuardMiddleware())
+		{
+			protectedRoutes.ProtectedRoutes(&protected)
 		}
 	}
 

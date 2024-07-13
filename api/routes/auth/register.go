@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"fmt"
 	"net/http"
 
 	gormDB "github.com/ElhanM/ai-chatbot/db"
@@ -19,14 +20,14 @@ func RegisterRoute(r *gin.RouterGroup) {
 	r.POST("/register", func(c *gin.Context) {
 		var req RegisterRequest
 		if err := c.ShouldBindJSON(&req); err != nil {
-			response := responses.NewServiceResponse(responses.Failed, "Invalid request", struct{}{}, nil)
+			response := responses.NewErrorResponse("Invalid request")
 			c.JSON(http.StatusBadRequest, response)
 			return
 		}
 
 		hashedPassword, err := utils.HashPassword(req.Password)
 		if err != nil {
-			response := responses.NewServiceResponse(responses.Failed, "Failed to hash password", struct{}{}, nil)
+			response := responses.NewErrorResponse("Failed to hash password")
 			c.JSON(http.StatusInternalServerError, response)
 			return
 		}
@@ -38,7 +39,8 @@ func RegisterRoute(r *gin.RouterGroup) {
 		}
 
 		if err := gormDB.DB.Create(&user).Error; err != nil {
-			response := responses.NewServiceResponse(responses.Failed, "Failed to create user", struct{}{}, nil)
+			errorMsg := fmt.Sprintf("Failed to create user: %v", err)
+			response := responses.NewErrorResponse(errorMsg)
 			c.JSON(http.StatusInternalServerError, response)
 			return
 		}

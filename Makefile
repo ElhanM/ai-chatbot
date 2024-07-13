@@ -4,7 +4,7 @@
 ai-chatbot: infra api app 
 
 infra:
-	cd infra && docker compose up -d
+	cd infra && docker compose up -d && sleep 2
 
 api:
 	cd api && air &

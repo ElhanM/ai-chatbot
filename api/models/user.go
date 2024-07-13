@@ -1,10 +1,10 @@
 package models
 
-import "gorm.io/gorm"
-
 type User struct {
-	gorm.Model
-	Name     string
-	Email    string `gorm:"unique"`
-	Password string
+	DBModel
+	Name         string `json:"name"`
+	Email        string `gorm:"unique" json:"email"`
+	Password     string `json:"password"`
+	AccessToken  string `json:"accessToken"`
+	RefreshToken string `json:"refreshToken"`
 }

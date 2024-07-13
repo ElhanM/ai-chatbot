@@ -7,6 +7,7 @@ import (
 
 	"github.com/ElhanM/ai-chatbot/envs"
 	"github.com/dgrijalva/jwt-go"
+	"github.com/google/uuid"
 )
 
 var (
@@ -14,7 +15,7 @@ var (
 	refreshSecret = []byte(envs.GetRefreshTokenSecret())
 )
 
-func GenerateAccessToken(userID uint) (string, error) {
+func GenerateAccessToken(userID uuid.UUID) (string, error) {
 	claims := jwt.MapClaims{
 		"user_id": userID,
 		// last for 1 hour
@@ -24,7 +25,7 @@ func GenerateAccessToken(userID uint) (string, error) {
 	return token.SignedString(accessSecret)
 }
 
-func GenerateRefreshToken(userID uint) (string, error) {
+func GenerateRefreshToken(userID uuid.UUID) (string, error) {
 	claims := jwt.MapClaims{
 		"user_id": userID,
 		// last for 1 week
