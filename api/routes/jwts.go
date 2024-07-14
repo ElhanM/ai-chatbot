@@ -3,6 +3,7 @@ package routes
 import (
 	"net/http"
 
+	"github.com/ElhanM/ai-chatbot/utils"
 	"github.com/ElhanM/ai-chatbot/utils/jwts"
 	"github.com/ElhanM/ai-chatbot/utils/responses"
 	"github.com/gin-gonic/gin"
@@ -15,7 +16,8 @@ func JwtsRoute(r *gin.RouterGroup) {
 
 		data, err := jwts.CheckJWTs(userIdStr)
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, responses.NewErrorResponse(err.Error()))
+			errorResponse := responses.NewErrorResponse(utils.BuildError(err, "Unauthorized").Error())
+			c.AbortWithStatusJSON(http.StatusUnauthorized, errorResponse)
 			return
 		}
 

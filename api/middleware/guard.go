@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/ElhanM/ai-chatbot/models"
+	"github.com/ElhanM/ai-chatbot/utils"
 	"github.com/ElhanM/ai-chatbot/utils/jwts"
 	"github.com/ElhanM/ai-chatbot/utils/responses"
 	"github.com/gin-gonic/gin"
@@ -19,8 +20,7 @@ func GuardMiddleware() gin.HandlerFunc {
 		// Validate the JWT tokens using CheckJWTs function
 		data, err := jwts.CheckJWTs(userId)
 		if err != nil {
-			errMsg := fmt.Sprintf("Unauthorized: %s", err.Error())
-			errorResponse := responses.NewErrorResponse(errMsg)
+			errorResponse := responses.NewErrorResponse(utils.BuildError(err, "Unauthorized").Error())
 			errorResponse.ErrorCode = "GUARD_FAILURE" // Unique error code to differentiate from other errors on the client side
 			c.AbortWithStatusJSON(http.StatusUnauthorized, errorResponse)
 			return

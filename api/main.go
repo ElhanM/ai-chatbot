@@ -6,7 +6,7 @@ import (
 
 	gormDB "github.com/ElhanM/ai-chatbot/db"
 	"github.com/ElhanM/ai-chatbot/envs"
-	"github.com/ElhanM/ai-chatbot/models"
+	"github.com/ElhanM/ai-chatbot/migrations"
 	"github.com/ElhanM/ai-chatbot/routes"
 	"github.com/gin-gonic/gin"
 	_ "github.com/joho/godotenv/autoload" // autoload package to load .env file
@@ -21,9 +21,8 @@ func init() {
 		panic("failed to connect to database")
 	}
 
-	// TODO: Move to a separate package
-	// Migrate the schema
-	err = gormDB.DB.AutoMigrate(&models.User{})
+	// Perform schema migration
+	err = migrations.MigrateSchema()
 	if err != nil {
 		errMsg := fmt.Sprintf("failed to migrate schema: %v", err)
 		panic(errMsg)

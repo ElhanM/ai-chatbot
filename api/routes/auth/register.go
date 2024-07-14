@@ -20,15 +20,15 @@ func RegisterRoute(r *gin.RouterGroup) {
 	r.POST("/register", func(c *gin.Context) {
 		var req RegisterRequest
 		if err := c.ShouldBindJSON(&req); err != nil {
-			response := responses.NewErrorResponse("Invalid request")
-			c.JSON(http.StatusBadRequest, response)
+			errorResponse := responses.NewErrorResponse(utils.BuildError(err, "Invalid request").Error())
+			c.JSON(http.StatusBadRequest, errorResponse)
 			return
 		}
 
 		hashedPassword, err := utils.HashPassword(req.Password)
 		if err != nil {
-			response := responses.NewErrorResponse("Failed to hash password")
-			c.JSON(http.StatusInternalServerError, response)
+			errorMsg := fmt.Sprintf("Failed to hash password: %v", err)
+			c.JSON(http.StatusInternalServerError, errorMsg)
 			return
 		}
 
@@ -39,9 +39,8 @@ func RegisterRoute(r *gin.RouterGroup) {
 		}
 
 		if err := gormDB.DB.Create(&user).Error; err != nil {
-			errorMsg := fmt.Sprintf("Failed to create user: %v", err)
-			response := responses.NewErrorResponse(errorMsg)
-			c.JSON(http.StatusInternalServerError, response)
+			errorResponse := responses.NewErrorResponse(utils.BuildError(err, "Failed to create user").Error())
+			c.JSON(http.StatusInternalServerError, errorResponse)
 			return
 		}
 

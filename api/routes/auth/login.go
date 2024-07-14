@@ -21,35 +21,35 @@ func LoginRoute(r *gin.RouterGroup) {
 	r.POST("/login", func(c *gin.Context) {
 		var req LoginRequest
 		if err := c.ShouldBindJSON(&req); err != nil {
-			response := responses.NewErrorResponse("Invalid request")
-			c.JSON(http.StatusBadRequest, response)
+			errorResponse := responses.NewErrorResponse(utils.BuildError(err, "Invalid request").Error())
+			c.JSON(http.StatusBadRequest, errorResponse)
 			return
 		}
 
 		var user models.User
 		if err := gormDB.DB.Where("email = ?", req.Email).First(&user).Error; err != nil {
-			response := responses.NewErrorResponse("User not found")
-			c.JSON(http.StatusUnauthorized, response)
+			errorResponse := responses.NewErrorResponse(utils.BuildError(err, "User not found").Error())
+			c.JSON(http.StatusUnauthorized, errorResponse)
 			return
 		}
 
 		if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password)); err != nil {
-			response := responses.NewErrorResponse("Invalid credentials")
-			c.JSON(http.StatusUnauthorized, response)
+			errorResponse := responses.NewErrorResponse(utils.BuildError(err, "Invalid credentials").Error())
+			c.JSON(http.StatusUnauthorized, errorResponse)
 			return
 		}
 
 		accessToken, err := utils.GenerateAccessToken(user.ID)
 		if err != nil {
-			response := responses.NewErrorResponse("Failed to generate access token")
-			c.JSON(http.StatusInternalServerError, response)
+			errorResponse := responses.NewErrorResponse(utils.BuildError(err, "Failed to generate access token").Error())
+			c.JSON(http.StatusInternalServerError, errorResponse)
 			return
 		}
 
 		refreshToken, err := utils.GenerateRefreshToken(user.ID)
 		if err != nil {
-			response := responses.NewErrorResponse("Failed to generate refresh token")
-			c.JSON(http.StatusInternalServerError, response)
+			errorResponse := responses.NewErrorResponse(utils.BuildError(err, "Failed to generate refresh token").Error())
+			c.JSON(http.StatusInternalServerError, errorResponse)
 			return
 		}
 

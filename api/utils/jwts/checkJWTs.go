@@ -2,16 +2,13 @@ package jwts
 
 import (
 	"github.com/ElhanM/ai-chatbot/envs"
+	"github.com/ElhanM/ai-chatbot/models"
 	"github.com/ElhanM/ai-chatbot/services"
 	"github.com/ElhanM/ai-chatbot/utils"
 	"github.com/google/uuid"
 )
 
-// TODO:
-// refactor code
-// apply better code splitting to this function
-// and to api/routes/auth/login.go and api/routes/auth/register.go
-// and write tests for them
+// TODO: write tests
 
 // CheckJWTs checks the validity of JWTs and returns relevant data and an error if any.
 func CheckJWTs(userIdStr string) (map[string]interface{}, error) {
@@ -45,18 +42,10 @@ func CheckJWTs(userIdStr string) (map[string]interface{}, error) {
 	}
 
 	if !isValidAccessToken && isValidRefreshToken {
-		newAccessToken, err := RefreshAccessToken(nil, refreshToken)
+		err = handleExpiredAccessToken(&accessToken, refreshToken, userId, &isValidAccessToken, &accessTokenExp)
 		if err != nil {
-			return nil, utils.BuildError(err, "failed to refresh access token")
+			return nil, utils.BuildError(err, "failed to handle expired access token")
 		}
-		accessToken = *newAccessToken
-		isValidAccessToken, accessTokenExp, err = utils.CheckTokenExpiration(accessToken, true)
-		if err != nil {
-			return nil, utils.BuildError(err, "failed to check new access token expiration")
-		}
-
-		SetAccessToken(accessToken, userId)
-
 	}
 
 	if !isValidRefreshToken {
@@ -70,20 +59,49 @@ func CheckJWTs(userIdStr string) (map[string]interface{}, error) {
 		return nil, utils.BuildError(err, "failed to fetch user by id")
 	}
 
-	data := map[string]interface{}{
+	var data map[string]interface{}
+	populateData(&data, isValidAccessToken, isValidRefreshToken, accessToken, refreshToken, decodedAccessToken, decodedRefreshToken, accessTokenExp, refreshTokenExp, user, environment)
+
+	return data, nil
+}
+
+func populateData(data *map[string]interface{}, isValidAccessToken, isValidRefreshToken bool, accessToken, refreshToken string, decodedAccessToken, decodedRefreshToken map[string]interface{}, accessTokenExp, refreshTokenExp string, user models.User, environment string) {
+	*data = map[string]interface{}{
 		"isValidAccessToken":  isValidAccessToken,
 		"isValidRefreshToken": isValidRefreshToken,
 	}
 
 	if environment == "development" {
-		data["accessToken"] = accessToken
-		data["refreshToken"] = refreshToken
-		data["decodedAccessToken"] = decodedAccessToken
-		data["decodedRefreshToken"] = decodedRefreshToken
-		data["accessTokenExp"] = accessTokenExp
-		data["refreshTokenExp"] = refreshTokenExp
-		data["user"] = user
+		(*data)["accessToken"] = accessToken
+		(*data)["refreshToken"] = refreshToken
+		(*data)["decodedAccessToken"] = decodedAccessToken
+		(*data)["decodedRefreshToken"] = decodedRefreshToken
+		(*data)["accessTokenExp"] = accessTokenExp
+		(*data)["refreshTokenExp"] = refreshTokenExp
+		(*data)["user"] = user
+	}
+}
+
+func handleExpiredAccessToken(accessToken *string, refreshToken string, userId uuid.UUID, isValidAccessToken *bool, accessTokenExp *string) error {
+	newAccessToken, err := RefreshAccessToken(nil, refreshToken)
+	if err != nil {
+		return utils.BuildError(err, "failed to refresh access token")
+	}
+	*accessToken = *newAccessToken
+
+	// Perform dereferencing correctly for assignment
+	var valid bool
+	var expiration string
+	valid, expiration, err = utils.CheckTokenExpiration(*accessToken, true)
+	if err != nil {
+		return utils.BuildError(err, "failed to check new access token expiration")
 	}
 
-	return data, nil
+	// Assign values to the pointers
+	*isValidAccessToken = valid
+	*accessTokenExp = expiration
+
+	SetAccessToken(*accessToken, userId)
+
+	return nil
 }
