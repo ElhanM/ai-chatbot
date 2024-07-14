@@ -7,9 +7,9 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGenerateAccessToken(t *testing.T) {
-	t.Setenv("ACCESS_TOKEN_SECRET", "shhhhh")
+// TODO: Write better tests
 
+func TestGenerateAccessToken(t *testing.T) {
 	userID := uuid.New()
 
 	tokenString, err := GenerateAccessToken(userID)
@@ -23,8 +23,6 @@ func TestGenerateAccessToken(t *testing.T) {
 }
 
 func TestGenerateRefreshToken(t *testing.T) {
-	t.Setenv("ACCESS_TOKEN_SECRET", "shhhhh")
-
 	userID := uuid.New()
 
 	tokenString, err := GenerateRefreshToken(userID)
@@ -38,8 +36,6 @@ func TestGenerateRefreshToken(t *testing.T) {
 }
 
 func TestParseToken(t *testing.T) {
-	t.Setenv("ACCESS_TOKEN_SECRET", "shhhhh")
-
 	userID := uuid.New()
 	accessToken, _ := GenerateAccessToken(userID)
 	refreshToken, _ := GenerateRefreshToken(userID)
@@ -69,8 +65,6 @@ func TestParseToken(t *testing.T) {
 }
 
 func TestCheckTokenExpiration(t *testing.T) {
-	t.Setenv("ACCESS_TOKEN_SECRET", "shhhhh")
-
 	userID := uuid.New()
 	accessToken, _ := GenerateAccessToken(userID)
 	refreshToken, _ := GenerateRefreshToken(userID)
