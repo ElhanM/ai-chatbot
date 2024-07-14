@@ -1,4 +1,4 @@
-name: Go API
+name: Tests
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: ["main"]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -17,6 +17,9 @@ jobs:
         with:
           go-version: "1.22.4"
 
-      - name: Build Go
+      - name: Install godotenv
+        run: go install github.com/joho/godotenv/cmd/godotenv@latest
+
+      - name: Test API
         working-directory: api
-        run: go build
+        run: godotenv -f .env.test go test ./...

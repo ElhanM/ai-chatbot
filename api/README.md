@@ -7,3 +7,7 @@ If you encounter `[GIN-debug] [ERROR] listen tcp :5019: bind: address already in
 `killall air` and `sudo lsof -t -i:5019 | xargs kill -9`
 
 To use Live reload - run `air` inside of api directory.
+
+In order to run the tests:
+Install godotenv: `go install github.com/joho/godotenv/cmd/godotenv@latest`
+Run the tests (use godotenv to load the env variables): `godotenv -f .env.test go test ./...`

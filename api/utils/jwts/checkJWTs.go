@@ -8,8 +8,6 @@ import (
 	"github.com/google/uuid"
 )
 
-// TODO: write tests
-
 // CheckJWTs checks the validity of JWTs and returns relevant data and an error if any.
 func CheckJWTs(userIdStr string) (map[string]interface{}, error) {
 	environment := envs.GetEnvironment()
@@ -65,7 +63,7 @@ func CheckJWTs(userIdStr string) (map[string]interface{}, error) {
 	return data, nil
 }
 
-func populateData(data *map[string]interface{}, isValidAccessToken, isValidRefreshToken bool, accessToken, refreshToken string, decodedAccessToken, decodedRefreshToken map[string]interface{}, accessTokenExp, refreshTokenExp string, user models.User, environment string) {
+func populateData(data *map[string]interface{}, isValidAccessToken, isValidRefreshToken bool, accessToken, refreshToken string, decodedAccessToken, decodedRefreshToken map[string]interface{}, accessTokenExp, refreshTokenExp string, user *models.User, environment string) {
 	*data = map[string]interface{}{
 		"isValidAccessToken":  isValidAccessToken,
 		"isValidRefreshToken": isValidRefreshToken,
@@ -78,7 +76,7 @@ func populateData(data *map[string]interface{}, isValidAccessToken, isValidRefre
 		(*data)["decodedRefreshToken"] = decodedRefreshToken
 		(*data)["accessTokenExp"] = accessTokenExp
 		(*data)["refreshTokenExp"] = refreshTokenExp
-		(*data)["user"] = user
+		(*data)["user"] = *user
 	}
 }
 
