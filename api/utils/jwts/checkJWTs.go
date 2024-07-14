@@ -1,9 +1,6 @@
 package jwts
 
 import (
-	"errors"
-	"fmt"
-
 	"github.com/ElhanM/ai-chatbot/envs"
 	"github.com/ElhanM/ai-chatbot/services"
 	"github.com/ElhanM/ai-chatbot/utils"
@@ -22,41 +19,40 @@ func CheckJWTs(userIdStr string) (map[string]interface{}, error) {
 
 	userId, err := uuid.Parse(userIdStr)
 	if err != nil {
-		return nil, errors.New("invalid user ID format")
+		return nil, utils.BuildError(err, "invalid user ID format")
 	}
 
 	accessToken, refreshToken := GetAccessToken(userId), GetRefreshToken(userId)
 
 	decodedAccessToken, _, err := utils.ParseToken(accessToken, true)
 	if err != nil {
-		return nil, errors.New("failed to decode access token")
+		return nil, utils.BuildError(err, "failed to decode access token")
 	}
 
 	decodedRefreshToken, _, err := utils.ParseToken(refreshToken, false)
 	if err != nil {
-		return nil, errors.New("failed to decode refresh token")
+		return nil, utils.BuildError(err, "failed to decode refresh token")
 	}
 
 	isValidAccessToken, accessTokenExp, err := utils.CheckTokenExpiration(accessToken, true)
 	if err != nil {
-		return nil, errors.New("failed to check access token expiration")
+		return nil, utils.BuildError(err, "failed to check access token expiration")
 	}
 
 	isValidRefreshToken, refreshTokenExp, err := utils.CheckTokenExpiration(refreshToken, false)
 	if err != nil {
-		return nil, errors.New("failed to check refresh token expiration")
+		return nil, utils.BuildError(err, "failed to check refresh token expiration")
 	}
 
 	if !isValidAccessToken && isValidRefreshToken {
 		newAccessToken, err := RefreshAccessToken(nil, refreshToken)
 		if err != nil {
-			errMsg := fmt.Sprintf("failed to refresh access token: %v", err)
-			return nil, errors.New(errMsg)
+			return nil, utils.BuildError(err, "failed to refresh access token")
 		}
-		accessToken = newAccessToken
+		accessToken = *newAccessToken
 		isValidAccessToken, accessTokenExp, err = utils.CheckTokenExpiration(accessToken, true)
 		if err != nil {
-			return nil, errors.New("failed to check new access token expiration")
+			return nil, utils.BuildError(err, "failed to check new access token expiration")
 		}
 
 		SetAccessToken(accessToken, userId)
@@ -64,14 +60,14 @@ func CheckJWTs(userIdStr string) (map[string]interface{}, error) {
 	}
 
 	if !isValidRefreshToken {
-		return nil, errors.New("refresh token is invalid")
+		return nil, utils.BuildError(err, "refresh token is invalid")
 	}
 
 	// fetch user by id and add to data
 	user, err := services.FetchUserById(userId)
 
 	if err != nil {
-		return nil, errors.New("failed to fetch user by id")
+		return nil, utils.BuildError(err, "failed to fetch user by id")
 	}
 
 	data := map[string]interface{}{

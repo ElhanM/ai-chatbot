@@ -14,8 +14,6 @@ import (
 	"gorm.io/gorm"
 )
 
-// TODO: all errors.New should return the err and optional message
-
 func init() {
 	var err error
 	gormDB.DB, err = gorm.Open(postgres.Open(gormDB.GetGormConnectionString()), &gorm.Config{})
