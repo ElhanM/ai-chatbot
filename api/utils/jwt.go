@@ -1,4 +1,3 @@
-// utils/jwt.go
 package utils
 
 import (
@@ -17,7 +16,7 @@ var (
 
 func GenerateAccessToken(userID uuid.UUID) (string, error) {
 	claims := jwt.MapClaims{
-		"user_id": userID,
+		"sub": userID.String(),
 		// last for 1 hour
 		"exp": time.Now().Add(time.Hour * 1).Unix(),
 	}
@@ -27,7 +26,7 @@ func GenerateAccessToken(userID uuid.UUID) (string, error) {
 
 func GenerateRefreshToken(userID uuid.UUID) (string, error) {
 	claims := jwt.MapClaims{
-		"user_id": userID,
+		"sub": userID.String(),
 		// last for 1 week
 		"exp": time.Now().Add(time.Hour * 24 * 7).Unix(),
 	}
@@ -35,7 +34,7 @@ func GenerateRefreshToken(userID uuid.UUID) (string, error) {
 	return token.SignedString(refreshSecret)
 }
 
-func ValidateToken(tokenString string, isAccessToken bool) (*jwt.Token, error) {
+func ParseToken(tokenString string, isAccessToken bool) (jwt.MapClaims, bool, error) {
 	var secret []byte
 	if isAccessToken {
 		secret = accessSecret
@@ -46,47 +45,30 @@ func ValidateToken(tokenString string, isAccessToken bool) (*jwt.Token, error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		return secret, nil
 	})
+
+	// Check if the token is expired
 	if err != nil {
-		return nil, err
-	}
-
-	if !token.Valid {
-		return nil, err
-	}
-
-	return token, nil
-}
-
-func DecodeToken(tokenString string, isAccessToken bool) (jwt.MapClaims, error) {
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		var secret []byte
-		if isAccessToken {
-			secret = accessSecret
+		if ve, ok := err.(*jwt.ValidationError); ok {
+			if ve.Errors&jwt.ValidationErrorExpired != 0 {
+				return token.Claims.(jwt.MapClaims), false, nil
+			} else {
+				return nil, false, err
+			}
 		} else {
-			secret = refreshSecret
+			return nil, false, err
 		}
-
-		return secret, nil
-	})
-	if err != nil {
-		return nil, err
 	}
 
-	if !token.Valid {
-		return nil, err
-	}
-
-	return token.Claims.(jwt.MapClaims), nil
+	return token.Claims.(jwt.MapClaims), true, nil
 }
 
 func CheckTokenExpiration(tokenString string, isAccessToken bool) (bool, string, error) {
-	token, err := ValidateToken(tokenString, isAccessToken)
+	claims, isTokenValid, err := ParseToken(tokenString, isAccessToken)
 	if err != nil {
 		return false, "0.00", err
 	}
 
-	// Correctly handle the exp claim as a float64 and convert to int64
-	exp, ok := token.Claims.(jwt.MapClaims)["exp"].(float64)
+	exp, ok := claims["exp"].(float64)
 	if !ok {
 		return false, "0.00", fmt.Errorf("invalid exp claim type")
 	}
@@ -95,5 +77,5 @@ func CheckTokenExpiration(tokenString string, isAccessToken bool) (bool, string,
 
 	timeLeftInHours := fmt.Sprintf("%.2f", timeLeft.Hours())
 
-	return timeLeft > 0, timeLeftInHours, nil
+	return isTokenValid && timeLeft > 0, timeLeftInHours, nil
 }

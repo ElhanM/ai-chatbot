@@ -2,6 +2,7 @@ package jwts
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/ElhanM/ai-chatbot/envs"
 	"github.com/ElhanM/ai-chatbot/services"
@@ -26,12 +27,12 @@ func CheckJWTs(userIdStr string) (map[string]interface{}, error) {
 
 	accessToken, refreshToken := GetAccessToken(userId), GetRefreshToken(userId)
 
-	decodedAccessToken, err := utils.DecodeToken(accessToken, true)
+	decodedAccessToken, _, err := utils.ParseToken(accessToken, true)
 	if err != nil {
 		return nil, errors.New("failed to decode access token")
 	}
 
-	decodedRefreshToken, err := utils.DecodeToken(refreshToken, false)
+	decodedRefreshToken, _, err := utils.ParseToken(refreshToken, false)
 	if err != nil {
 		return nil, errors.New("failed to decode refresh token")
 	}
@@ -49,7 +50,8 @@ func CheckJWTs(userIdStr string) (map[string]interface{}, error) {
 	if !isValidAccessToken && isValidRefreshToken {
 		newAccessToken, err := RefreshAccessToken(nil, refreshToken)
 		if err != nil {
-			return nil, errors.New("failed to refresh access token")
+			errMsg := fmt.Sprintf("failed to refresh access token: %v", err)
+			return nil, errors.New(errMsg)
 		}
 		accessToken = newAccessToken
 		isValidAccessToken, accessTokenExp, err = utils.CheckTokenExpiration(accessToken, true)

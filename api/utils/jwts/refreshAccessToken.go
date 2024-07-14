@@ -8,10 +8,9 @@ import (
 	"github.com/google/uuid"
 )
 
-// RefreshAccessToken generates a new access token using the provided refresh token.
 func RefreshAccessToken(c *gin.Context, refreshToken string) (string, error) {
 	// Decode the refresh token
-	decodedRefreshToken, err := utils.DecodeToken(refreshToken, false)
+	decodedRefreshToken, _, err := utils.ParseToken(refreshToken, false)
 	if err != nil {
 		return "", errors.New("invalid refresh token")
 	}
@@ -25,7 +24,11 @@ func RefreshAccessToken(c *gin.Context, refreshToken string) (string, error) {
 	// Get the user ID from the refresh token claims
 	userIdStr, ok := decodedRefreshToken["sub"].(string)
 	if !ok {
-		return "", errors.New("invalid refresh token claims")
+		// Fallback to the "user_id" claim if "sub" is not present
+		userIdStr, ok = decodedRefreshToken["user_id"].(string)
+		if !ok {
+			return "", errors.New("invalid refresh token claims")
+		}
 	}
 
 	userId, err := uuid.Parse(userIdStr)
