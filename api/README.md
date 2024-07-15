@@ -10,4 +10,6 @@ To use Live reload - run `air` inside of api directory.
 
 In order to run the tests:
 Install godotenv: `go install github.com/joho/godotenv/cmd/godotenv@latest`
-Run the tests (use godotenv to load the env variables): `godotenv -f .env.test go test ./...`
+
+Run the tests (use godotenv to load the env variables): `godotenv -f .env.test go test -v ./...`
+If you want to see the logs for tests that are not failing, you have to provide go test the -v flag (v for verbosity).

@@ -37,28 +37,39 @@ func TestGenerateRefreshToken(t *testing.T) {
 
 func TestParseToken(t *testing.T) {
 	userID := uuid.New()
+
 	accessToken, _ := GenerateAccessToken(userID)
 	refreshToken, _ := GenerateRefreshToken(userID)
+
+	dummyUUID := "8e3d56ca-a0d5-4048-8498-3602b606774d"
+	expiredToken := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjEwNTc4MTUsInN1YiI6IjhlM2Q1NmNhLWEwZDUtNDA0OC04NDk4LTM2MDJiNjA2Nzc0ZCJ9.q3WtxCfgSCpmEaMYlTjGXzUmJFoLlPQ60FN6BQm7JhQ"
 
 	tests := []struct {
 		tokenString   string
 		isAccessToken bool
 		expectedSub   string
 		expectValid   bool
+		expectError   bool
 	}{
-		{accessToken, true, userID.String(), true},
-		{refreshToken, false, userID.String(), true},
-		{"invalid.token.string", true, "", false},
+		{accessToken, true, userID.String(), true, false},
+		{refreshToken, false, userID.String(), true, false},
+		{"invalid.token.string", true, "", false, true},
+		{expiredToken, true, dummyUUID, false, false},
 	}
 
 	for _, test := range tests {
 		claims, isValid, err := ParseToken(test.tokenString, test.isAccessToken)
+
 		if test.expectValid {
 			assert.NoError(t, err)
 			assert.True(t, isValid)
 			assert.Equal(t, test.expectedSub, claims["sub"])
 		} else {
-			assert.Error(t, err)
+			if test.expectError {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+			}
 			assert.False(t, isValid)
 		}
 	}
