@@ -1,9 +1,15 @@
+import { useRootNavigationState, Redirect } from 'expo-router';
 import { Text, View } from 'react-native';
 
 export default function Index() {
-  return (
-    <View className="flex-1 justify-center items-center">
-      <Text>Edit app/index.tsx to edit this screen.</Text>
-    </View>
-  );
+  const rootNavigationState = useRootNavigationState();
+
+  if (!rootNavigationState?.key)
+    return (
+      <View className="flex-1 justify-center items-center">
+        <Text>Loading...</Text>
+      </View>
+    );
+
+  return <Redirect href={'/chats'} />;
 }
