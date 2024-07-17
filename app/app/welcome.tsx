@@ -1,31 +1,27 @@
 import Button from '@/components/Button';
+import { useRouter } from 'expo-router';
 import React from 'react';
-import { View, Text, Dimensions } from 'react-native';
-
-const { width } = Dimensions.get('window');
+import { Text, View } from 'react-native';
 
 const Welcome = () => {
+  const router = useRouter();
+
   const handleLogin = () => {
-    // Handle login logic here
+    router.push('/login');
   };
 
-  const handleSignUp = () => {
-    // Handle signup logic here
+  const handleRegister = () => {
+    router.push('/register');
   };
 
+  // TODO: Add tailwind dark mode
   return (
-    <View style={styles.container} className="flex-1 bg-black justify-center items-center px-5">
+    <View className="flex-1 bg-black justify-center items-center px-5">
       <Text className="text-white text-3xl font-bold mb-5">Get started</Text>
       <Button title="Log in" onPress={handleLogin} classNameProp="self-stretch" />
-      <Button title="Sign up" onPress={handleSignUp} classNameProp="self-stretch" />
+      <Button title="Register" onPress={handleRegister} classNameProp="self-stretch" />
     </View>
   );
 };
 
 export default Welcome;
-
-const styles = {
-  container: {
-    width,
-  },
-};
