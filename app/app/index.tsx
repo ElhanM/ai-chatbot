@@ -6,5 +6,5 @@ export default function Index() {
 
   if (!rootNavigationState?.key) return <Loading />;
 
-  return <Redirect href={'/chats'} />;
+  return <Redirect href={'/welcome'} />;
 }

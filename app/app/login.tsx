@@ -8,6 +8,7 @@ export default function Login() {
     <View className="flex-1 justify-center items-center">
       <Text>Login Page</Text>
       <Button title="Go to Register" onPress={() => router.push('/register')} />
+      <Button title="Go to Chats" onPress={() => router.push('/chats')} />
     </View>
   );
 }
