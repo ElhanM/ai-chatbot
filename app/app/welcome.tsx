@@ -1,4 +1,4 @@
-import Button from '@/components/Button';
+import Button from '@/components/forms/Button';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import { Text, View } from 'react-native';
