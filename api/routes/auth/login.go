@@ -53,8 +53,19 @@ func LoginRoute(r *gin.RouterGroup) {
 			return
 		}
 
-		jwts.SetAccessToken(accessToken, user.ID)
-		jwts.SetRefreshToken(refreshToken, user.ID)
+		err = jwts.SetAccessToken(accessToken, user.ID)
+		if err != nil {
+			errorResponse := responses.NewErrorResponse(utils.BuildError(err, "Failed to set access token").Error())
+			c.JSON(http.StatusInternalServerError, errorResponse)
+			return
+		}
+
+		err = jwts.SetRefreshToken(refreshToken, user.ID)
+		if err != nil {
+			errorResponse := responses.NewErrorResponse(utils.BuildError(err, "Failed to set refresh token").Error())
+			c.JSON(http.StatusInternalServerError, errorResponse)
+			return
+		}
 
 		data := map[string]interface{}{"id": user.ID, "name": user.Name}
 		response := responses.NewServiceResponse(responses.Success, "Login successful", data, nil)

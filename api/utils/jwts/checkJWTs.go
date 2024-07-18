@@ -17,7 +17,16 @@ func CheckJWTs(userIdStr string) (map[string]interface{}, error) {
 		return nil, utils.BuildError(err, "invalid user ID format")
 	}
 
-	accessToken, refreshToken := GetAccessToken(userId), GetRefreshToken(userId)
+	// accessToken, refreshToken := GetAccessToken(userId), GetRefreshToken(userId)
+  accessToken, err := GetAccessToken(userId)
+  if err != nil {
+    return nil, utils.BuildError(err, "failed to get access token")
+  }
+
+  refreshToken, err := GetRefreshToken(userId)
+  if err != nil {
+    return nil, utils.BuildError(err, "failed to get refresh token")
+  }
 
 	decodedAccessToken, _, err := utils.ParseToken(accessToken, true)
 	if err != nil {

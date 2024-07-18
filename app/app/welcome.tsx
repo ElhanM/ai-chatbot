@@ -14,7 +14,6 @@ const Welcome = () => {
     router.push('/register');
   };
 
-  // TODO: Add tailwind dark mode
   return (
     <View className="flex-1 bg-black justify-center items-center px-5">
       <Text className="text-white text-3xl font-bold mb-5">Get started</Text>
