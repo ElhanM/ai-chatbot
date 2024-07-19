@@ -1,8 +1,12 @@
+import { IResponse } from '@/api';
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
+import { fetchData } from './utils';
 
 interface HealthState {
-  message: string;
+  data: IResponse | null;
+  loading: boolean;
+  error: string | null;
   fetchHealth: () => Promise<void>;
   counter: number;
   increaseCounter: () => void;
@@ -11,18 +15,11 @@ interface HealthState {
 
 export const useHealthStore = create(
   immer<HealthState>((set) => ({
-    message: '',
+    data: null,
+    loading: true,
+    error: null,
     fetchHealth: async () => {
-      try {
-        const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/api/v1/health`);
-
-        const data = await response.json();
-        set((state) => {
-          state.message = data.message;
-        });
-      } catch (error) {
-        console.error('Failed to fetch health data:', error);
-      }
+      await fetchData({ endpoint: '/health', set });
     },
     counter: 0,
     increaseCounter: () =>

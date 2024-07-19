@@ -3,30 +3,38 @@ import { useRouter } from 'expo-router';
 import React from 'react';
 import { Text, View } from 'react-native';
 
+const environment = process.env.EXPO_PUBLIC_ENVIRONMENT;
+
 const Welcome = () => {
   const router = useRouter();
-  const environment = process.env.EXPO_PUBLIC_ENVIRONMENT;
 
-  const handleLogin = () => {
-    router.push('/login');
+  const handleNavigation = (path: string) => () => {
+    router.push(path);
   };
 
-  const handleRegister = () => {
-    router.push('/register');
-  };
-
-  const handleHealth = () => {
-    router.push('/health');
-  };
+  const buttons = [
+    { title: 'Log in', path: '/login' },
+    { title: 'Register', path: '/register' },
+    ...(environment === 'development'
+      ? [
+          { title: 'Health', path: '/health' },
+          { title: 'Error', path: '/error' },
+          { title: 'Chats', path: '/chats' },
+        ]
+      : []),
+  ];
 
   return (
     <View className="flex-1 bg-black justify-center items-center px-5">
       <Text className="text-white text-3xl font-bold mb-5">Get started</Text>
-      <Button title="Log in" onPress={handleLogin} classNameProp="self-stretch" />
-      <Button title="Register" onPress={handleRegister} classNameProp="self-stretch" />
-      {environment === 'development' && (
-        <Button title="Health" onPress={handleHealth} classNameProp="self-stretch" />
-      )}
+      {buttons.map(({ title, path }) => (
+        <Button
+          key={path}
+          title={title}
+          onPress={handleNavigation(path)}
+          classNameProp="self-stretch"
+        />
+      ))}
     </View>
   );
 };

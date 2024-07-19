@@ -7,8 +7,8 @@ const SpinnerContainer = styled(View, 'flex-1 justify-center items-center');
 
 export default function LoadingSpinner() {
   return (
-    <SpinnerContainer>
-      <ActivityIndicator size="large" color="#000" />
+    <SpinnerContainer className="bg-black">
+      <ActivityIndicator size="large" color="#fff" />
     </SpinnerContainer>
   );
 }
