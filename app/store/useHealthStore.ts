@@ -3,10 +3,8 @@ import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import { makeRequest, RequestMethod } from './utils';
 
-export interface HealthData {}
-
 export interface HealthState {
-  data: IResponse<HealthData> | null;
+  data: IResponse | null;
   loading: boolean;
   error: string | null;
   fetchHealth: () => Promise<void>;

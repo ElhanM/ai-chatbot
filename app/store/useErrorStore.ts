@@ -3,10 +3,8 @@ import { immer } from 'zustand/middleware/immer';
 import { makeRequest, RequestMethod } from './utils';
 import { IResponse } from '@/api';
 
-interface ErrorData {}
-
 export interface ErrorState {
-  data: IResponse<ErrorData> | null;
+  data: IResponse | null;
   loading: boolean;
   error: string | null;
   fetchError: () => Promise<void>;
