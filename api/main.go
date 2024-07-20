@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"time"
 
 	gormDB "github.com/ElhanM/ai-chatbot/db"
 	"github.com/ElhanM/ai-chatbot/envs"
@@ -39,8 +38,6 @@ func setupRouter() *gin.Engine {
 }
 
 func main() {
-	fmt.Println(time.Hour * 1)
-
 	port := envs.GetPort()
 
 	r := setupRouter()
