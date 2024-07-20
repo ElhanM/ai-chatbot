@@ -1,23 +1,46 @@
 import Button from '@/components/forms/Button';
 import Input from '@/components/forms/Input';
+import LoadingSpinner from '@/components/Loading';
+import { useAuthStore } from '@/store/useAuthStore';
 import React, { useState } from 'react';
-import { View, Text } from 'react-native';
+import { Text, View } from 'react-native';
 
 const Login = () => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const login = useAuthStore((state) => state.login);
+  const loading = useAuthStore((state) => state.loading);
+  const error = useAuthStore((state) => state.error);
 
-  const handleLogin = () => {
-    // Handle login logic here
-    console.log('Username:', username);
-    console.log('Password:', password);
+  // TODO: add form validation
+  const handleLogin = async () => {
+    await login(email, password);
+
+    if (!error) {
+      setEmail('');
+      setPassword('');
+    }
   };
+
+  if (loading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <View className="flex-1 bg-black justify-center items-center px-5">
       <Text className="text-white text-3xl font-bold mb-8">Login</Text>
-      <Input placeholder="Username" onChangeText={(text) => setUsername(text)} />
-      <Input placeholder="Password" secureTextEntry onChangeText={(text) => setPassword(text)} />
+      <Input
+        placeholder="Email"
+        value={email}
+        onChangeText={(text) => setEmail(text)}
+        autoCapitalize="none"
+      />
+      <Input
+        placeholder="Password"
+        secureTextEntry
+        value={password}
+        onChangeText={(text) => setPassword(text)}
+      />
       <Button title="Log in" onPress={handleLogin} classNameProp="self-stretch" />
     </View>
   );

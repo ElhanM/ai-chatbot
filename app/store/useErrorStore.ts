@@ -1,10 +1,12 @@
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
-import { fetchData } from './utils';
+import { makeRequest, RequestMethod } from './utils';
 import { IResponse } from '@/api';
 
+interface ErrorData {}
+
 export interface ErrorState {
-  data: IResponse | null;
+  data: IResponse<ErrorData> | null;
   loading: boolean;
   error: string | null;
   fetchError: () => Promise<void>;
@@ -16,7 +18,7 @@ export const useErrorStore = create(
     loading: true,
     error: null,
     fetchError: async () => {
-      await fetchData({ endpoint: '/error', set });
+      await makeRequest({ endpoint: '/error', set, method: RequestMethod.GET });
     },
   }))
 );

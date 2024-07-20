@@ -1,9 +1,11 @@
 import axios from 'axios';
 
-export interface IResponse {
+export type IResponseType = Record<string, any> | Record<string, any>[];
+
+export interface IResponse<T extends IResponseType> {
   success: boolean;
   message: string;
-  results: Record<string, unknown> | Record<string, unknown>[];
+  results: T;
 }
 
 const api = axios.create({

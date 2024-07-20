@@ -1,10 +1,12 @@
 import { IResponse } from '@/api';
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
-import { fetchData } from './utils';
+import { makeRequest, RequestMethod } from './utils';
+
+export interface HealthData {}
 
 export interface HealthState {
-  data: IResponse | null;
+  data: IResponse<HealthData> | null;
   loading: boolean;
   error: string | null;
   fetchHealth: () => Promise<void>;
@@ -13,14 +15,13 @@ export interface HealthState {
   decreaseCounter: () => void;
 }
 
-// TODO: add tests for fetchHealth and fetchError
 export const useHealthStore = create(
   immer<HealthState>((set) => ({
     data: null,
     loading: true,
     error: null,
     fetchHealth: async () => {
-      await fetchData({ endpoint: '/health', set });
+      await makeRequest({ endpoint: '/health', set, method: RequestMethod.GET });
     },
     counter: 0,
     increaseCounter: () =>

@@ -1,11 +1,11 @@
 import { IResponse } from '@/api';
 import { act, renderHook } from '@testing-library/react';
-import { HealthState, useHealthStore } from '../useHealthStore';
-import { fetchData } from '../utils';
+import { HealthData, HealthState, useHealthStore } from '../useHealthStore';
+import { makeRequest } from '../utils';
 
 jest.mock('../utils', () => ({
   ...jest.requireActual('../utils'),
-  fetchData: jest.fn(),
+  makeRequest: jest.fn(),
 }));
 
 describe('useHealthStore', () => {
@@ -14,13 +14,13 @@ describe('useHealthStore', () => {
   });
 
   it('should fetch health data successfully', async () => {
-    const data: IResponse = {
+    const data: IResponse<HealthData> = {
       success: true,
       message: 'Server is healthy',
       results: {},
     };
 
-    (fetchData as jest.Mock).mockImplementation(async ({ set }) => {
+    (makeRequest as jest.Mock).mockImplementation(async ({ set }) => {
       set((state: HealthState) => {
         state.data = data;
         state.loading = false;

@@ -1,10 +1,10 @@
 import { act, renderHook } from '@testing-library/react';
 import { ErrorState, useErrorStore } from '../useErrorStore';
-import { fetchData } from '../utils';
+import { makeRequest } from '../utils';
 
 jest.mock('../utils', () => ({
   ...jest.requireActual('../utils'),
-  fetchData: jest.fn(),
+  makeRequest: jest.fn(),
 }));
 
 describe('useErrorStore', () => {
@@ -15,7 +15,7 @@ describe('useErrorStore', () => {
   it('should fetch error data and handle it correctly', async () => {
     const errorMessage = 'Internal server error';
 
-    (fetchData as jest.Mock).mockImplementation(async ({ set }) => {
+    (makeRequest as jest.Mock).mockImplementation(async ({ set }) => {
       set((state: ErrorState) => {
         state.data = null;
         state.loading = false;
