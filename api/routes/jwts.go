@@ -14,9 +14,10 @@ func JwtsRoute(r *gin.RouterGroup) {
 	r.GET("/jwts/:userId", func(c *gin.Context) {
 		userIdStr := c.Param("userId")
 
-		data, err := jwts.CheckJWTs(userIdStr)
+		data, err, errorCode := jwts.CheckJWTs(userIdStr)
 		if err != nil {
 			errorResponse := responses.NewErrorResponse(utils.BuildError(err, "Unauthorized").Error())
+			errorResponse.ErrorCode = *errorCode
 			c.AbortWithStatusJSON(http.StatusUnauthorized, errorResponse)
 			return
 		}

@@ -2,6 +2,8 @@ import api, { ErrorCodes, IResponse, IResponseType } from '@/api';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { Toast } from 'toastify-react-native';
 import { router } from 'expo-router';
+import { useAuthStore } from './useAuthStore';
+import { setUser } from '@/utils/user';
 
 const environment = process.env.EXPO_PUBLIC_ENVIRONMENT;
 
@@ -21,6 +23,15 @@ interface RequestOptions {
   data?: any;
   set: (fn: (state: any) => void) => void;
 }
+
+// TODO: solve require cycle
+// TODO: Test + refactor
+const onGuardFailure = () => {
+  const { setUserDetails, setUserId } = useAuthStore.getState();
+  setUserDetails('', '');
+  setUser(setUserId, null);
+  router.replace('/login');
+};
 
 export const makeRequest = async ({ endpoint, method, data, set }: RequestOptions) => {
   set((state) => {
@@ -82,7 +93,7 @@ export const makeRequest = async ({ endpoint, method, data, set }: RequestOption
     }
   } finally {
     if (errorCode === ErrorCodes.GUARD_FAILURE) {
-      router.replace('/login');
+      onGuardFailure();
     }
     set((state) => {
       state.loading = false;

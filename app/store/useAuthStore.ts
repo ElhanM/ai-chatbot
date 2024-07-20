@@ -54,11 +54,7 @@ export const useAuthStore = create(
           if (userId) {
             setUser(state.setUserId, userId);
           }
-          if (environment === 'development') {
-            router.replace('/welcome');
-          } else {
-            router.replace('/chats');
-          }
+          router.replace('/chats');
         }
       });
     },

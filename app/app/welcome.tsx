@@ -13,11 +13,12 @@ const Welcome = () => {
   };
 
   const buttons = [
+    { title: 'Login', path: '/login' },
+    { title: 'Register', path: '/register' },
     ...(environment === 'development'
       ? [
           { title: 'Health', path: '/health' },
           { title: 'Error', path: '/error' },
-          { title: 'Chats', path: '/chats' },
         ]
       : []),
   ];
