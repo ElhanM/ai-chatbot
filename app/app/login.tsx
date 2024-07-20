@@ -42,6 +42,7 @@ const Login = () => {
         onChangeText={(text) => setPassword(text)}
       />
       <Button title="Log in" onPress={handleLogin} classNameProp="self-stretch" />
+      {/* TODO: Add button to go to register page */}
     </View>
   );
 };

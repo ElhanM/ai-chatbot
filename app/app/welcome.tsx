@@ -13,8 +13,6 @@ const Welcome = () => {
   };
 
   const buttons = [
-    { title: 'Log in', path: '/login' },
-    { title: 'Register', path: '/register' },
     ...(environment === 'development'
       ? [
           { title: 'Health', path: '/health' },

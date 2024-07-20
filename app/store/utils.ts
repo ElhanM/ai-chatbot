@@ -1,6 +1,7 @@
-import api, { IResponse, IResponseType } from '@/api';
+import api, { ErrorCodes, IResponse, IResponseType } from '@/api';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { Toast } from 'toastify-react-native';
+import { router } from 'expo-router';
 
 const environment = process.env.EXPO_PUBLIC_ENVIRONMENT;
 
@@ -26,6 +27,7 @@ export const makeRequest = async ({ endpoint, method, data, set }: RequestOption
     state.loading = true;
     state.error = null;
   });
+  let errorCode: string | null = null;
 
   try {
     environment === 'development' && (await delay(1000));
@@ -64,6 +66,9 @@ export const makeRequest = async ({ endpoint, method, data, set }: RequestOption
       if (axiosError.response) {
         const apiError = axiosError.response.data;
         errorMessage = apiError.message || errorMessage;
+        if (apiError.errorCode) {
+          errorCode = apiError.errorCode;
+        }
       } else if (axiosError.message) {
         errorMessage = axiosError.message;
       }
@@ -76,6 +81,9 @@ export const makeRequest = async ({ endpoint, method, data, set }: RequestOption
       Toast.error(errorMessage, 'top');
     }
   } finally {
+    if (errorCode === ErrorCodes.GUARD_FAILURE) {
+      router.replace('/login');
+    }
     set((state) => {
       state.loading = false;
     });

@@ -7,8 +7,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// TODO: Write better tests
-
 func TestGenerateAccessToken(t *testing.T) {
 	userID := uuid.New()
 
