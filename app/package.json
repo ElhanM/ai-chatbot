@@ -13,10 +13,6 @@
     "format:check": "prettier --check .",
     "format:fix": "prettier --write ."
   },
-  "jest": {
-    "preset": "jest-expo",
-    "testEnvironment": "jsdom"
-  },
   "dependencies": {
     "@expo/vector-icons": "^14.0.2",
     "@react-navigation/native": "^6.0.2",
