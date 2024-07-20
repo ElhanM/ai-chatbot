@@ -1,5 +1,5 @@
 import api, { IResponse, IResponseType } from '@/api';
-import axios, { AxiosError } from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import { Toast } from 'toastify-react-native';
 
 const environment = process.env.EXPO_PUBLIC_ENVIRONMENT;
@@ -30,7 +30,7 @@ export const makeRequest = async ({ endpoint, method, data, set }: RequestOption
   try {
     environment === 'development' && (await delay(1000));
 
-    let response;
+    let response: AxiosResponse<IResponse<IResponseType>>;
 
     switch (method) {
       case RequestMethod.GET:
