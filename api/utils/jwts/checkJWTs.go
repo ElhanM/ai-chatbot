@@ -18,15 +18,15 @@ func CheckJWTs(userIdStr string) (map[string]interface{}, error) {
 	}
 
 	// accessToken, refreshToken := GetAccessToken(userId), GetRefreshToken(userId)
-  accessToken, err := GetAccessToken(userId)
-  if err != nil {
-    return nil, utils.BuildError(err, "failed to get access token")
-  }
+	accessToken, err := GetAccessToken(userId)
+	if err != nil {
+		return nil, utils.BuildError(err, "failed to get access token")
+	}
 
-  refreshToken, err := GetRefreshToken(userId)
-  if err != nil {
-    return nil, utils.BuildError(err, "failed to get refresh token")
-  }
+	refreshToken, err := GetRefreshToken(userId)
+	if err != nil {
+		return nil, utils.BuildError(err, "failed to get refresh token")
+	}
 
 	decodedAccessToken, _, err := utils.ParseToken(accessToken, true)
 	if err != nil {
@@ -76,6 +76,7 @@ func populateData(data *map[string]interface{}, isValidAccessToken, isValidRefre
 	*data = map[string]interface{}{
 		"isValidAccessToken":  isValidAccessToken,
 		"isValidRefreshToken": isValidRefreshToken,
+		"user":                user,
 	}
 
 	if environment == "development" {
@@ -85,7 +86,6 @@ func populateData(data *map[string]interface{}, isValidAccessToken, isValidRefre
 		(*data)["decodedRefreshToken"] = decodedRefreshToken
 		(*data)["accessTokenExp"] = accessTokenExp
 		(*data)["refreshTokenExp"] = refreshTokenExp
-		(*data)["user"] = *user
 	}
 }
 

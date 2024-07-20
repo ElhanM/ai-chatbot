@@ -12,23 +12,38 @@ import (
 var (
 	accessSecret  = []byte(envs.GetAccessTokenSecret())
 	refreshSecret = []byte(envs.GetRefreshTokenSecret())
+	environment   = envs.GetEnvironment()
 )
 
 func GenerateAccessToken(userID uuid.UUID) (string, error) {
+	// last for 1 hour in production, 5 minutes in development
+	var expirationTime time.Time
+	if environment == "development" {
+		expirationTime = time.Now().Add(time.Minute * 5)
+	} else {
+		expirationTime = time.Now().Add(time.Hour * 1)
+	}
+
 	claims := jwt.MapClaims{
 		"sub": userID.String(),
-		// last for 1 hour
-		"exp": time.Now().Add(time.Hour * 1).Unix(),
+		"exp": expirationTime.Unix(),
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString(accessSecret)
 }
 
 func GenerateRefreshToken(userID uuid.UUID) (string, error) {
+	// last for 1 week in production, 15 minutes in development
+	var expirationTime time.Time
+	if environment == "development" {
+		expirationTime = time.Now().Add(time.Minute * 15)
+	} else {
+		expirationTime = time.Now().Add(time.Hour * 24 * 7)
+	}
+
 	claims := jwt.MapClaims{
 		"sub": userID.String(),
-		// last for 1 week
-		"exp": time.Now().Add(time.Hour * 24 * 7).Unix(),
+		"exp": expirationTime.Unix(),
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString(refreshSecret)
