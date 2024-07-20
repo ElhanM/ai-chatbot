@@ -3,7 +3,7 @@ import { immer } from 'zustand/middleware/immer';
 import { fetchData } from './utils';
 import { IResponse } from '@/api';
 
-interface ErrorState {
+export interface ErrorState {
   data: IResponse | null;
   loading: boolean;
   error: string | null;

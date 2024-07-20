@@ -28,3 +28,7 @@ jobs:
       - name: Run Prettier
         working-directory: app
         run: npm run format:check
+
+      - name: Run Tests
+        working-directory: app
+        run: npm test

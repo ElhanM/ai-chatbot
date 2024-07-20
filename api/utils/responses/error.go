@@ -11,6 +11,7 @@ func NewErrorResponse(message string) ErrorResponse {
 		ServiceResponse: ServiceResponse[any]{
 			Success: false,
 			Message: message,
+			Results: struct{}{},
 		},
 	}
 }

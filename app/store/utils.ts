@@ -17,7 +17,6 @@ export const fetchData = async ({ endpoint, set }: FetchOptions) => {
   });
 
   try {
-    console.log({ environment });
     environment === 'development' && (await delay(1000));
     const response = await api.get<IResponse>(endpoint);
 

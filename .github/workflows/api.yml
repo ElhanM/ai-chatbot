@@ -20,3 +20,10 @@ jobs:
       - name: Build Go
         working-directory: api
         run: go build
+
+      - name: Install godotenv
+        run: go install github.com/joho/godotenv/cmd/godotenv@latest
+
+      - name: Test API
+        working-directory: api
+        run: godotenv -f .env.test go test ./...

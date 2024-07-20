@@ -3,7 +3,7 @@ import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import { fetchData } from './utils';
 
-interface HealthState {
+export interface HealthState {
   data: IResponse | null;
   loading: boolean;
   error: string | null;
@@ -13,6 +13,7 @@ interface HealthState {
   decreaseCounter: () => void;
 }
 
+// TODO: add tests for fetchHealth and fetchError
 export const useHealthStore = create(
   immer<HealthState>((set) => ({
     data: null,
