@@ -5,7 +5,7 @@ import LoadingSpinner from '@/components/Loading';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useUserStore } from '@/store/useUserStore';
 import { getUser, setUser } from '@/utils/user';
-import { Stack, useRootNavigationState, useRouter } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import { useEffect } from 'react';
 
 const environment = process.env.EXPO_PUBLIC_ENVIRONMENT;
@@ -15,24 +15,35 @@ export default function RootLayout() {
 
   const setUserId = useAuthStore((state) => state.setUserId);
   const userId = useAuthStore((state) => state.user.id);
-  // const fetchUserData = useUserStore((state) => state.fetchUserData);
   const { fetchUserData, loading, error } = useUserStore();
 
   useEffect(() => {
+    let mounted = true; // Flag to track component mount status
+
     const checkUser = async () => {
       if (!userId) {
         const storedUser = getUser();
         if (storedUser) {
           setUser(setUserId, storedUser);
           await fetchUserData();
-          router.replace('/chats');
+          if (mounted) {
+            // Check if component is still mounted
+            router.replace('/chats');
+          }
         } else {
-          router.replace('/welcome');
+          if (mounted) {
+            // Check if component is still mounted
+            router.replace('/welcome');
+          }
         }
       }
     };
 
     checkUser();
+
+    return () => {
+      mounted = false; // Set flag to false when component unmounts
+    };
   }, [userId, setUserId, router, fetchUserData]);
 
   console.log({ userId });
