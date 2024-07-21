@@ -1,8 +1,9 @@
 import { IResponse } from '@/api';
-import { setUser } from '@/utils/user';
+import { setUserInStorage } from '@/utils/user';
 import { router } from 'expo-router';
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
+import { useGuardStore } from './useGuardStore';
 import { makeRequest, RequestMethod } from './utils/makeRequest';
 
 interface LoginData {
@@ -50,7 +51,10 @@ export const useAuthStore = create(
           const userId = state.data?.results?.id;
 
           if (userId) {
-            setUser(state.setUserId, userId);
+            set((state) => {
+              state.user.id = userId;
+            });
+            setUserInStorage(userId);
           }
           router.replace('/chats');
         }
@@ -69,8 +73,13 @@ export const useAuthStore = create(
     },
     onGuardFailure: () => {
       set((state) => {
-        state.setUserDetails('', '');
-        setUser(state.setUserId, null);
+        // Using setUserId or setUserDetails here does not work as expected
+        // My guess is the fact that we call set((state) => {set((state) => { ... })})
+        state.user.id = null;
+        state.user.name = '';
+        state.user.email = '';
+        setUserInStorage(null);
+        useGuardStore.getState().resetErrorCode();
       });
     },
   }))

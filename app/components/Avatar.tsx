@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import Modal from 'react-native-modal';
 import Button, { ButtonSize } from './forms/Button';
-import { setUser } from '@/utils/user';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useShallow } from 'zustand/react/shallow';
+import { setUserInStorage } from '@/utils/user';
 
 type Props = {};
 
@@ -31,7 +31,8 @@ const Avatar = (props: Props) => {
 
   const handleLogout = () => {
     // TODO: Delete tokens from database
-    setUser(setUserId, null);
+    setUserId(null);
+    setUserInStorage(null);
   };
 
   const firstLetter = name?.charAt(0).toUpperCase();

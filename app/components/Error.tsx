@@ -15,6 +15,7 @@ const Error = ({ error }: Props) => {
   );
 
   useEffect(() => {
+    console.log({ errorCode });
     if (errorCode) {
       onGuardFailure();
     }

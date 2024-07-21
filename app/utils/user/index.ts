@@ -1,12 +1,11 @@
 import * as SecureStore from 'expo-secure-store';
 
-const setUser = (setUserId: (userId: string | null) => void, userId: string | null) => {
+const setUserInStorage = (userId: string | null) => {
   SecureStore.setItem('userId', userId ?? '');
-  setUserId(userId);
 };
 
-const getUser = () => {
+const getUserFromStorage = () => {
   return SecureStore.getItem('userId');
 };
 
-export { getUser, setUser };
+export { setUserInStorage, getUserFromStorage };

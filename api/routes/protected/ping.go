@@ -10,6 +10,7 @@ import (
 func PingRoute(r *gin.IRoutes) {
 	(*r).GET("/ping", func(c *gin.Context) {
 		user, exists := c.Get("user")
+
 		if !exists {
 			response := responses.NewErrorResponse("Unauthorized")
 			c.JSON(http.StatusUnauthorized, response)

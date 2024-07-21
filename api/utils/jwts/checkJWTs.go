@@ -77,7 +77,7 @@ func populateData(data *map[string]interface{}, isValidAccessToken, isValidRefre
 	*data = map[string]interface{}{
 		"isValidAccessToken":  isValidAccessToken,
 		"isValidRefreshToken": isValidRefreshToken,
-		"user":                user,
+		"user":                *user,
 	}
 
 	if environment == "development" {
