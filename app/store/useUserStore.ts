@@ -2,7 +2,7 @@ import { IResponse } from '@/api';
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import { useAuthStore, User } from './useAuthStore';
-import { makeRequest, RequestMethod } from './utils';
+import { makeRequest, RequestMethod } from './utils/makeRequest';
 
 interface UserState {
   data: IResponse<{ user: User }> | null;

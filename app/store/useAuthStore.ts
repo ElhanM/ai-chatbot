@@ -1,12 +1,9 @@
 import { IResponse } from '@/api';
-import { create } from 'zustand';
-import { immer } from 'zustand/middleware/immer';
-import { makeRequest, RequestMethod } from './utils';
-import * as SecureStore from 'expo-secure-store';
 import { setUser } from '@/utils/user';
 import { router } from 'expo-router';
-
-const environment = process.env.EXPO_PUBLIC_ENVIRONMENT;
+import { create } from 'zustand';
+import { immer } from 'zustand/middleware/immer';
+import { makeRequest, RequestMethod } from './utils/makeRequest';
 
 interface LoginData {
   id: string;
@@ -27,6 +24,7 @@ export interface AuthState {
   user: User;
   setUserId: (userId: string | null) => void;
   setUserDetails: (name: string, email: string) => void;
+  onGuardFailure: () => void;
 }
 
 export const useAuthStore = create(
@@ -67,6 +65,12 @@ export const useAuthStore = create(
       set((state) => {
         state.user.name = name;
         state.user.email = email;
+      });
+    },
+    onGuardFailure: () => {
+      set((state) => {
+        state.setUserDetails('', '');
+        setUser(state.setUserId, null);
       });
     },
   }))

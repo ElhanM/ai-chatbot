@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
-import { makeRequest, RequestMethod } from './utils';
 import { IResponse } from '@/api';
+import { makeRequest, RequestMethod } from './utils/makeRequest';
 
 export interface ErrorState {
   data: IResponse | null;

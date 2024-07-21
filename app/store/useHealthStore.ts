@@ -1,7 +1,7 @@
 import { IResponse } from '@/api';
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
-import { makeRequest, RequestMethod } from './utils';
+import { makeRequest, RequestMethod } from './utils/makeRequest';
 
 export interface HealthState {
   data: IResponse | null;

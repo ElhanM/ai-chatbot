@@ -10,7 +10,7 @@ export interface IResponse<T extends IResponseType = {}> {
   success: boolean;
   message: string;
   results: T;
-  errorCode: ErrorCodes | null;
+  errorCode?: ErrorCodes | null;
 }
 
 const api = axios.create({

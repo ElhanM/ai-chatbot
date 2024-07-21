@@ -5,7 +5,7 @@ import LoadingSpinner from '@/components/Loading';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useUserStore } from '@/store/useUserStore';
 import { getUser, setUser } from '@/utils/user';
-import { Stack, useRouter } from 'expo-router';
+import { Stack, useRootNavigationState, useRouter } from 'expo-router';
 import { useEffect } from 'react';
 
 const environment = process.env.EXPO_PUBLIC_ENVIRONMENT;
