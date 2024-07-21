@@ -4,13 +4,22 @@ import Modal from 'react-native-modal';
 import Button, { ButtonSize } from './forms/Button';
 import { setUser } from '@/utils/user';
 import { useAuthStore } from '@/store/useAuthStore';
+import { useShallow } from 'zustand/react/shallow';
 
 type Props = {};
 
 const Avatar = (props: Props) => {
   const [popoverVisible, setPopoverVisible] = useState(false);
-  const setUserId = useAuthStore((state) => state.setUserId);
-  const name = useAuthStore((state) => state.user.name);
+
+  const {
+    setUserId,
+    user: { name },
+  } = useAuthStore(
+    useShallow((state) => ({
+      setUserId: state.setUserId,
+      user: state.user,
+    }))
+  );
 
   const handlePress = () => {
     setPopoverVisible(!popoverVisible);

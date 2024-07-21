@@ -3,10 +3,21 @@ import LoadingSpinner from '@/components/Loading';
 import { useHealthStore } from '@/store/useHealthStore';
 import React, { useEffect } from 'react';
 import { Text, View, Button } from 'react-native';
+import { useShallow } from 'zustand/react/shallow';
 
 const Health = () => {
   const { data, error, loading, fetchHealth, counter, increaseCounter, decreaseCounter } =
-    useHealthStore();
+    useHealthStore(
+      useShallow((state) => ({
+        data: state.data,
+        error: state.error,
+        loading: state.loading,
+        fetchHealth: state.fetchHealth,
+        counter: state.counter,
+        increaseCounter: state.increaseCounter,
+        decreaseCounter: state.decreaseCounter,
+      }))
+    );
 
   useEffect(() => {
     fetchHealth();

@@ -7,15 +7,30 @@ import { useUserStore } from '@/store/useUserStore';
 import { getUser, setUser } from '@/utils/user';
 import { Stack, useRouter } from 'expo-router';
 import { useEffect } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 
 const environment = process.env.EXPO_PUBLIC_ENVIRONMENT;
 
 export default function RootLayout() {
   const router = useRouter();
 
-  const setUserId = useAuthStore((state) => state.setUserId);
-  const userId = useAuthStore((state) => state.user.id);
-  const { fetchUserData, loading, error } = useUserStore();
+  // most optimal and best way to use zustand is with useShallow
+  const {
+    setUserId,
+    user: { id: userId },
+  } = useAuthStore(
+    useShallow((state) => ({
+      setUserId: state.setUserId,
+      user: state.user,
+    }))
+  );
+  const { fetchUserData, loading, error } = useUserStore(
+    useShallow((state) => ({
+      fetchUserData: state.fetchUserData,
+      loading: state.loading,
+      error: state.error,
+    }))
+  );
 
   useEffect(() => {
     let mounted = true; // Flag to track component mount status

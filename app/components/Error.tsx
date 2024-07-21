@@ -1,6 +1,7 @@
 import { useAuthStore } from '@/store/useAuthStore';
 import { useGuardStore } from '@/store/useGuardStore';
 import React, { useEffect } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 import { Text, View } from 'react-native';
 
 type Props = {
@@ -8,8 +9,10 @@ type Props = {
 };
 
 const Error = ({ error }: Props) => {
-  const { errorCode } = useGuardStore((state) => state);
-  const { onGuardFailure } = useAuthStore((state) => state);
+  const { errorCode } = useGuardStore(useShallow((state) => ({ errorCode: state.errorCode })));
+  const { onGuardFailure } = useAuthStore(
+    useShallow((state) => ({ onGuardFailure: state.onGuardFailure }))
+  );
 
   useEffect(() => {
     if (errorCode) {

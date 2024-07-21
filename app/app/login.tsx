@@ -4,13 +4,19 @@ import LoadingSpinner from '@/components/Loading';
 import { useAuthStore } from '@/store/useAuthStore';
 import React, { useState } from 'react';
 import { Text, View } from 'react-native';
+import { useShallow } from 'zustand/react/shallow';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const login = useAuthStore((state) => state.login);
-  const loading = useAuthStore((state) => state.loading);
-  const error = useAuthStore((state) => state.error);
+
+  const { login, loading, error } = useAuthStore(
+    useShallow((state) => ({
+      login: state.login,
+      loading: state.loading,
+      error: state.error,
+    }))
+  );
 
   // TODO: add form validation
   const handleLogin = async () => {

@@ -3,8 +3,8 @@ import { act, renderHook } from '@testing-library/react';
 import { HealthState, useHealthStore } from '../useHealthStore';
 import { makeRequest } from '../utils/makeRequest';
 
-jest.mock('../utils', () => ({
-  ...jest.requireActual('../utils'),
+jest.mock('../utils/makeRequest', () => ({
+  ...jest.requireActual('../utils/makeRequest'),
   makeRequest: jest.fn(),
 }));
 
