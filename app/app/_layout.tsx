@@ -33,9 +33,6 @@ export default function RootLayout() {
   );
 
   useEffect(() => {
-    console.log('TRIGGERO SE LIK');
-    console.log({ userId });
-
     const checkUser = async () => {
       if (!userId) {
         const storedUser = getUserFromStorage();
@@ -44,7 +41,6 @@ export default function RootLayout() {
           await fetchUserData();
           router.replace('/chats');
         } else {
-          console.log('USO U ELSE');
           router.replace('/welcome');
         }
       }
@@ -52,10 +48,6 @@ export default function RootLayout() {
 
     checkUser();
   }, [userId, setUserId, router, fetchUserData]);
-
-  useEffect(() => {
-    console.log({ userId });
-  });
 
   if (loading) {
     return <LoadingSpinner />;

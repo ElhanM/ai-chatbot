@@ -10,61 +10,61 @@ import (
 )
 
 // CheckJWTs checks the validity of JWTs and returns relevant data and an error if any.
-func CheckJWTs(userIdStr string) (map[string]interface{}, error, *string) {
+func CheckJWTs(userIdStr string) (map[string]interface{}, *string, error) { // Error is now the last argument
 	environment := envs.GetEnvironment()
 
 	userId, err := uuid.Parse(userIdStr)
+
 	if err != nil {
-		return nil, utils.BuildError(err, "invalid user ID format"), nil
+		return nil, nil, utils.BuildError(err, "invalid user ID format")
 	}
 
 	accessToken, err := GetAccessToken(userId)
 	if err != nil {
-		return nil, utils.BuildError(err, "failed to get access token"), nil
+		return nil, nil, utils.BuildError(err, "failed to get access token")
 	}
 
 	refreshToken, err := GetRefreshToken(userId)
 	if err != nil {
-		return nil, utils.BuildError(err, "failed to get refresh token"), nil
+		return nil, nil, utils.BuildError(err, "failed to get refresh token")
 	}
 
 	decodedAccessToken, _, err := utils.ParseToken(accessToken, true)
 	if err != nil {
-		return nil, utils.BuildError(err, "failed to decode access token"), nil
+		return nil, nil, utils.BuildError(err, "failed to decode access token")
 	}
 
 	decodedRefreshToken, _, err := utils.ParseToken(refreshToken, false)
 	if err != nil {
-		return nil, utils.BuildError(err, "failed to decode refresh token"), nil
+		return nil, nil, utils.BuildError(err, "failed to decode refresh token")
 	}
 
 	isValidAccessToken, accessTokenExp, err := utils.CheckTokenExpiration(accessToken, true)
 	if err != nil {
-		return nil, utils.BuildError(err, "failed to check access token expiration"), nil
+		return nil, nil, utils.BuildError(err, "failed to check access token expiration")
 	}
 
 	isValidRefreshToken, refreshTokenExp, err := utils.CheckTokenExpiration(refreshToken, false)
 	if err != nil {
-		return nil, utils.BuildError(err, "failed to check refresh token expiration"), nil
+		return nil, nil, utils.BuildError(err, "failed to check refresh token expiration")
 	}
 
 	if !isValidAccessToken && isValidRefreshToken {
 		err = handleExpiredAccessToken(&accessToken, refreshToken, userId, &isValidAccessToken, &accessTokenExp)
 		if err != nil {
-			return nil, utils.BuildError(err, "failed to handle expired access token"), nil
+			return nil, nil, utils.BuildError(err, "failed to handle expired access token")
 		}
 	}
 
 	if !isValidRefreshToken {
 		guardFailureMsg := enums.GuardFailure
-		return nil, utils.BuildError(err, "refresh token is invalid"), &guardFailureMsg
+		return nil, &guardFailureMsg, utils.BuildError(err, "refresh token is invalid")
 	}
 
 	// fetch user by id and add to data
 	user, err := services.FetchUserById(userId)
-
 	if err != nil {
-		return nil, utils.BuildError(err, "failed to fetch user by id"), nil
+		return nil, nil, utils.BuildError(err, "failed to fetch user by id")
 	}
 
 	var data map[string]interface{}

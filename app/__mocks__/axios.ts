@@ -1,6 +1,14 @@
 const mockAxiosInstance = {
   get: jest.fn(),
-  create: jest.fn().mockReturnThis(),
+  post: jest.fn(),
+  interceptors: {
+    request: {
+      use: jest.fn(),
+    },
+    response: {
+      use: jest.fn(),
+    },
+  },
 };
 
 const mockAxios = jest.fn(() => mockAxiosInstance) as any;
