@@ -16,7 +16,7 @@ func GuardMiddleware() gin.HandlerFunc {
 		userId := c.GetHeader("Authorization")
 
 		// Validate the JWT tokens using CheckJWTs function
-		data, err, _ := jwts.CheckJWTs(userId)
+		data, _, err := jwts.CheckJWTs(userId)
 		if err != nil {
 			errorResponse := responses.NewErrorResponse(utils.BuildError(err, "Unauthorized").Error())
 			errorResponse.ErrorCode = enums.GuardFailure // Unique error code to differentiate from other errors on the client side
