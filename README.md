@@ -1,14 +1,47 @@
 # AI Chatbot
 
-AI Chatbot app built with React Native, TypeScript, Tailwind and Zustand on the frontned, and Golang, Gin and Gorm on the backend.
-The app utilizes the OpenAI API to generate responses to user input.
+An AI Chatbot app built with React Native, TypeScript, Tailwind, and Zustand on the frontend, and Golang, Gin, and Gorm on the backend. The app leverages the OpenAI API to generate responses to user input.
 
-Run project with: `make ai-chatbot` from root directory.
+## Getting Started
 
-This will run the React Native app, which you can view on your device or emulator using the Expo Go app.
-It will also run the Golang backend server, which you can, by default, view at [http://localhost:5019](http://localhost:5019).
-As well as run the Postgres database inside of a Docker container.
+### Installation
 
-The project uses TDD, which run automatically when pushing your code to the repository due to GitHub Actions.
+1. Clone the repository:
 
-For first time running the project, run `go mod tidy` inside of `./api` directory first, to download all the dependencies
+   ```bash
+   git clone https://github.com/ElhanM/ai-chatbot.git
+   cd ai-chatbot
+   ```
+
+2. Navigate to the `./app` directory and install React Native dependencies:
+
+   ```bash
+   cd app
+   nvm use
+   npm install
+   ```
+
+3. Navigate to the `./api` directory and install Go dependencies:
+   ```bash
+   cd api
+   go mod tidy
+   ```
+
+### Running the Project
+
+Run the entire project with a single command from the root directory (make sure Docker is running on your machine):
+
+```bash
+make ai-chatbot
+```
+
+This command will:
+
+- Start the React Native frontend, viewable on your device or emulator using the Expo Go app.
+- Start the Golang backend server, accessible at http://localhost:5019.
+- Launch the Postgres database inside a Docker container.
+
+## Quality Assurance
+
+- I used Test-Driven Development (TDD) while building this project.
+- The tests run automatically when you push your code to the repository via GitHub Actions.
