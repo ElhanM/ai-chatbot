@@ -26,12 +26,7 @@ const Welcome = () => {
   const buttons = [
     { title: 'Login', path: '/login' },
     { title: 'Register', path: '/register' },
-    ...(environment === 'development'
-      ? [
-          { title: 'Health', path: '/health' },
-          { title: 'Protected', path: '/protected' },
-        ]
-      : []),
+    ...(environment === 'development' ? [{ title: 'Health', path: '/health' }] : []),
   ];
 
   return (

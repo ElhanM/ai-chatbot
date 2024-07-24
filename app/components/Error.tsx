@@ -24,13 +24,13 @@ const Error = ({ error }: Props) => {
   useEffect(() => {
     if (errorCode) {
       onGuardFailure();
+      router.replace('/welcome');
     }
   }, [errorCode, onGuardFailure]);
 
   return (
-    <View className="flex-1 justify-center items-center bg-black">
-      {/* TODO: Increase width to 90% screen */}
-      <View className="justify-center items-center bg-red-400 rounded-md p-3">
+    <View className=" flex-1 justify-center items-center bg-black">
+      <View className="w-[90%] justify-center items-center bg-red-400 rounded-md p-3">
         <Text className="text-white">{error ?? 'Something went wrong'}</Text>
         <Button
           onPress={() => {
