@@ -1,7 +1,6 @@
 import api, { ErrorCodes, IResponse, IResponseType } from '@/api';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { Toast } from 'toastify-react-native';
-import { useAuthStore } from '../useAuthStore';
 import { useGuardStore } from '../useGuardStore';
 
 const environment = process.env.EXPO_PUBLIC_ENVIRONMENT;
@@ -28,7 +27,6 @@ interface RequestOptions {
 export const makeRequest = async ({ endpoint, method, data, set }: RequestOptions) => {
   set((state) => {
     state.loading = true;
-    state.error = null;
   });
   let errorCode: string | null = null;
 
@@ -77,9 +75,7 @@ export const makeRequest = async ({ endpoint, method, data, set }: RequestOption
       }
     }
 
-    set((state) => {
-      state.error = errorMessage;
-    });
+    useGuardStore.getState().error = errorMessage;
     if (errorCode === ErrorCodes.GUARD_FAILURE) {
       useGuardStore.getState().errorCode = ErrorCodes.GUARD_FAILURE;
     }

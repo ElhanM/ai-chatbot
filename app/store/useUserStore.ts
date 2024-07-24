@@ -1,13 +1,12 @@
 import { IResponse } from '@/api';
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
-import { useAuthStore, User } from './useAuthStore';
+import { useLoginStore, User } from './useLoginStore';
 import { makeRequest, RequestMethod } from './utils/makeRequest';
 
 interface UserState {
   data: IResponse<{ user: User }> | null;
   loading: boolean;
-  error: string | null;
   fetchUserData: () => Promise<void>;
 }
 
@@ -15,21 +14,15 @@ export const useUserStore = create(
   immer<UserState>((set) => ({
     data: null,
     loading: false,
-    error: null,
     fetchUserData: async () => {
-      set((state) => {
-        state.loading = true;
-        state.error = null;
-      });
-
       await makeRequest({
-        endpoint: `/jwts/${useAuthStore.getState().user.id}`,
+        endpoint: `/jwts/${useLoginStore.getState().user.id}`,
         method: RequestMethod.GET,
         set,
       });
 
       set((state) => {
-        useAuthStore
+        useLoginStore
           .getState()
           .setUserDetails(
             state.data?.results?.user.name as string,

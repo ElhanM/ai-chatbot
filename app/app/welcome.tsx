@@ -1,12 +1,23 @@
 import Button from '@/components/forms/Button';
-import { useRouter } from 'expo-router';
+import LoadingSpinner from '@/components/Loading';
+import { useUserStore } from '@/store/useUserStore';
+import { router } from 'expo-router';
 import React from 'react';
 import { Text, View } from 'react-native';
+import { useShallow } from 'zustand/react/shallow';
 
 const environment = process.env.EXPO_PUBLIC_ENVIRONMENT;
 
 const Welcome = () => {
-  const router = useRouter();
+  const { loading } = useUserStore(
+    useShallow((state) => ({
+      loading: state.loading,
+    }))
+  );
+
+  if (loading) {
+    return <LoadingSpinner />;
+  }
 
   const handleNavigation = (path: string) => () => {
     router.push(path);
@@ -18,7 +29,7 @@ const Welcome = () => {
     ...(environment === 'development'
       ? [
           { title: 'Health', path: '/health' },
-          { title: 'Error', path: '/error' },
+          { title: 'Protected', path: '/protected' },
         ]
       : []),
   ];

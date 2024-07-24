@@ -1,10 +1,10 @@
 import { IResponse } from '@/api';
 import { setUserInStorage } from '@/utils/user';
-import { router } from 'expo-router';
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
-import { useGuardStore } from './useGuardStore';
 import { makeRequest, RequestMethod } from './utils/makeRequest';
+import { useGuardStore } from './useGuardStore';
+import { router } from 'expo-router';
 
 interface LoginData {
   id: string;
@@ -17,10 +17,9 @@ export interface User {
   email: string | null;
 }
 
-export interface AuthState {
+export interface LoginState {
   data: IResponse<LoginData> | null;
   loading: boolean;
-  error: string | null;
   login: (email: string, password: string) => Promise<void>;
   user: User;
   setUserId: (userId: string | null) => void;
@@ -28,11 +27,10 @@ export interface AuthState {
   onGuardFailure: () => void;
 }
 
-export const useAuthStore = create(
-  immer<AuthState>((set) => ({
+export const useLoginStore = create(
+  immer<LoginState>((set) => ({
     data: null,
     loading: false,
-    error: null,
     user: {
       id: null,
       name: null,
@@ -47,7 +45,7 @@ export const useAuthStore = create(
       });
 
       set((state) => {
-        if (!state.error) {
+        if (!useGuardStore.getState().error) {
           const userId = state.data?.results?.id;
 
           if (userId) {
@@ -56,9 +54,9 @@ export const useAuthStore = create(
             });
             setUserInStorage(userId);
           }
-          router.replace('/chats');
         }
       });
+      router.replace('/chats');
     },
     setUserId: (userId: string | null) => {
       set((state) => {
@@ -79,7 +77,6 @@ export const useAuthStore = create(
         state.user.name = '';
         state.user.email = '';
         setUserInStorage(null);
-        useGuardStore.getState().resetErrorCode();
       });
     },
   }))

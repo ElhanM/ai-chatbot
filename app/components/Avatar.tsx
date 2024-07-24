@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import Modal from 'react-native-modal';
 import Button, { ButtonSize } from './forms/Button';
-import { useAuthStore } from '@/store/useAuthStore';
+import { useLoginStore } from '@/store/useLoginStore';
 import { useShallow } from 'zustand/react/shallow';
 import { setUserInStorage } from '@/utils/user';
 
@@ -14,7 +14,7 @@ const Avatar = (props: Props) => {
   const {
     setUserId,
     user: { name },
-  } = useAuthStore(
+  } = useLoginStore(
     useShallow((state) => ({
       setUserId: state.setUserId,
       user: state.user,

@@ -44,7 +44,7 @@ func RegisterRoute(r *gin.RouterGroup) {
 			return
 		}
 
-		data := map[string]interface{}{"id": user.ID, "name": user.Name}
+		data := map[string]interface{}{"id": user.ID, "name": user.Name, "email": user.Email}
 		response := responses.NewServiceResponse(responses.Success, "User registered successfully", data, nil)
 		c.JSON(http.StatusOK, response)
 	})
