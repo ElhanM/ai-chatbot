@@ -1,9 +1,8 @@
 import { useGuardStore } from '@/store/useGuardStore';
 import { useLoginStore } from '@/store/useLoginStore';
-import { useUserStore } from '@/store/useUserStore';
 import { getUserFromStorage } from '@/utils/user';
 import { router } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
 const useUserCheck = () => {
@@ -14,39 +13,27 @@ const useUserCheck = () => {
     }))
   );
 
-  const { fetchUserData } = useUserStore(
-    useShallow((state) => ({
-      fetchUserData: state.fetchUserData,
-    }))
-  );
-
   const { error } = useGuardStore(useShallow((state) => ({ error: state.error })));
-
-  // Used to avoid flickering when useEffect runs multiple times
-  const [currentRoute, setCurrentRoute] = useState('');
 
   useEffect(() => {
     const checkUser = async () => {
       if (!userId && !error) {
         const storedUser = getUserFromStorage();
+        // https://github.com/expo/router/discussions/495#discussioncomment-7308082
+        while (router.canGoBack()) {
+          router.back();
+        }
         if (storedUser) {
           setUserId(storedUser);
-          await fetchUserData();
-          if (currentRoute !== '/chats') {
-            router.replace('/chats');
-          }
-          setCurrentRoute('/chats');
+          router.replace('/chats');
         } else {
-          if (currentRoute !== '/welcome') {
-            router.replace('/welcome');
-          }
-          setCurrentRoute('/welcome');
+          router.replace('/welcome');
         }
       }
     };
 
     checkUser();
-  }, [userId, setUserId, fetchUserData, error]);
+  }, [userId, setUserId, error]);
 };
 
 export default useUserCheck;

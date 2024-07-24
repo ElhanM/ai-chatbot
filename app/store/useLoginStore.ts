@@ -56,7 +56,6 @@ export const useLoginStore = create(
           }
         }
       });
-      router.replace('/chats');
     },
     setUserId: (userId: string | null) => {
       set((state) => {
