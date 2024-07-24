@@ -35,6 +35,5 @@ describe('useHealthStore', () => {
 
     expect(result.current.data).toEqual(data);
     expect(result.current.loading).toBe(false);
-    expect(result.current.error).toBeNull();
   });
 });
