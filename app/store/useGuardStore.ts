@@ -1,7 +1,6 @@
 import { ErrorCodes } from '@/api';
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
-import { useLoginStore } from './useLoginStore';
 
 export interface GuardState {
   errorCode: ErrorCodes | null;
