@@ -61,6 +61,7 @@ export const makeRequest = async ({ endpoint, method, data, set }: RequestOption
 
     if (axios.isAxiosError(error)) {
       const axiosError = error as AxiosError<IResponse<IResponseType>>;
+      console.log({ axiosError });
 
       if (axiosError.response) {
         const apiError = axiosError.response.data;
