@@ -22,8 +22,6 @@ interface RequestOptions {
   set: (fn: (state: any) => void) => void;
 }
 
-// TODO: Test + refactor
-
 export const makeRequest = async ({ endpoint, method, data, set }: RequestOptions) => {
   set((state) => {
     state.loading = true;
