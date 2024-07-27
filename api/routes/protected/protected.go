@@ -6,4 +6,5 @@ import (
 
 func ProtectedRoutes(r *gin.IRoutes) {
 	PingRoute(r)
+	ClearTokensRoute(r)
 }

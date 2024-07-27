@@ -14,3 +14,11 @@ func FetchUserById(id uuid.UUID) (*models.User, error) {
 	}
 	return &user, nil
 }
+
+func ClearUserTokens(id uuid.UUID) error {
+	result := gormDB.DB.Model(&models.User{}).Where("id = ?", id).Updates(map[string]interface{}{"access_token": "", "refresh_token": ""})
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
