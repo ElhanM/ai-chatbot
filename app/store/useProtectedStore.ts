@@ -12,7 +12,7 @@ export interface ProtectedState {
 export const useProtectedStore = create(
   immer<ProtectedState>((set) => ({
     data: null,
-    loading: true,
+    loading: false,
     fetchProtected: async () => {
       await makeRequest({ endpoint: '/protected/ping', set, method: RequestMethod.GET });
     },

@@ -15,7 +15,7 @@ export interface HealthState {
 export const useHealthStore = create(
   immer<HealthState>((set) => ({
     data: null,
-    loading: true,
+    loading: false,
     fetchHealth: async () => {
       await makeRequest({ endpoint: '/health', set, method: RequestMethod.GET });
     },

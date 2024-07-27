@@ -5,6 +5,7 @@ import { router } from 'expo-router';
 import { useEffect } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
+// TODO: This useEffect is not triggered as expected
 const useUserCheck = () => {
   const { setUserId, userId } = useLoginStore(
     useShallow((state) => ({

@@ -5,10 +5,14 @@ import Button, { ButtonSize } from './forms/Button';
 import { useLoginStore } from '@/store/useLoginStore';
 import { useShallow } from 'zustand/react/shallow';
 import { setUserInStorage } from '@/utils/user';
+import { useClearTokensStore } from '@/store/api/useClearTokensStore';
+import { useGuardStore } from '@/store/useGuardStore';
+import Error from './Error';
+import LoadingSpinner from './Loading';
+import { Toast } from 'toastify-react-native';
+import { router } from 'expo-router';
 
-type Props = {};
-
-const Avatar = (props: Props) => {
+const Avatar = () => {
   const [popoverVisible, setPopoverVisible] = useState(false);
 
   const {
@@ -21,6 +25,19 @@ const Avatar = (props: Props) => {
     }))
   );
 
+  const { clearTokens, loading } = useClearTokensStore(
+    useShallow((state) => ({
+      clearTokens: state.clearTokens,
+      loading: state.loading,
+    }))
+  );
+
+  const { error } = useGuardStore(
+    useShallow((state) => ({
+      error: state.error,
+    }))
+  );
+
   const handlePress = () => {
     setPopoverVisible(!popoverVisible);
   };
@@ -29,10 +46,16 @@ const Avatar = (props: Props) => {
     setPopoverVisible(false);
   };
 
-  const handleLogout = () => {
-    // TODO: Delete tokens from database
+  const handleLogout = async () => {
+    // TODO: Solve warning on logout
+    Toast.info('Logging out...', 'top');
+    await clearTokens();
+    if (error) {
+      Toast.error(error, 'top');
+    }
     setUserId(null);
     setUserInStorage(null);
+    router.replace('/welcome');
   };
 
   const firstLetter = name?.charAt(0).toUpperCase();
@@ -57,7 +80,10 @@ const Avatar = (props: Props) => {
           <View className="flex flex-row justify-between items-center">
             <Button
               title="Logout"
-              onPress={handleLogout}
+              onPress={() => {
+                handleClose();
+                handleLogout();
+              }}
               size={ButtonSize.SMALL}
               classNameProp="mr-2"
             />
