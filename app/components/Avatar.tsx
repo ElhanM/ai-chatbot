@@ -47,12 +47,11 @@ const Avatar = () => {
     // TODO: Solve warning on logout
     Toast.info('Logging out...', 'top');
     await clearTokens();
+    setUserInStorage(null);
+    setUserId(null);
     if (error) {
       Toast.error(error, 'top');
     }
-    setUserId(null);
-    setUserInStorage(null);
-    router.replace('/welcome');
   };
 
   const firstLetter = name?.charAt(0).toUpperCase();

@@ -70,12 +70,12 @@ export const useLoginStore = create(
     },
     onGuardFailure: () => {
       set((state) => {
+        setUserInStorage(null);
         // Using setUserId or setUserDetails here does not work as expected
         // My guess is the fact that we call set((state) => {set((state) => { ... })})
         state.user.id = null;
         state.user.name = '';
         state.user.email = '';
-        setUserInStorage(null);
       });
     },
   }))
