@@ -17,6 +17,8 @@ const useUserCheck = () => {
   const { error } = useGuardStore(useShallow((state) => ({ error: state.error })));
 
   useEffect(() => {
+    console.log('useUserCheck useEffect triggered');
+    console.log({ userId });
     const checkUser = async () => {
       if (!userId && !error) {
         const storedUser = getUserFromStorage();

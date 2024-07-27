@@ -1,16 +1,14 @@
+import { useClearTokensStore } from '@/store/api/useClearTokensStore';
+import { useGuardStore } from '@/store/useGuardStore';
+import { useLoginStore } from '@/store/useLoginStore';
+import { setUserInStorage } from '@/utils/user';
+import { router } from 'expo-router';
 import React, { useState } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import Modal from 'react-native-modal';
-import Button, { ButtonSize } from './forms/Button';
-import { useLoginStore } from '@/store/useLoginStore';
-import { useShallow } from 'zustand/react/shallow';
-import { setUserInStorage } from '@/utils/user';
-import { useClearTokensStore } from '@/store/api/useClearTokensStore';
-import { useGuardStore } from '@/store/useGuardStore';
-import Error from './Error';
-import LoadingSpinner from './Loading';
 import { Toast } from 'toastify-react-native';
-import { router } from 'expo-router';
+import { useShallow } from 'zustand/react/shallow';
+import Button, { ButtonSize } from './forms/Button';
 
 const Avatar = () => {
   const [popoverVisible, setPopoverVisible] = useState(false);
@@ -25,10 +23,9 @@ const Avatar = () => {
     }))
   );
 
-  const { clearTokens, loading } = useClearTokensStore(
+  const { clearTokens } = useClearTokensStore(
     useShallow((state) => ({
       clearTokens: state.clearTokens,
-      loading: state.loading,
     }))
   );
 
