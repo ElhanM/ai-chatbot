@@ -85,7 +85,7 @@ const Avatar = () => {
               disabled={loading}
               icon={
                 loading ? (
-                  <LoadingSpinner classNameProp="bg-transparent" />
+                  <LoadingSpinner classNameProp="bg-transparent w-6" />
                 ) : (
                   <MaterialIcons name="logout" color={'white'} size={24} />
                 )

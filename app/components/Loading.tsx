@@ -2,7 +2,7 @@ import React from 'react';
 import { View, ActivityIndicator } from 'react-native';
 import { styled } from 'nativewind';
 
-const SpinnerContainer = styled(View, 'flex-1 justify-center items-center bg-black w-6');
+const SpinnerContainer = styled(View, 'flex-1 justify-center items-center bg-black');
 
 type Props = {
   classNameProp?: string;

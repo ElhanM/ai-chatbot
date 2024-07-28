@@ -1,17 +1,28 @@
+import React from 'react';
+import { useForm, Controller, SubmitHandler } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { View, Text } from 'react-native';
+import { Link } from 'expo-router';
 import Button from '@/components/forms/Button';
 import Input from '@/components/forms/Input';
 import LoadingSpinner from '@/components/Loading';
 import { useGuardStore } from '@/store/useGuardStore';
 import { useRegisterStore } from '@/store/useRegisterStore';
-import { Link } from 'expo-router';
-import React, { useState } from 'react';
-import { Text, View } from 'react-native';
 import { useShallow } from 'zustand/react/shallow';
+import { schema } from '@/zod-schemas/register';
+
+type RegisterFormInputs = z.infer<typeof schema>;
 
 const Register = () => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<RegisterFormInputs>({
+    resolver: zodResolver(schema),
+  });
 
   const { register, loading } = useRegisterStore(
     useShallow((state) => ({
@@ -22,14 +33,12 @@ const Register = () => {
 
   const { error } = useGuardStore(useShallow((state) => ({ error: state.error })));
 
-  // TODO: add form validation
-  const handleRegister = async () => {
+  const handleRegister: SubmitHandler<RegisterFormInputs> = async (data) => {
+    const { name, email, password } = data;
     await register(name, email, password);
 
     if (!error) {
-      setName('');
-      setEmail('');
-      setPassword('');
+      reset();
     }
   };
 
@@ -40,26 +49,55 @@ const Register = () => {
   return (
     <View className="flex-1 bg-black justify-center items-center px-5">
       <Text className="text-white text-3xl font-bold mb-8">Register</Text>
-      <Input
-        placeholder="Name"
-        value={name}
-        onChangeText={(text) => setName(text)}
-        autoCapitalize="none"
+
+      <Controller
+        control={control}
+        name="name"
+        render={({ field: { onChange, value } }) => (
+          <Input
+            placeholder="Name"
+            value={value}
+            onChangeText={onChange}
+            autoCapitalize="none"
+            errorMessage={errors.name?.message}
+          />
+        )}
       />
-      <Input
-        placeholder="Email"
-        value={email}
-        onChangeText={(text) => setEmail(text)}
-        autoCapitalize="none"
+
+      <Controller
+        control={control}
+        name="email"
+        render={({ field: { onChange, value } }) => (
+          <Input
+            placeholder="Email"
+            value={value}
+            onChangeText={onChange}
+            autoCapitalize="none"
+            errorMessage={errors.email?.message}
+          />
+        )}
       />
-      <Input
-        placeholder="Password"
-        secureTextEntry
-        value={password}
-        onChangeText={(text) => setPassword(text)}
-        autoCapitalize="none"
+
+      <Controller
+        control={control}
+        name="password"
+        render={({ field: { onChange, value } }) => (
+          <Input
+            placeholder="Password"
+            secureTextEntry
+            value={value}
+            onChangeText={onChange}
+            autoCapitalize="none"
+            errorMessage={errors.password?.message}
+          />
+        )}
       />
-      <Button title="Register" onPress={handleRegister} classNameProp="self-stretch" />
+
+      <Button
+        title="Register"
+        onPress={handleSubmit(handleRegister)}
+        classNameProp="self-stretch"
+      />
       <Link href="/login" className="text-blue-500 mt-5">
         Already have an account? Login
       </Link>

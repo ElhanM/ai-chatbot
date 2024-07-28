@@ -34,7 +34,7 @@ func LoginRoute(r *gin.RouterGroup) {
 		}
 
 		if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password)); err != nil {
-			errorResponse := responses.NewErrorResponse(utils.BuildError(err, "Invalid credentials").Error())
+			errorResponse := responses.NewErrorResponse(utils.BuildError(nil, "Invalid credentials, email or password is incorrect").Error())
 			c.JSON(http.StatusUnauthorized, errorResponse)
 			return
 		}
