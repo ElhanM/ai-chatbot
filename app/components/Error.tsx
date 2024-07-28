@@ -23,10 +23,10 @@ const Error = ({ error }: Props) => {
 
   useEffect(() => {
     if (errorCode) {
+      reset();
       onGuardFailure();
-      router.replace('/welcome');
     }
-  }, [errorCode, onGuardFailure]);
+  }, [errorCode, onGuardFailure, reset]);
 
   return (
     <View className=" flex-1 justify-center items-center bg-black">
@@ -34,9 +34,8 @@ const Error = ({ error }: Props) => {
         <Text className="text-white">{error ?? 'Something went wrong'}</Text>
         <Button
           onPress={() => {
-            onGuardFailure();
             reset();
-            router.replace('/welcome');
+            onGuardFailure();
           }}
           title="Reset"
           size={ButtonSize.SMALL}

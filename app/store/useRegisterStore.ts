@@ -12,12 +12,6 @@ interface RegisterData {
   email: string;
 }
 
-export interface User {
-  id: string | null;
-  name: string | null;
-  email: string | null;
-}
-
 export interface RegisterState {
   data: IResponse<RegisterData> | null;
   loading: boolean;
@@ -28,11 +22,6 @@ export const useRegisterStore = create(
   immer<RegisterState>((set) => ({
     data: null,
     loading: false,
-    user: {
-      id: null,
-      name: null,
-      email: null,
-    },
     register: async (name: string, email: string, password: string) => {
       await makeRequest({
         endpoint: '/auth/register',
