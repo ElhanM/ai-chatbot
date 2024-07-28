@@ -15,8 +15,14 @@ export const useUserStore = create(
     data: null,
     loading: false,
     fetchUserData: async () => {
+      const userId = useLoginStore.getState().user.id;
+
+      if (!userId) {
+        return;
+      }
+
       await makeRequest({
-        endpoint: `/jwts/${useLoginStore.getState().user.id}`,
+        endpoint: `/jwts/${userId}`,
         method: RequestMethod.GET,
         set,
       });

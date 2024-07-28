@@ -23,26 +23,18 @@ const useUserCheck = () => {
         authUserId = getUserFromStorage();
       }
 
-      if (!authUserId) {
-        router.replace('/welcome');
+      // Uset to not allow the user to go back from the header
+      // router.replace seems to not work as expected
+      // https://github.com/expo/router/discussions/495#discussioncomment-7308082
+      while (router.canGoBack()) {
+        router.back();
       }
 
-      if (!error) {
-        const storedUser = getUserFromStorage();
-        // Uset to not allow the user to go back from the header
-        // router.replace seems to not work as expected
-        // https://github.com/expo/router/discussions/495#discussioncomment-7308082
-        while (router.canGoBack()) {
-          router.back();
-        }
-        if (storedUser) {
-          setUserId(storedUser);
-          router.replace('/chats');
-        } else {
-          router.replace('/welcome');
-        }
-      } else {
+      if (!authUserId) {
         router.replace('/welcome');
+      } else {
+        setUserId(authUserId);
+        router.replace('/chats');
       }
     };
 

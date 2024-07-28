@@ -73,12 +73,13 @@ export const makeRequest = async ({ endpoint, method, data, set }: RequestOption
       }
     }
 
-    useGuardStore.getState().error = errorMessage;
-    if (errorCode === ErrorCodes.GUARD_FAILURE) {
-      useGuardStore.getState().errorCode = ErrorCodes.GUARD_FAILURE;
-    }
     if (method !== RequestMethod.GET) {
       Toast.error(errorMessage, 'top');
+    } else {
+      useGuardStore.getState().error = errorMessage;
+      if (errorCode === ErrorCodes.GUARD_FAILURE) {
+        useGuardStore.getState().errorCode = ErrorCodes.GUARD_FAILURE;
+      }
     }
   } finally {
     set((state) => {

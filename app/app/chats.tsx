@@ -2,6 +2,7 @@ import Error from '@/components/Error';
 import Button from '@/components/forms/Button';
 import LoadingSpinner from '@/components/Loading';
 import { useGuardStore } from '@/store/useGuardStore';
+import { useLoginStore } from '@/store/useLoginStore';
 import { useUserStore } from '@/store/useUserStore';
 import { router } from 'expo-router';
 import { useEffect } from 'react';
@@ -18,14 +19,22 @@ export default function Chats() {
     }))
   );
 
+  const { userId } = useLoginStore(
+    useShallow((state) => ({
+      userId: state.user.id,
+    }))
+  );
+
   const { error } = useGuardStore(useShallow((state) => ({ error: state.error })));
 
   useEffect(() => {
     const handleFetchUserData = async () => {
       await fetchUserData();
     };
-    handleFetchUserData();
-  }, [fetchUserData]);
+    if (userId) {
+      handleFetchUserData();
+    }
+  }, [fetchUserData, userId]);
 
   if (loading) {
     return <LoadingSpinner />;
