@@ -17,7 +17,17 @@ const useUserCheck = () => {
 
   useEffect(() => {
     const checkUser = async () => {
-      if (!userId && !error) {
+      let authUserId = userId;
+
+      if (!authUserId) {
+        authUserId = getUserFromStorage();
+      }
+
+      if (!authUserId) {
+        router.replace('/welcome');
+      }
+
+      if (!error) {
         const storedUser = getUserFromStorage();
         // Uset to not allow the user to go back from the header
         // router.replace seems to not work as expected
@@ -31,6 +41,8 @@ const useUserCheck = () => {
         } else {
           router.replace('/welcome');
         }
+      } else {
+        router.replace('/welcome');
       }
     };
 
