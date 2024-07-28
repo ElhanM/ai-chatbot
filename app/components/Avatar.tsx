@@ -9,6 +9,7 @@ import { Toast } from 'toastify-react-native';
 import { useShallow } from 'zustand/react/shallow';
 import Button, { ButtonSize } from './forms/Button';
 import LoadingSpinner from './Loading';
+import { MaterialIcons } from '@expo/vector-icons';
 
 const Avatar = () => {
   const [popoverVisible, setPopoverVisible] = useState(false);
@@ -82,9 +83,20 @@ const Avatar = () => {
               size={ButtonSize.SMALL}
               classNameProp="mr-2"
               disabled={loading}
-              icon={loading ? <LoadingSpinner classNameProp="bg-transparent" /> : null}
+              icon={
+                loading ? (
+                  <LoadingSpinner classNameProp="bg-transparent" />
+                ) : (
+                  <MaterialIcons name="logout" color={'white'} size={24} />
+                )
+              }
             />
-            <Button title="Close" onPress={handleClose} size={ButtonSize.SMALL} />
+            <Button
+              title="Close"
+              onPress={handleClose}
+              size={ButtonSize.SMALL}
+              icon={<MaterialIcons name="close" color={'white'} size={24} />}
+            />
           </View>
         </View>
       </Modal>
