@@ -2,13 +2,13 @@ import { useClearTokensStore } from '@/store/api/useClearTokensStore';
 import { useGuardStore } from '@/store/useGuardStore';
 import { useLoginStore } from '@/store/useLoginStore';
 import { setUserInStorage } from '@/utils/user';
-import { router } from 'expo-router';
 import React, { useState } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import Modal from 'react-native-modal';
 import { Toast } from 'toastify-react-native';
 import { useShallow } from 'zustand/react/shallow';
 import Button, { ButtonSize } from './forms/Button';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 const Avatar = () => {
   const [popoverVisible, setPopoverVisible] = useState(false);
@@ -44,8 +44,7 @@ const Avatar = () => {
   };
 
   const handleLogout = async () => {
-    // TODO: Solve warning on logout
-    Toast.info('Logging out...', 'top');
+    Toast.warn('Logging out...', 'top');
     await clearTokens();
     setUserInStorage(null);
     setUserId(null);
