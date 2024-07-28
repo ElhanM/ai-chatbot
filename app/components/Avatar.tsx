@@ -8,7 +8,7 @@ import Modal from 'react-native-modal';
 import { Toast } from 'toastify-react-native';
 import { useShallow } from 'zustand/react/shallow';
 import Button, { ButtonSize } from './forms/Button';
-import Ionicons from '@expo/vector-icons/Ionicons';
+import LoadingSpinner from './Loading';
 
 const Avatar = () => {
   const [popoverVisible, setPopoverVisible] = useState(false);
@@ -23,9 +23,10 @@ const Avatar = () => {
     }))
   );
 
-  const { clearTokens } = useClearTokensStore(
+  const { clearTokens, loading } = useClearTokensStore(
     useShallow((state) => ({
       clearTokens: state.clearTokens,
+      loading: state.loading,
     }))
   );
 
@@ -44,13 +45,13 @@ const Avatar = () => {
   };
 
   const handleLogout = async () => {
-    Toast.warn('Logging out...', 'top');
     await clearTokens();
     setUserInStorage(null);
     setUserId(null);
     if (error) {
       Toast.error(error, 'top');
     }
+    handleClose();
   };
 
   const firstLetter = name?.charAt(0).toUpperCase();
@@ -76,11 +77,12 @@ const Avatar = () => {
             <Button
               title="Logout"
               onPress={() => {
-                handleClose();
                 handleLogout();
               }}
               size={ButtonSize.SMALL}
               classNameProp="mr-2"
+              disabled={loading}
+              icon={loading ? <LoadingSpinner classNameProp="bg-transparent" /> : null}
             />
             <Button title="Close" onPress={handleClose} size={ButtonSize.SMALL} />
           </View>

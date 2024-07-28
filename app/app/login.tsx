@@ -22,6 +22,8 @@ const Login = () => {
   const { error } = useGuardStore(useShallow((state) => ({ error: state.error })));
 
   // TODO: add form validation
+  // TODO: test error handling (from validation and from server)
+  // TODO: test auth workflow
   const handleLogin = async () => {
     await login(email, password);
 
