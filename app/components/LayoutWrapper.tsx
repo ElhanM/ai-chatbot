@@ -18,8 +18,13 @@ const LayoutWrapper = ({ children, headerRight = null }: Props) => {
     <>
       <ToastManager
         position={'top'}
-        // set width to fill long text
-        style={{ backgroundColor: '#222', maxWidth: width, height: 'auto', width: 'auto' }}
+        style={{
+          backgroundColor: '#222',
+          height: 'auto',
+          width: 'auto',
+          maxWidth: width - 40,
+          wordWrap: 'break-word',
+        }}
         textStyle={{ color: '#fff' }}
         positionValue={75}
       />
