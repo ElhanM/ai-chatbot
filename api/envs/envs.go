@@ -68,3 +68,11 @@ func GetEnvironment() string {
 	}
 	return env
 }
+
+func GetOpenAIKey() string {
+	openAIKey := os.Getenv("OPENAI_KEY")
+	if openAIKey == "" {
+		panic("OPENAI_KEY environment variable is not set")
+	}
+	return openAIKey
+}

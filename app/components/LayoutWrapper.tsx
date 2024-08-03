@@ -18,7 +18,7 @@ const LayoutWrapper = ({ children, headerRight = null }: Props) => {
     <>
       <ToastManager
         position={'top'}
-      style={{
+        style={{
           backgroundColor: '#222',
           height: 'auto',
           width: 'auto',

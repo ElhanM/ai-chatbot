@@ -29,9 +29,11 @@ func SetupRouter(r *gin.Engine) {
 			authRoutes.AuthRoutes(auth)
 		}
 
-		protected := api.Group("/protected").Use(middleware.GuardMiddleware())
+		// Define the protected subgroup
+		protectedGroup := api.Group("/protected")
+		protectedGroup.Use(middleware.GuardMiddleware())
 		{
-			protectedRoutes.ProtectedRoutes(&protected)
+			protectedRoutes.ProtectedRoutes(protectedGroup)
 		}
 	}
 

@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func PingRoute(r *gin.IRoutes) {
+func PingRoute(r *gin.RouterGroup) {
 	(*r).GET("/ping", func(c *gin.Context) {
 		user, exists := c.Get("user")
 

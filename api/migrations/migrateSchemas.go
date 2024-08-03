@@ -7,5 +7,5 @@ import (
 
 func MigrateSchema() error {
 	// Migrate the schemas
-	return gormDB.DB.AutoMigrate(&models.User{})
+	return gormDB.DB.AutoMigrate(&models.User{}, &models.Message{}, &models.Conversation{})
 }

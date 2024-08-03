@@ -1,8 +1,7 @@
 package models
 
 type User struct {
-	// We omit the ID field for users due to security reasons
-	DBModelNoID
+	DBModel
 	Name         string `gorm:"not null;unique" json:"name"`
 	Email        string `gorm:"not null;unique" json:"email"`
 	Password     string `gorm:"not null" json:"-"`

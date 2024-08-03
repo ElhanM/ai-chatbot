@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func ClearTokensRoute(r *gin.IRoutes) {
+func ClearTokensRoute(r *gin.RouterGroup) {
 	(*r).DELETE("/clear-tokens", func(c *gin.Context) {
 		user, exists := c.Get("user")
 
