@@ -45,8 +45,7 @@ export const useLoginStore = create(
       });
 
       set((state) => {
-        console.log({ error: useGuardStore.getState().error });
-        if (!useGuardStore.getState().error) {
+        if (state.data) {
           const userId = state.data?.results?.id;
 
           if (userId) {
