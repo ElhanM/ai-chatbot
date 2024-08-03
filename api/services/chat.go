@@ -11,6 +11,9 @@ import (
 	openai "github.com/sashabaranov/go-openai"
 )
 
+// https://platform.openai.com/docs/models
+var model = openai.GPT3Dot5Turbo
+
 func CreateConversation(userID uuid.UUID) (*models.Conversation, error) {
 	conversation := &models.Conversation{
 		UserID: userID,
@@ -34,7 +37,7 @@ func AddMessage(conversationID uuid.UUID, sender, content string) (*models.Messa
 	return message, nil
 }
 
-func GenerateBotResponse(conversationID uuid.UUID, userMessage string) (string, error) {
+func GenerateBotResponseStream(conversationID uuid.UUID, userMessage string) (*openai.ChatCompletionStream, error) {
 	apiKey := envs.GetOpenAIKey()
 
 	client := openai.NewClient(apiKey)
@@ -43,10 +46,10 @@ func GenerateBotResponse(conversationID uuid.UUID, userMessage string) (string, 
 	// Fetch previous messages in the conversation
 	var messages []models.Message
 	if err := gormDB.DB.Where("conversation_id = ?", conversationID).Order("created_at asc").Find(&messages).Error; err != nil {
-		return "", err
+		return nil, err
 	}
 
-	// Prepare messages for the OpenAI API
+	// Add context from previous messages to conversation
 	var chatMessages []openai.ChatCompletionMessage
 	for _, msg := range messages {
 		role := "user"
@@ -64,21 +67,18 @@ func GenerateBotResponse(conversationID uuid.UUID, userMessage string) (string, 
 	})
 
 	req := openai.ChatCompletionRequest{
-		Model:     "gpt-4o-mini",
+		Model:     model,
 		Messages:  chatMessages,
-		MaxTokens: 150,
+		MaxTokens: 200,
+		Stream:    true, // Enable streaming
 	}
 
-	resp, err := client.CreateChatCompletion(ctx, req)
+	stream, err := client.CreateChatCompletionStream(ctx, req)
 	if err != nil {
-		return "", fmt.Errorf("failed to generate bot response: %w", err)
+		return nil, fmt.Errorf("failed to generate bot response: %w", err)
 	}
 
-	if len(resp.Choices) == 0 {
-		return "", fmt.Errorf("no response from OpenAI")
-	}
-
-	return resp.Choices[0].Message.Content, nil
+	return stream, nil
 }
 
 func GenerateTitle(userMessage string) (string, error) {
@@ -88,7 +88,7 @@ func GenerateTitle(userMessage string) (string, error) {
 	ctx := context.Background()
 
 	req := openai.ChatCompletionRequest{
-		Model: "gpt-4o-mini",
+		Model: model,
 		Messages: []openai.ChatCompletionMessage{
 			{
 				Role:    "system",
@@ -114,42 +114,29 @@ func GenerateTitle(userMessage string) (string, error) {
 	return resp.Choices[0].Message.Content, nil
 }
 
-func HandleNewMessage(conversationID uuid.UUID, userMessage string) (*models.Message, *models.Message, error) {
-	// Fetch the conversation
+func AddUserMessage(conversationID uuid.UUID, userMessage string) (*models.Message, error) {
+	return AddMessage(conversationID, "user", userMessage)
+}
+
+func SaveBotResponse(conversationID uuid.UUID, botResponse string) (*models.Message, error) {
+	return AddMessage(conversationID, "bot", botResponse)
+}
+
+func GenerateTitleIfEmpty(conversationID uuid.UUID, userMessage string) error {
 	var conversation models.Conversation
 	if err := gormDB.DB.First(&conversation, "id = ?", conversationID).Error; err != nil {
-		return nil, nil, err
+		return err
 	}
 
-	// Add user message
-	userMsg, err := AddMessage(conversationID, "user", userMessage)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	// Generate bot response
-	botResponse, err := GenerateBotResponse(conversationID, userMessage)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	// Add bot message
-	botMsg, err := AddMessage(conversationID, "bot", botResponse)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	// Update conversation title if it's empty
 	if conversation.Title == "" {
 		title, err := GenerateTitle(userMessage)
 		if err != nil {
-			return nil, nil, err
+			return err
 		}
 		conversation.Title = title
 		if err := gormDB.DB.Save(&conversation).Error; err != nil {
-			return nil, nil, err
+			return err
 		}
 	}
-
-	return userMsg, botMsg, nil
+	return nil
 }
