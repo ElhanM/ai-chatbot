@@ -11,13 +11,14 @@ import (
 )
 
 func MessageRoutes(r *gin.RouterGroup) {
-	r.POST("/message", addMessage)
+	r.POST("/message/:conversationId", addMessage)
 }
 
 func addMessage(c *gin.Context) {
+	// TODO: add streaming
+	// TODO: add code blocks to frontend
 	var req struct {
-		ConversationID uuid.UUID `json:"conversationId" binding:"required"`
-		Content        string    `json:"content" binding:"required"`
+		Content string `json:"content" binding:"required"`
 	}
 
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -33,9 +34,17 @@ func addMessage(c *gin.Context) {
 		return
 	}
 
+	conversationIDParam := c.Param("conversationId")
+	conversationID, err := uuid.Parse(conversationIDParam)
+	if err != nil {
+		errorResponse := responses.NewErrorResponse(utils.BuildError(err, "Invalid conversation ID").Error())
+		c.JSON(http.StatusBadRequest, errorResponse)
+		return
+	}
+
 	userMessage := req.Content
 
-	userMsg, botMsg, err := services.HandleNewMessage(req.ConversationID, userMessage)
+	userMsg, botMsg, err := services.HandleNewMessage(conversationID, userMessage)
 	if err != nil {
 		errorResponse := responses.NewErrorResponse(utils.BuildError(err, "Failed to add message").Error())
 		c.JSON(http.StatusInternalServerError, errorResponse)
