@@ -13,8 +13,6 @@ const useUserCheck = () => {
     }))
   );
 
-  const { error } = useGuardStore(useShallow((state) => ({ error: state.error })));
-
   useEffect(() => {
     const checkUser = async () => {
       let authUserId = userId;
@@ -39,7 +37,7 @@ const useUserCheck = () => {
     };
 
     checkUser();
-  }, [userId, setUserId, error]);
+  }, [userId, setUserId]);
 };
 
 export default useUserCheck;

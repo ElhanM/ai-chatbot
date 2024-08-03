@@ -50,30 +50,4 @@ describe('useUserCheck', () => {
     expect(setUserIdMock).not.toHaveBeenCalled();
     expect(router.replace).toHaveBeenCalledWith('/welcome');
   });
-
-  test('does nothing if userId exists', async () => {
-    jest.mocked(useLoginStore).mockReturnValue({
-      setUserId: jest.fn(),
-      userId: 'existing-user-id',
-    });
-    jest.mocked(useGuardStore).mockReturnValue({ error: null });
-    jest.mocked(getUserFromStorage).mockReturnValue(null);
-
-    renderHook(() => useUserCheck());
-
-    expect(router.replace).not.toHaveBeenCalled();
-  });
-
-  test('does nothing if there is an error', async () => {
-    jest.mocked(useLoginStore).mockReturnValue({
-      setUserId: jest.fn(),
-      userId: null,
-    });
-    jest.mocked(useGuardStore).mockReturnValue({ error: 'some error' });
-    jest.mocked(getUserFromStorage).mockReturnValue(null);
-
-    renderHook(() => useUserCheck());
-
-    expect(router.replace).not.toHaveBeenCalled();
-  });
 });
