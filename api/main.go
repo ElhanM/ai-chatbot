@@ -26,6 +26,12 @@ func init() {
 		errMsg := fmt.Sprintf("failed to migrate schema: %v", err)
 		panic(errMsg)
 	}
+
+	// err = seeders.SeedDatabase()
+	// if err != nil {
+	// 	errMsg := fmt.Sprintf("failed to seed database: %v", err)
+	// 	panic(errMsg)
+	// }
 }
 
 func setupRouter() *gin.Engine {
