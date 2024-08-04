@@ -3,8 +3,6 @@ import { setUserInStorage } from '@/utils/user';
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import { makeRequest, RequestMethod } from './utils/makeRequest';
-import { useGuardStore } from './useGuardStore';
-import { router } from 'expo-router';
 
 interface LoginData {
   id: string;
@@ -45,8 +43,8 @@ export const useLoginStore = create(
       });
 
       set((state) => {
-        if (state.data) {
-          const userId = state.data?.results?.id;
+        if (state.data && state.data.results && state.user) {
+          const userId = state.data.results.id;
 
           if (userId) {
             set((state) => {
