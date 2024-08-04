@@ -4,7 +4,6 @@ import React, { useEffect } from 'react';
 import { Text, View } from 'react-native';
 import { useShallow } from 'zustand/react/shallow';
 import Button, { ButtonSize } from './forms/Button';
-import { router } from 'expo-router';
 
 type Props = {
   error?: string | null;

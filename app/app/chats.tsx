@@ -5,9 +5,9 @@ import { useGuardStore } from '@/store/useGuardStore';
 import { useLoginStore } from '@/store/useLoginStore';
 import { useUserStore } from '@/store/useUserStore';
 import { router } from 'expo-router';
-import { useEffect } from 'react';
 import { Text, View } from 'react-native';
 import { useShallow } from 'zustand/react/shallow';
+import { useAsyncEffect } from 'use-async-effect';
 
 const environment = process.env.EXPO_PUBLIC_ENVIRONMENT;
 
@@ -27,12 +27,9 @@ export default function Chats() {
 
   const { error } = useGuardStore(useShallow((state) => ({ error: state.error })));
 
-  useEffect(() => {
-    const handleFetchUserData = async () => {
-      await fetchUserData();
-    };
+  useAsyncEffect(async () => {
     if (userId) {
-      handleFetchUserData();
+      await fetchUserData();
     }
   }, [fetchUserData, userId]);
 

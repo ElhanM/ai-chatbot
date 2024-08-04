@@ -2,8 +2,9 @@ import Error from '@/components/Error';
 import LoadingSpinner from '@/components/Loading';
 import { useGuardStore } from '@/store/useGuardStore';
 import { useProtectedStore } from '@/store/useProtectedStore';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Text, View } from 'react-native';
+import useAsyncEffect from 'use-async-effect';
 import { useShallow } from 'zustand/react/shallow';
 
 const Protected = () => {
@@ -17,8 +18,8 @@ const Protected = () => {
 
   const { error } = useGuardStore(useShallow((state) => ({ error: state.error })));
 
-  useEffect(() => {
-    fetchProtected();
+  useAsyncEffect(async () => {
+    await fetchProtected();
   }, [fetchProtected]);
 
   if (loading) {

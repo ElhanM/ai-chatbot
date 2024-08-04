@@ -14,29 +14,25 @@ const useUserCheck = () => {
   );
 
   useEffect(() => {
-    const checkUser = async () => {
-      let authUserId = userId;
+    let authUserId = userId;
 
-      if (!authUserId) {
-        authUserId = getUserFromStorage();
-      }
+    if (!authUserId) {
+      authUserId = getUserFromStorage();
+    }
 
-      // Uset to not allow the user to go back from the header
-      // router.replace seems to not work as expected
-      // https://github.com/expo/router/discussions/495#discussioncomment-7308082
-      while (router.canGoBack()) {
-        router.back();
-      }
+    // Uset to not allow the user to go back from the header
+    // router.replace seems to not work as expected
+    // https://github.com/expo/router/discussions/495#discussioncomment-7308082
+    while (router.canGoBack()) {
+      router.back();
+    }
 
-      if (!authUserId) {
-        router.replace('/welcome');
-      } else {
-        setUserId(authUserId);
-        router.replace('/chats');
-      }
-    };
-
-    checkUser();
+    if (!authUserId) {
+      router.replace('/welcome');
+    } else {
+      setUserId(authUserId);
+      router.replace('/chats');
+    }
   }, [userId, setUserId]);
 };
 

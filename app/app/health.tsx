@@ -2,8 +2,9 @@ import Error from '@/components/Error';
 import LoadingSpinner from '@/components/Loading';
 import { useGuardStore } from '@/store/useGuardStore';
 import { useHealthStore } from '@/store/useHealthStore';
-import React, { useEffect } from 'react';
-import { Text, View, Button } from 'react-native';
+import React from 'react';
+import { Button, Text, View } from 'react-native';
+import useAsyncEffect from 'use-async-effect';
 import { useShallow } from 'zustand/react/shallow';
 
 const Health = () => {
@@ -20,8 +21,8 @@ const Health = () => {
 
   const { error } = useGuardStore(useShallow((state) => ({ error: state.error })));
 
-  useEffect(() => {
-    fetchHealth();
+  useAsyncEffect(async () => {
+    await fetchHealth();
   }, [fetchHealth]);
 
   if (loading) {
