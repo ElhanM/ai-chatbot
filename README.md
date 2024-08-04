@@ -1,6 +1,6 @@
 # AI Chatbot
 
-An AI Chatbot app built with React Native, TypeScript, Tailwind, and Zustand on the frontend, and Golang, Gin, and Gorm on the backend. The app leverages the OpenAI API to generate responses to user input.
+An AI Chatbot app built with React Native, TypeScript, Tailwind, and Zustand on the frontend, and Golang, Gin, and Gorm on the backend. The app leverages the OpenAI API to generate streamed responses to user input.
 
 ## Getting Started
 

@@ -50,6 +50,7 @@ func GenerateBotResponseStream(conversationID uuid.UUID, userMessage string) (*o
 	}
 
 	// Add context from previous messages to conversation
+  // https://platform.openai.com/docs/guides/chat-completions/getting-started
 	var chatMessages []openai.ChatCompletionMessage
 	for _, msg := range messages {
 		role := "user"
@@ -66,6 +67,7 @@ func GenerateBotResponseStream(conversationID uuid.UUID, userMessage string) (*o
 		Content: userMessage,
 	})
 
+	// https://platform.openai.com/docs/api-referenc  e/streaming
 	req := openai.ChatCompletionRequest{
 		Model:     model,
 		Messages:  chatMessages,
