@@ -6,10 +6,21 @@ import (
 	"github.com/google/uuid"
 )
 
-func GetConversations(userID uuid.UUID) ([]models.Conversation, error) {
+func GetConversations(userID uuid.UUID, limit, offset int) ([]models.Conversation, int, error) {
 	var conversations []models.Conversation
-	if err := gormDB.DB.Where("user_id = ?", userID).Find(&conversations).Error; err != nil {
-		return nil, err
+	var count int64
+
+	query := gormDB.DB.Model(&models.Conversation{}).Where("user_id = ?", userID)
+	query.Count(&count)
+
+	if limit > 0 {
+		query = query.Limit(limit)
 	}
-	return conversations, nil
+	if offset > 0 {
+		query = query.Offset(offset)
+	}
+	if err := query.Find(&conversations).Error; err != nil {
+		return nil, 0, err
+	}
+	return conversations, int(count), nil
 }

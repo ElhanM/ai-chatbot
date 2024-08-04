@@ -25,9 +25,9 @@ func SeedDatabase() error {
 	}
 
 	// Define the number of entries to create
-	numConversations := 5
-	numUsers := numConversations * 2
-	numMessages := numUsers * 2
+	numConversations := 20
+	numUsers := 20
+	numMessages := 20
 
 	hashedPassword, err := utils.HashPassword("1234")
 	if err != nil {

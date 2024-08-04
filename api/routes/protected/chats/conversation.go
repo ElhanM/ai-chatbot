@@ -2,6 +2,7 @@ package routes
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/ElhanM/ai-chatbot/models"
 	"github.com/ElhanM/ai-chatbot/services"
@@ -23,16 +24,19 @@ func getConversations(c *gin.Context) {
 		return
 	}
 
+	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "10"))
+	offset, _ := strconv.Atoi(c.DefaultQuery("offset", "0"))
+
 	switch u := user.(type) {
 	case models.User:
-		conversations, err := services.GetConversations(u.ID)
+		conversations, count, err := services.GetConversations(u.ID, limit, offset)
 		if err != nil {
 			errorResponse := responses.NewErrorResponse(utils.BuildError(err, "Failed to get conversations").Error())
 			c.JSON(http.StatusInternalServerError, errorResponse)
 			return
 		}
 
-		response := responses.NewServiceResponse(responses.Success, "Conversations retrieved", conversations, nil)
+		response := responses.NewServiceResponse(responses.Success, "Conversations retrieved", conversations, &count)
 		c.JSON(http.StatusOK, response)
 	default:
 		response := responses.NewErrorResponse("Unauthorized")
