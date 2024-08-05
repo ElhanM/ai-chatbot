@@ -12,6 +12,7 @@ export interface IResponse<T extends IResponseType = {}> {
   message: string;
   results: T;
   errorCode?: ErrorCodes | null;
+  count?: number;
 }
 
 const api = axios.create({

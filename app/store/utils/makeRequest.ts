@@ -20,11 +20,14 @@ interface RequestOptions {
   method: RequestMethod;
   data?: any;
   set: (fn: (state: any) => void) => void;
+  pagination?: boolean;
 }
 
-export const makeRequest = async ({ endpoint, method, data, set }: RequestOptions) => {
+export const makeRequest = async ({ endpoint, method, data, set, pagination }: RequestOptions) => {
   set((state) => {
-    state.loading = true;
+    if (!pagination) {
+      state.loading = true;
+    }
   });
   let errorCode: string | null = null;
 
@@ -54,7 +57,14 @@ export const makeRequest = async ({ endpoint, method, data, set }: RequestOption
     }
 
     set((state) => {
-      state.data = response.data;
+      if (pagination && Array.isArray(response.data.results)) {
+        const { results, ...rest } = response.data;
+        const prevResults = state?.data?.results ?? [];
+        state.data = rest;
+        state.data.results = [...prevResults, ...results];
+      } else {
+        state.data = response.data;
+      }
     });
   } catch (error: unknown) {
     let errorMessage = 'Failed to make request. Internal server error.';

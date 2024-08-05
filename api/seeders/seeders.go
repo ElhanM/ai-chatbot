@@ -46,7 +46,13 @@ func SeedDatabase() error {
 			return err
 		}
 
-		for j := 0; j < numConversations; j++ {
+		// Set the number of conversations for user 1 to 50
+		conversationsToCreate := numConversations
+		if i == 1 {
+			conversationsToCreate = 50
+		}
+
+		for j := 0; j < conversationsToCreate; j++ {
 			conversation := models.Conversation{
 				DBModel: models.DBModel{ID: uuid.New()},
 				UserID:  user.ID,
