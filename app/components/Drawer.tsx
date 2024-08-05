@@ -4,6 +4,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { useConversationsStore } from '@/store/api/useConversationStore';
 import LoadingSpinner from './Loading';
 import { useShallow } from 'zustand/react/shallow';
+import Error from './Error';
 
 type Props = {
   onClose: () => void;
@@ -12,19 +13,18 @@ type Props = {
 export default function Drawer({ onClose }: Props) {
   const slideAnim = useRef(new Animated.Value(-Dimensions.get('window').width)).current;
 
-  // TODO: add error handling
-  // TODO: clean up and refactor pagination
-  // TODO: reset all stores on logout
-  const { data, fetchConversations, loading, fetching, limit, offset } = useConversationsStore(
-    useShallow((state) => ({
-      data: state.data,
-      fetchConversations: state.fetchConversations,
-      loading: state.loading,
-      fetching: state.fetching,
-      limit: state.limit,
-      offset: state.offset,
-    }))
-  );
+  const { data, fetchConversations, loading, fetching, limit, offset, error } =
+    useConversationsStore(
+      useShallow((state) => ({
+        data: state.data,
+        fetchConversations: state.fetchConversations,
+        loading: state.loading,
+        fetching: state.fetching,
+        limit: state.limit,
+        offset: state.offset,
+        error: state.error,
+      }))
+    );
 
   useEffect(() => {
     Animated.timing(slideAnim, {
@@ -63,23 +63,31 @@ export default function Drawer({ onClose }: Props) {
             <MaterialIcons name="close" size={24} color="white" />
           </TouchableOpacity>
         </View>
-        {loading ? (
-          <LoadingSpinner backgroundColor="bg-grayish" />
+        {error ? (
+          <Error error={error} />
         ) : (
-          <FlatList
-            data={data?.results}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-              <Text className="text-white mb-2 p-2 rounded">{item.title}</Text>
+          <>
+            {loading ? (
+              <LoadingSpinner backgroundColor="bg-grayish" />
+            ) : (
+              <FlatList
+                data={data?.results}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item }) => (
+                  <Text className="text-white mb-2 p-2 rounded">{item.title}</Text>
+                )}
+                onEndReached={
+                  (data?.results?.length || 0) >= (data?.count || 0)
+                    ? undefined
+                    : loadMoreConversations
+                }
+                onEndReachedThreshold={0.1}
+              />
             )}
-            onEndReached={
-              (data?.results?.length || 0) >= (data?.count || 0) ? undefined : loadMoreConversations
-            }
-            onEndReachedThreshold={0.1}
-          />
-        )}
-        {fetching && !loading && (
-          <LoadingSpinner backgroundColor="bg-grayish" classNameProp="mt-1" />
+            {fetching && !loading && (
+              <LoadingSpinner backgroundColor="bg-grayish" classNameProp="mt-1" />
+            )}
+          </>
         )}
       </Animated.View>
     </View>

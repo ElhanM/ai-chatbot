@@ -11,7 +11,7 @@ type Props = {
 
 export default function LoadingSpinner({ classNameProp, backgroundColor = 'bg-black' }: Props) {
   return (
-    <SpinnerContainer className={`${classNameProp} ${backgroundColor}`}>
+    <SpinnerContainer className={`${backgroundColor} ${classNameProp} `}>
       <ActivityIndicator size="large" color="#fff" />
     </SpinnerContainer>
   );

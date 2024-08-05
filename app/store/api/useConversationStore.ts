@@ -38,12 +38,14 @@ export const useConversationsStore = create(
           state.loading = true;
         }
       });
+
       await makeRequest({
         endpoint: `/protected/chats/conversations?limit=${limit}&offset=${offset}`,
         method: RequestMethod.GET,
         set,
         pagination: true,
       });
+
       set((state) => {
         state.fetching = false;
       });

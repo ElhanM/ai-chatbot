@@ -43,15 +43,15 @@ export const useLoginStore = create(
       });
 
       set((state) => {
-        if (state.data && state.data.results && state.user) {
+        if (state.data && state.data.results && state.data.results.id && state.user) {
           const userId = state.data.results.id;
 
-          if (userId) {
-            set((state) => {
-              state.user.id = userId;
-            });
-            setUserInStorage(userId);
-          }
+          set((state) => {
+            state.user.id = userId;
+          });
+          setUserInStorage(userId);
+        } else {
+          throw new Error('No user id found');
         }
       });
     },

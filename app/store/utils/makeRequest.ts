@@ -29,71 +29,67 @@ export const makeRequest = async ({ endpoint, method, data, set, pagination }: R
       state.loading = true;
     }
   });
+
   let errorCode: string | null = null;
 
   try {
-    environment === 'development' && (await delay(1000));
-
-    let response: AxiosResponse<IResponse<IResponseType>>;
-
-    switch (method) {
-      case RequestMethod.GET:
-        response = await api.get<IResponse<IResponseType>>(endpoint);
-        break;
-      case RequestMethod.POST:
-        response = await api.post<IResponse<IResponseType>>(endpoint, data);
-        break;
-      case RequestMethod.PATCH:
-        response = await api.patch<IResponse<IResponseType>>(endpoint, data);
-        break;
-      case RequestMethod.PUT:
-        response = await api.put<IResponse<IResponseType>>(endpoint, data);
-        break;
-      case RequestMethod.DELETE:
-        response = await api.delete<IResponse<IResponseType>>(endpoint);
-        break;
-      default:
-        throw new Error(`Unsupported method: ${method}`);
+    if (environment === 'development') {
+      await delay(1000);
     }
+
+    const response = await api.request<IResponse<IResponseType>>({
+      url: endpoint,
+      method,
+      data,
+    });
 
     set((state) => {
       if (pagination && Array.isArray(response.data.results)) {
         const { results, ...rest } = response.data;
         const prevResults = state?.data?.results ?? [];
-        state.data = rest;
-        state.data.results = [...prevResults, ...results];
+        state.data = { ...rest, results: [...prevResults, ...results] };
       } else {
         state.data = response.data;
       }
     });
   } catch (error: unknown) {
-    let errorMessage = 'Failed to make request. Internal server error.';
-
-    if (axios.isAxiosError(error)) {
-      const axiosError = error as AxiosError<IResponse<IResponseType>>;
-
-      if (axiosError.response) {
-        const apiError = axiosError.response.data;
-        errorMessage = apiError.message || errorMessage;
-        if (apiError.errorCode) {
-          errorCode = apiError.errorCode;
-        }
-      } else if (axiosError.message) {
-        errorMessage = axiosError.message;
-      }
-    }
-
-    if (method !== RequestMethod.GET) {
-      Toast.error(errorMessage, 'top');
-    } else {
-      useGuardStore.getState().error = errorMessage;
-      if (errorCode === ErrorCodes.GUARD_FAILURE) {
-        useGuardStore.getState().errorCode = ErrorCodes.GUARD_FAILURE;
-      }
-    }
+    handleRequestError(error, method, set, errorCode);
   } finally {
     set((state) => {
       state.loading = false;
     });
+  }
+};
+
+const handleRequestError = (
+  error: unknown,
+  method: RequestMethod,
+  _set: (fn: (state: any) => void) => void,
+  errorCode: string | null
+) => {
+  let errorMessage = 'Failed to make request. Internal server error.';
+
+  if (axios.isAxiosError(error)) {
+    const axiosError = error as AxiosError<IResponse<IResponseType>>;
+
+    if (axiosError.response) {
+      const apiError = axiosError.response.data;
+      errorMessage = apiError.message || errorMessage;
+      if (apiError.errorCode) {
+        errorCode = apiError.errorCode;
+      }
+    } else if (axiosError.message) {
+      errorMessage = axiosError.message;
+    }
+  }
+
+  if (method !== RequestMethod.GET) {
+    Toast.error(errorMessage, 'top');
+  } else {
+    const guardStore = useGuardStore.getState();
+    guardStore.error = errorMessage;
+    if (errorCode === ErrorCodes.GUARD_FAILURE) {
+      guardStore.errorCode = ErrorCodes.GUARD_FAILURE;
+    }
   }
 };

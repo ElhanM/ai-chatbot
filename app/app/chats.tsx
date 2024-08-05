@@ -33,8 +33,6 @@ export default function Chats() {
 
   useAsyncEffect(async () => {
     if (userId) {
-      // TODO: Auto logout if this fails
-      // TODO: Fix not rederecting to chats on login sometimes
       await fetchUserData();
     }
   }, [fetchUserData, userId]);

@@ -57,6 +57,7 @@ const Avatar = () => {
 
   const firstLetter = name?.charAt(0).toUpperCase();
 
+  // TODO: reset all stores on logout or error
   return (
     <View className="relative flex items-center justify-center">
       <TouchableOpacity
