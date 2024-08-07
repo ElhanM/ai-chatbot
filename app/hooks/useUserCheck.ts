@@ -20,8 +20,6 @@ const useUserCheck = () => {
       authUserId = getUserFromStorage();
     }
 
-    // TODO: fix login not working sometimes
-
     // Uset to not allow the user to go back from the header
     // router.replace seems to not work as expected
     // https://github.com/expo/router/discussions/495#discussioncomment-7308082

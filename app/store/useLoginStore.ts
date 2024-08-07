@@ -3,6 +3,7 @@ import { setUserInStorage } from '@/utils/user';
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import { makeRequest, RequestMethod } from './utils/makeRequest';
+import { router } from 'expo-router';
 
 interface LoginData {
   id: string;
@@ -50,6 +51,7 @@ export const useLoginStore = create(
             state.user.id = userId;
           });
           setUserInStorage(userId);
+          router.replace('/chats');
         } else {
           throw new Error('No user id found');
         }

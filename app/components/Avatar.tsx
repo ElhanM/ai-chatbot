@@ -10,6 +10,7 @@ import { useShallow } from 'zustand/react/shallow';
 import Button, { ButtonSize } from './forms/Button';
 import LoadingSpinner from './Loading';
 import { MaterialIcons } from '@expo/vector-icons';
+import { useDrawerStore } from '@/store/useDrawerStore';
 
 const Avatar = () => {
   const [popoverVisible, setPopoverVisible] = useState(false);
@@ -37,6 +38,10 @@ const Avatar = () => {
     }))
   );
 
+  const { reset: resetDrawerState } = useDrawerStore(
+    useShallow((state) => ({ reset: state.reset }))
+  );
+
   const handlePress = () => {
     setPopoverVisible(!popoverVisible);
   };
@@ -52,6 +57,7 @@ const Avatar = () => {
     if (error) {
       Toast.error(error, 'top');
     }
+    resetDrawerState();
     handleClose();
   };
 

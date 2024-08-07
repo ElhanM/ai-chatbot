@@ -1,13 +1,12 @@
 import Avatar from '@/components/Avatar';
 import LayoutWrapper from '@/components/LayoutWrapper';
+import { useDrawerStore } from '@/store/useDrawerStore';
 import { useLoginStore } from '@/store/useLoginStore';
 import { useUserStore } from '@/store/useUserStore';
-import { useDrawerStore } from '@/store/useDrawerStore';
-import { Stack } from 'expo-router';
-import { useShallow } from 'zustand/react/shallow';
-import { TouchableOpacity } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
-import FormDrawer from '@/components/Drawer';
+import { Stack } from 'expo-router';
+import { TouchableOpacity } from 'react-native';
+import { useShallow } from 'zustand/react/shallow';
 
 const environment = process.env.EXPO_PUBLIC_ENVIRONMENT;
 
@@ -26,7 +25,9 @@ export default function RootLayout() {
     }))
   );
 
-  const { toggleDrawer } = useDrawerStore();
+  const { toggleDrawer } = useDrawerStore(
+    useShallow((state) => ({ toggleDrawer: state.toggleDrawer }))
+  );
 
   const devRoutes = environment === 'development' && [
     <Stack.Screen name="health" options={{ title: 'Health' }} key="health" />,
