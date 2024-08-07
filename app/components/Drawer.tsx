@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useCallback } from 'react';
+import React, { useRef, useEffect, useCallback, useState } from 'react';
 import { View, Text, TouchableOpacity, Animated, Dimensions, FlatList } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useConversationsStore } from '@/store/api/useConversationStore';
@@ -12,8 +12,9 @@ type Props = {
 
 export default function Drawer({ onClose }: Props) {
   const slideAnim = useRef(new Animated.Value(-Dimensions.get('window').width)).current;
+  const [initalMount, setInitialMount] = useState(true);
 
-  const { data, fetchConversations, loading, fetching, limit, offset, error } =
+  const { data, fetchConversations, loading, fetching, limit, offset, error, reset } =
     useConversationsStore(
       useShallow((state) => ({
         data: state.data,
@@ -23,6 +24,7 @@ export default function Drawer({ onClose }: Props) {
         limit: state.limit,
         offset: state.offset,
         error: state.error,
+        reset: state.reset,
       }))
     );
 
@@ -35,10 +37,16 @@ export default function Drawer({ onClose }: Props) {
   }, [slideAnim]);
 
   useEffect(() => {
+    if (initalMount) {
+      setInitialMount(false);
+      reset();
+      return;
+    }
     if (offset === 0) {
+      // TODO: handle cases where new conversations are added or removed in the middle of pagination
       fetchConversations(limit, offset);
     }
-  }, [fetchConversations, limit, offset]);
+  }, [fetchConversations, limit, offset, reset, initalMount]);
 
   const loadMoreConversations = useCallback(() => {
     if (!fetching) {

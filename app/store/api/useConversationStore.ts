@@ -19,16 +19,21 @@ interface ConversationsState {
   limit: number;
   offset: number;
   fetchConversations: (limit: number, offset: number) => Promise<void>;
+  reset: () => void;
 }
+
+const initialState = {
+  data: null,
+  loading: false,
+  fetching: false,
+  error: null,
+  limit: 10,
+  offset: 0,
+};
 
 export const useConversationsStore = create(
   immer<ConversationsState>((set) => ({
-    data: null,
-    loading: false,
-    fetching: false,
-    error: null,
-    limit: 10,
-    offset: 0,
+    ...initialState,
     fetchConversations: async (limit, offset) => {
       set((state) => {
         state.fetching = true;
@@ -49,6 +54,11 @@ export const useConversationsStore = create(
       set((state) => {
         state.fetching = false;
       });
+    },
+    reset: () => {
+      set(() => ({
+        ...initialState,
+      }));
     },
   }))
 );

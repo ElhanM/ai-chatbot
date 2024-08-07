@@ -10,7 +10,7 @@ func GetConversations(userID uuid.UUID, limit, offset int) ([]models.Conversatio
 	var conversations []models.Conversation
 	var count int64
 
-	query := gormDB.DB.Model(&models.Conversation{}).Where("user_id = ?", userID)
+	query := gormDB.DB.Model(&models.Conversation{}).Where("user_id = ?", userID).Order("created_at desc")
 	query.Count(&count)
 
 	if limit > 0 {

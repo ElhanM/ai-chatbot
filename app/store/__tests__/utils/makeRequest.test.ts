@@ -27,7 +27,7 @@ describe('makeRequest', () => {
   });
 
   it('should handle errors and set error message', async () => {
-    const errorMessage = 'Request failed';
+    const errorMessage = 'Failed to make request. Internal server error.';
     const axiosError = new AxiosError(errorMessage);
 
     (api.get as jest.Mock).mockRejectedValueOnce(axiosError);
