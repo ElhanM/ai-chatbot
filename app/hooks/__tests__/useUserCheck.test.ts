@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react';
+import { act, renderHook } from '@testing-library/react';
 import useUserCheck from '@/hooks/useUserCheck';
 import { useLoginStore } from '@/store/useLoginStore';
 import { useGuardStore } from '@/store/useGuardStore';
@@ -23,19 +23,28 @@ describe('useUserCheck', () => {
 
   test('redirects to /chats if user is found in storage', async () => {
     const setUserIdMock = jest.fn();
-    jest.mocked(useLoginStore).mockReturnValue({
-      setUserId: setUserIdMock,
-      userId: null,
-    });
-    jest.mocked(useGuardStore).mockReturnValue({ error: null });
+    let userId: string | null = null;
+
+    jest.mocked(useLoginStore).mockImplementation(() => ({
+      setUserId: (id: string | null) => {
+        userId = id;
+        setUserIdMock(id);
+      },
+      userId,
+    }));
+
     jest.mocked(getUserFromStorage).mockReturnValue('test-user-id');
 
-    renderHook(() => useUserCheck());
+    const { rerender } = renderHook(() => useUserCheck());
+
+    // Simulate state change
+    act(() => {
+      rerender();
+    });
 
     expect(setUserIdMock).toHaveBeenCalledWith('test-user-id');
     expect(router.replace).toHaveBeenCalledWith('/chats');
   });
-
   test('redirects to /welcome if user is not found in storage', async () => {
     const setUserIdMock = jest.fn();
     jest.mocked(useLoginStore).mockReturnValue({
