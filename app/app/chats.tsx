@@ -2,7 +2,6 @@ import FormDrawer from '@/components/Drawer';
 import Error from '@/components/Error';
 import Button from '@/components/forms/Button';
 import LoadingSpinner from '@/components/Loading';
-import { Conversation } from '@/store/api/useConversationStore';
 import { useGetLatestConversationStore } from '@/store/api/useGetLatestConversationStore';
 import { useSelectedConversationStore } from '@/store/api/useSelectedConversationStore';
 import { useDrawerStore } from '@/store/useDrawerStore';
@@ -17,23 +16,17 @@ import { useShallow } from 'zustand/react/shallow';
 const environment = process.env.EXPO_PUBLIC_ENVIRONMENT;
 
 export default function Chats() {
-  const { fetchUserData, loading } = useUserStore(
+  const { fetchUserData, loading, data } = useUserStore(
     useShallow((state) => ({
       fetchUserData: state.fetchUserData,
       loading: state.loading,
+      data: state.data,
     }))
   );
 
   const { error } = useGuardStore(useShallow((state) => ({ error: state.error })));
 
   const { isDrawerOpen, toggleDrawer } = useDrawerStore();
-
-  const { conversation, setConversation } = useSelectedConversationStore(
-    useShallow((state) => ({
-      conversation: state.conversation,
-      setConversation: state.setConversation,
-    }))
-  );
 
   const {
     fetchLatestConversation,
@@ -50,16 +43,21 @@ export default function Chats() {
   );
 
   useEffect(() => {
-    console.log({ conversation });
-  }, [conversation]);
+    console.log({ data });
+    console.log({ latestConversation });
+  }, [data, latestConversation]);
 
   useAsyncEffect(async () => {
-    await Promise.all([fetchUserData(), fetchLatestConversation()]);
-  }, []);
+    // TODO: reset this state on logout
+    // TODO: on create convo error for already exists empty convo do not redirect
+    if (!data?.results?.user?.id) {
+      await fetchUserData();
+    }
 
-  useEffect(() => {
-    setConversation(latestConversation?.results as Conversation);
-  }, [latestConversation, setConversation]);
+    if (!latestConversation?.results?.id) {
+      await fetchLatestConversation();
+    }
+  }, []);
 
   if (loading || loadingLatestConversation) {
     return <LoadingSpinner />;

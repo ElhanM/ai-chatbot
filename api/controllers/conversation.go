@@ -74,14 +74,29 @@ func CreateConversation(c *gin.Context) {
 
 	switch u := user.(type) {
 	case models.User:
-		conversation, err := services.CreateConversation(u.ID)
+		// if title of services.GetLatestConversation is empty string, do not allow to create new conversation
+		conversation, err := services.GetLatestConversation(u.ID)
+
+		if err != nil {
+			errorResponse := responses.NewErrorResponse(utils.BuildError(err, "Failed to get latest conversation").Error())
+			c.JSON(http.StatusInternalServerError, errorResponse)
+			return
+		}
+
+		if conversation.Title == "" {
+			response := responses.NewErrorResponse("Cannot create new conversation, there is already an empty conversation")
+			c.JSON(http.StatusBadRequest, response)
+			return
+		}
+
+		createConversation, err := services.CreateConversation(u.ID)
 		if err != nil {
 			errorResponse := responses.NewErrorResponse(utils.BuildError(err, "Failed to create conversation").Error())
 			c.JSON(http.StatusInternalServerError, errorResponse)
 			return
 		}
 
-		response := responses.NewServiceResponse(responses.Success, "Conversation created", conversation, nil)
+		response := responses.NewServiceResponse(responses.Success, "Conversation created", createConversation, nil)
 		c.JSON(http.StatusOK, response)
 	default:
 		response := responses.NewErrorResponse("Unauthorized")

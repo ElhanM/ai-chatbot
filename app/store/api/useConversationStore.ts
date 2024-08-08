@@ -20,6 +20,7 @@ interface ConversationsState {
   offset: number;
   fetchConversations: (limit: number, offset: number) => Promise<void>;
   reset: () => void;
+  setConversation: (conversation: Conversation) => void;
 }
 
 const initialState = {
@@ -54,6 +55,11 @@ export const useConversationsStore = create(
       set((state) => {
         state.fetching = false;
       });
+    },
+    setConversation: (conversation: Conversation) => {
+      set(() => ({
+        conversation,
+      }));
     },
     reset: () => {
       set(() => ({

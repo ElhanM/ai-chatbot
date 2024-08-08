@@ -3,6 +3,7 @@ import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import { Conversation } from './useConversationStore';
 import { makeRequest, RequestMethod } from '../utils/makeRequest';
+import { useSelectedConversationStore } from './useSelectedConversationStore';
 
 interface CreateConversationState {
   data: IResponse<Conversation> | null;
@@ -27,6 +28,16 @@ export const useCreateConversationStore = create(
         method: RequestMethod.POST,
         set,
       });
+
+      set((state) => {
+        if (state.error || !state.data?.results?.id) {
+          return;
+        }
+      });
+      // We do it like this to avoid nested set((state) => { ... }) calls
+      useSelectedConversationStore
+        .getState()
+        .setConversation(useCreateConversationStore.getState().data?.results as Conversation);
     },
     reset: () => {
       set(() => ({

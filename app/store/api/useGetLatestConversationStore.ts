@@ -3,6 +3,7 @@ import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import { makeRequest, RequestMethod } from '../utils/makeRequest';
 import { Conversation } from './useConversationStore';
+import { useSelectedConversationStore } from './useSelectedConversationStore';
 
 interface GetLatestConversationState {
   data: IResponse<Conversation> | null;
@@ -27,6 +28,9 @@ export const useGetLatestConversationStore = create(
         method: RequestMethod.GET,
         set,
       });
+      useSelectedConversationStore
+        .getState()
+        .setConversation(useGetLatestConversationStore.getState().data?.results as Conversation);
     },
     reset: () => {
       set(() => ({

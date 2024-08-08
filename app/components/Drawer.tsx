@@ -1,15 +1,15 @@
-import React, { useRef, useEffect, useCallback, useState } from 'react';
-import { View, Text, Animated, Dimensions, FlatList, TouchableOpacity } from 'react-native';
+import { useConversationsStore } from '@/store/api/useConversationStore';
+import { useCreateConversationStore } from '@/store/api/useCreateConversationStore';
+import { useSelectedConversationStore } from '@/store/api/useSelectedConversationStore';
+import { useDrawerStore } from '@/store/useDrawerStore';
 import { MaterialIcons } from '@expo/vector-icons';
-import { Conversation, useConversationsStore } from '@/store/api/useConversationStore';
-import LoadingSpinner from './Loading';
+import { router } from 'expo-router';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Animated, Dimensions, FlatList, Text, TouchableOpacity, View } from 'react-native';
 import { useShallow } from 'zustand/react/shallow';
 import Error from './Error';
-import { useCreateConversationStore } from '@/store/api/useCreateConversationStore';
-import { router } from 'expo-router';
-import { useDrawerStore } from '@/store/useDrawerStore';
 import Button, { ButtonSize } from './forms/Button';
-import { useSelectedConversationStore } from '@/store/api/useSelectedConversationStore';
+import LoadingSpinner from './Loading';
 
 type Props = {
   onClose: () => void;
@@ -33,12 +33,7 @@ export default function Drawer({ onClose }: Props) {
       }))
     );
 
-  const {
-    createConversation,
-    loading: creatingConversation,
-    error: createError,
-    data: createData,
-  } = useCreateConversationStore(
+  const { createConversation, loading: creatingConversation } = useCreateConversationStore(
     useShallow((state) => ({
       createConversation: state.createConversation,
       loading: state.loading,
@@ -85,10 +80,6 @@ export default function Drawer({ onClose }: Props) {
 
   const handleCreateConversation = async () => {
     await createConversation();
-    if (createError || !createData) {
-      return;
-    }
-    setConversation(createData?.results);
     resetDrawerState();
     router.replace('/chats');
   };
@@ -121,7 +112,6 @@ export default function Drawer({ onClose }: Props) {
                 data={data?.results}
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (
-                  // TODO: Do not allow creating a new conversation if user already has empty new conversation
                   <Text
                     className={`text-white mb-2 p-2 rounded ${conversation?.id === item.id ? 'bg-gray-600' : ''}`}
                     onPress={() => {
