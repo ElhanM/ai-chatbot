@@ -1,10 +1,8 @@
 import useUserCheck from '@/hooks/useUserCheck';
-import { useGuardStore } from '@/store/useGuardStore';
 import { Stack } from 'expo-router';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Dimensions } from 'react-native';
 import ToastManager from 'toastify-react-native';
-import { useShallow } from 'zustand/react/shallow';
 
 type Props = {
   children: React.ReactNode;
@@ -14,15 +12,6 @@ type Props = {
 const width = Dimensions.get('window').width;
 
 const LayoutWrapper = ({ children, headerRight = null }: Props) => {
-  const { errorCode } = useGuardStore(
-    useShallow((state) => ({
-      errorCode: state.errorCode,
-    }))
-  );
-
-  useEffect(() => {
-  }, [errorCode]);
-
   useUserCheck();
 
   return (
