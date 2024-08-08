@@ -14,18 +14,6 @@ import (
 // https://platform.openai.com/docs/models
 var model = openai.GPT3Dot5Turbo
 
-// TODO: move to conversation.go
-func CreateConversation(userID uuid.UUID) (*models.Conversation, error) {
-	conversation := &models.Conversation{
-		UserID: userID,
-		Title:  "",
-	}
-	if err := gormDB.DB.Create(conversation).Error; err != nil {
-		return nil, err
-	}
-	return conversation, nil
-}
-
 func AddMessage(conversationID uuid.UUID, sender, content string) (*models.Message, error) {
 	message := &models.Message{
 		ConversationID: conversationID,

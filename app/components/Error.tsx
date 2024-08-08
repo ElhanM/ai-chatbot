@@ -1,12 +1,11 @@
+import { ErrorCodes } from '@/api';
+import { useResetHandlers } from '@/hooks/useResetHandlers';
 import { useGuardStore } from '@/store/useGuardStore';
-import { useLoginStore } from '@/store/useLoginStore';
 import React, { useEffect } from 'react';
 import { Text, View } from 'react-native';
 import { useShallow } from 'zustand/react/shallow';
 import Button, { ButtonSize } from './forms/Button';
-import { ErrorCodes } from '@/api';
-import { useDrawerStore } from '@/store/useDrawerStore';
-import { useResetHandlers } from '@/hooks/useResetHandlers';
+import LoadingSpinner from './Loading';
 
 type Props = {
   error?: string | null;
@@ -26,6 +25,10 @@ const Error = ({ error }: Props) => {
       resetAll();
     }
   }, [errorCode, resetAll]);
+
+  if (errorCode) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <View className="flex-1 justify-center items-center bg-black">

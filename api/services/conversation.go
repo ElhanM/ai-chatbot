@@ -32,3 +32,14 @@ func GetLatestConversation(userID uuid.UUID) (models.Conversation, error) {
 	}
 	return conversation, nil
 }
+
+func CreateConversation(userID uuid.UUID) (*models.Conversation, error) {
+	conversation := &models.Conversation{
+		UserID: userID,
+		Title:  "",
+	}
+	if err := gormDB.DB.Create(conversation).Error; err != nil {
+		return nil, err
+	}
+	return conversation, nil
+}
