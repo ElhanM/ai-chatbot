@@ -5,28 +5,27 @@ import { Text, View } from 'react-native';
 import { useShallow } from 'zustand/react/shallow';
 import Button, { ButtonSize } from './forms/Button';
 import { ErrorCodes } from '@/api';
+import { useDrawerStore } from '@/store/useDrawerStore';
+import { useResetHandlers } from '@/hooks/useResetHandlers';
 
 type Props = {
   error?: string | null;
 };
 
 const Error = ({ error }: Props) => {
-  const { reset, errorCode } = useGuardStore(
+  const { errorCode } = useGuardStore(
     useShallow((state) => ({
-      reset: state.reset,
       errorCode: state.errorCode,
     }))
   );
-  const { onGuardFailure } = useLoginStore(
-    useShallow((state) => ({ onGuardFailure: state.onGuardFailure }))
-  );
+
+  const { resetAll } = useResetHandlers();
 
   useEffect(() => {
     if (errorCode === ErrorCodes.GUARD_FAILURE) {
-      reset();
-      onGuardFailure();
+      resetAll();
     }
-  }, [errorCode, onGuardFailure, reset]);
+  }, [errorCode, resetAll]);
 
   return (
     <View className="flex-1 justify-center items-center bg-black">
@@ -34,8 +33,7 @@ const Error = ({ error }: Props) => {
         <Text className="text-white">{error ?? 'Something went wrong'}</Text>
         <Button
           onPress={() => {
-            reset();
-            onGuardFailure();
+            resetAll();
           }}
           title="Reset"
           size={ButtonSize.SMALL}
