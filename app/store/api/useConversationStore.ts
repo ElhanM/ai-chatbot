@@ -3,7 +3,7 @@ import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import { makeRequest, RequestMethod } from '../utils/makeRequest';
 
-interface Conversation {
+export interface Conversation {
   id: string;
   title: string;
   createdAt: string;

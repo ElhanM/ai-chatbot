@@ -1,10 +1,14 @@
 import React, { useRef, useEffect, useCallback, useState } from 'react';
-import { View, Text, TouchableOpacity, Animated, Dimensions, FlatList } from 'react-native';
+import { View, Text, Animated, Dimensions, FlatList, TouchableOpacity } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useConversationsStore } from '@/store/api/useConversationStore';
 import LoadingSpinner from './Loading';
 import { useShallow } from 'zustand/react/shallow';
 import Error from './Error';
+import { useCreateConversationStore } from '@/store/api/useCreateConversationStore';
+import { router } from 'expo-router';
+import { useDrawerStore } from '@/store/useDrawerStore';
+import Button, { ButtonSize } from './forms/Button';
 
 type Props = {
   onClose: () => void;
@@ -28,6 +32,17 @@ export default function Drawer({ onClose }: Props) {
       }))
     );
 
+  const { createConversation, loading: creatingConversation } = useCreateConversationStore(
+    useShallow((state) => ({
+      createConversation: state.createConversation,
+      loading: state.loading,
+    }))
+  );
+
+  const { reset: resetDrawerState } = useDrawerStore(
+    useShallow((state) => ({ reset: state.reset }))
+  );
+
   useEffect(() => {
     Animated.timing(slideAnim, {
       toValue: 0,
@@ -43,7 +58,6 @@ export default function Drawer({ onClose }: Props) {
       return;
     }
     if (offset === 0) {
-      // TODO: handle cases where new conversations are added or removed in the middle of pagination
       fetchConversations(limit, offset);
     }
   }, [fetchConversations, limit, offset, reset, initalMount]);
@@ -53,6 +67,12 @@ export default function Drawer({ onClose }: Props) {
       fetchConversations(limit, data?.results?.length || 0);
     }
   }, [fetchConversations, data?.results?.length, fetching, limit]);
+
+  const handleCreateConversation = async () => {
+    await createConversation();
+    resetDrawerState();
+    router.replace('/chats');
+  };
 
   return (
     <View className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-75">
@@ -82,7 +102,9 @@ export default function Drawer({ onClose }: Props) {
                 data={data?.results}
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (
-                  <Text className="text-white mb-2 p-2 rounded">{item.title}</Text>
+                  // TODO: Select conversation is highlighted
+                  // TODO: Title of selected conversation is displayed in chats page
+                  <Text className="text-white mb-2 p-2 rounded">{item.title || 'New Chat'}</Text>
                 )}
                 onEndReached={
                   (data?.results?.length || 0) >= (data?.count || 0)
@@ -97,6 +119,19 @@ export default function Drawer({ onClose }: Props) {
             )}
           </>
         )}
+        <Button
+          title="New"
+          onPress={handleCreateConversation}
+          size={ButtonSize.SMALL}
+          disabled={creatingConversation}
+          icon={
+            creatingConversation ? (
+              <LoadingSpinner backgroundColor="bg-transparent" />
+            ) : (
+              <MaterialIcons name="add" size={24} color="white" />
+            )
+          }
+        />
       </Animated.View>
     </View>
   );
