@@ -14,6 +14,7 @@ import (
 // https://platform.openai.com/docs/models
 var model = openai.GPT3Dot5Turbo
 
+// TODO: move to conversation.go
 func CreateConversation(userID uuid.UUID) (*models.Conversation, error) {
 	conversation := &models.Conversation{
 		UserID: userID,

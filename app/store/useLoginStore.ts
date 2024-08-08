@@ -3,7 +3,6 @@ import { setUserInStorage } from '@/utils/user';
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import { makeRequest, RequestMethod } from './utils/makeRequest';
-import { router } from 'expo-router';
 
 interface LoginData {
   id: string;

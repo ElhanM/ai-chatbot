@@ -2,10 +2,14 @@ import FormDrawer from '@/components/Drawer';
 import Error from '@/components/Error';
 import Button from '@/components/forms/Button';
 import LoadingSpinner from '@/components/Loading';
+import { Conversation } from '@/store/api/useConversationStore';
+import { useGetLatestConversationStore } from '@/store/api/useGetLatestConversationStore';
+import { useSelectedConversationStore } from '@/store/api/useSelectedConversationStore';
 import { useDrawerStore } from '@/store/useDrawerStore';
 import { useGuardStore } from '@/store/useGuardStore';
 import { useUserStore } from '@/store/useUserStore';
 import { router } from 'expo-router';
+import { useEffect } from 'react';
 import { Text, View } from 'react-native';
 import { useAsyncEffect } from 'use-async-effect';
 import { useShallow } from 'zustand/react/shallow';
@@ -24,16 +28,45 @@ export default function Chats() {
 
   const { isDrawerOpen, toggleDrawer } = useDrawerStore();
 
+  const { conversation, setConversation } = useSelectedConversationStore(
+    useShallow((state) => ({
+      conversation: state.conversation,
+      setConversation: state.setConversation,
+    }))
+  );
+
+  const {
+    fetchLatestConversation,
+    data: latestConversation,
+    loading: loadingLatestConversation,
+    error: errorLatestConversation,
+  } = useGetLatestConversationStore(
+    useShallow((state) => ({
+      fetchLatestConversation: state.fetchLatestConversation,
+      data: state.data,
+      loading: state.loading,
+      error: state.error,
+    }))
+  );
+
+  useEffect(() => {
+    console.log({ conversation });
+  }, [conversation]);
+
   useAsyncEffect(async () => {
-    await fetchUserData();
+    await Promise.all([fetchUserData(), fetchLatestConversation()]);
   }, []);
 
-  if (loading) {
+  useEffect(() => {
+    setConversation(latestConversation?.results as Conversation);
+  }, [latestConversation, setConversation]);
+
+  if (loading || loadingLatestConversation) {
     return <LoadingSpinner />;
   }
 
-  if (error) {
-    return <Error error={error} />;
+  if (error || errorLatestConversation) {
+    return <Error error={error || errorLatestConversation} />;
   }
 
   return (

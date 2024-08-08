@@ -24,3 +24,11 @@ func GetConversations(userID uuid.UUID, limit, offset int) ([]models.Conversatio
 	}
 	return conversations, int(count), nil
 }
+
+func GetLatestConversation(userID uuid.UUID) (models.Conversation, error) {
+	var conversation models.Conversation
+	if err := gormDB.DB.Where("user_id = ?", userID).Order("created_at desc").First(&conversation).Error; err != nil {
+		return conversation, err
+	}
+	return conversation, nil
+}

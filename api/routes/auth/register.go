@@ -6,6 +6,7 @@ import (
 
 	gormDB "github.com/ElhanM/ai-chatbot/db"
 	"github.com/ElhanM/ai-chatbot/models"
+	"github.com/ElhanM/ai-chatbot/services"
 	"github.com/ElhanM/ai-chatbot/utils"
 	"github.com/ElhanM/ai-chatbot/utils/responses"
 	"github.com/gin-gonic/gin"
@@ -40,6 +41,13 @@ func RegisterRoute(r *gin.RouterGroup) {
 
 		if err := gormDB.DB.Create(&user).Error; err != nil {
 			errorResponse := responses.NewErrorResponse(utils.BuildError(err, "Failed to create user").Error())
+			c.JSON(http.StatusInternalServerError, errorResponse)
+			return
+		}
+
+		_, err = services.CreateConversation(user.ID)
+		if err != nil {
+			errorResponse := responses.NewErrorResponse(utils.BuildError(err, "Failed to create conversation").Error())
 			c.JSON(http.StatusInternalServerError, errorResponse)
 			return
 		}

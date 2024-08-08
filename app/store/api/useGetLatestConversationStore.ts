@@ -1,14 +1,14 @@
 import { IResponse } from '@/api';
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
-import { Conversation } from './useConversationStore';
 import { makeRequest, RequestMethod } from '../utils/makeRequest';
+import { Conversation } from './useConversationStore';
 
-interface CreateConversationState {
+interface GetLatestConversationState {
   data: IResponse<Conversation> | null;
   loading: boolean;
   error: string | null;
-  createConversation: () => Promise<void>;
+  fetchLatestConversation: () => Promise<void>;
   reset: () => void;
 }
 
@@ -18,13 +18,13 @@ const initialState = {
   error: null,
 };
 
-export const useCreateConversationStore = create(
-  immer<CreateConversationState>((set) => ({
+export const useGetLatestConversationStore = create(
+  immer<GetLatestConversationState>((set) => ({
     ...initialState,
-    createConversation: async () => {
+    fetchLatestConversation: async () => {
       await makeRequest({
-        endpoint: `/protected/chats/conversation`,
-        method: RequestMethod.POST,
+        endpoint: `/protected/chats/latest-conversation`,
+        method: RequestMethod.GET,
         set,
       });
     },

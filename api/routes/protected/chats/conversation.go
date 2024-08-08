@@ -11,9 +11,36 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// TODO: Remove for better code splitting
 func ConversationRoutes(r *gin.RouterGroup) {
 	r.GET("/conversations", getConversations)
+	r.GET("/latest-conversation", getLatestConversation)
 	r.POST("/conversation", createConversation)
+}
+
+func getLatestConversation(c *gin.Context) {
+	user, exists := c.Get("user")
+	if !exists {
+		response := responses.NewErrorResponse("Unauthorized")
+		c.JSON(http.StatusUnauthorized, response)
+		return
+	}
+
+	switch u := user.(type) {
+	case models.User:
+		conversation, err := services.GetLatestConversation(u.ID)
+		if err != nil {
+			errorResponse := responses.NewErrorResponse(utils.BuildError(err, "Failed to get latest conversation").Error())
+			c.JSON(http.StatusInternalServerError, errorResponse)
+			return
+		}
+
+		response := responses.NewServiceResponse(responses.Success, "Latest conversation retrieved", conversation, nil)
+		c.JSON(http.StatusOK, response)
+	default:
+		response := responses.NewErrorResponse("Unauthorized")
+		c.JSON(http.StatusUnauthorized, response)
+	}
 }
 
 func getConversations(c *gin.Context) {

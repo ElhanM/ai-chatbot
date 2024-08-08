@@ -1,5 +1,6 @@
 import Avatar from '@/components/Avatar';
 import LayoutWrapper from '@/components/LayoutWrapper';
+import { useSelectedConversationStore } from '@/store/api/useSelectedConversationStore';
 import { useDrawerStore } from '@/store/useDrawerStore';
 import { useLoginStore } from '@/store/useLoginStore';
 import { useUserStore } from '@/store/useUserStore';
@@ -25,6 +26,12 @@ export default function RootLayout() {
     }))
   );
 
+  const { conversation } = useSelectedConversationStore(
+    useShallow((state) => ({
+      conversation: state.conversation,
+    }))
+  );
+
   const { toggleDrawer } = useDrawerStore(
     useShallow((state) => ({ toggleDrawer: state.toggleDrawer }))
   );
@@ -40,7 +47,7 @@ export default function RootLayout() {
       <Stack.Screen
         name="chats"
         options={{
-          title: 'Chats',
+          title: `${conversation?.title ?? ''}`,
           headerLeft: () => (
             <TouchableOpacity onPress={toggleDrawer}>
               <MaterialIcons name="menu" color="white" size={24} />
