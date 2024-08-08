@@ -19,7 +19,9 @@ func GenerateAccessToken(userID uuid.UUID) (string, error) {
 	// last for 1 hour in production, 5 minutes in development
 	var expirationTime time.Time
 	if environment == "development" {
-		expirationTime = time.Now().Add(time.Minute * 5)
+		// TODO: reset after testing
+		// expirationTime = time.Now().Add(time.Minute * 5)
+		expirationTime = time.Now().Add(time.Second * 5)
 	} else {
 		expirationTime = time.Now().Add(time.Hour * 1)
 	}
@@ -36,7 +38,8 @@ func GenerateRefreshToken(userID uuid.UUID) (string, error) {
 	// last for 1 week in production, 15 minutes in development
 	var expirationTime time.Time
 	if environment == "development" {
-		expirationTime = time.Now().Add(time.Minute * 15)
+		// expirationTime = time.Now().Add(time.Minute * 15)
+		expirationTime = time.Now().Add(time.Second * 10)
 	} else {
 		expirationTime = time.Now().Add(time.Hour * 24 * 7)
 	}

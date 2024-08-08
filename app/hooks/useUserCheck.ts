@@ -1,4 +1,3 @@
-import { useGuardStore } from '@/store/useGuardStore';
 import { useLoginStore } from '@/store/useLoginStore';
 import { getUserFromStorage } from '@/utils/user';
 import { router } from 'expo-router';
@@ -18,6 +17,10 @@ const useUserCheck = () => {
 
     if (!authUserId) {
       authUserId = getUserFromStorage();
+      if (authUserId !== userId) {
+        setUserId(authUserId);
+        return;
+      }
     }
 
     // Uset to not allow the user to go back from the header
@@ -30,7 +33,6 @@ const useUserCheck = () => {
     if (!authUserId) {
       router.replace('/welcome');
     } else {
-      setUserId(authUserId);
       router.replace('/chats');
     }
   }, [userId, setUserId]);

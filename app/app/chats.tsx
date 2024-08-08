@@ -1,15 +1,14 @@
+import FormDrawer from '@/components/Drawer';
 import Error from '@/components/Error';
 import Button from '@/components/forms/Button';
 import LoadingSpinner from '@/components/Loading';
-import { useGuardStore } from '@/store/useGuardStore';
-import { useLoginStore } from '@/store/useLoginStore';
-import { useUserStore } from '@/store/useUserStore';
 import { useDrawerStore } from '@/store/useDrawerStore';
+import { useGuardStore } from '@/store/useGuardStore';
+import { useUserStore } from '@/store/useUserStore';
 import { router } from 'expo-router';
 import { Text, View } from 'react-native';
-import { useShallow } from 'zustand/react/shallow';
 import { useAsyncEffect } from 'use-async-effect';
-import FormDrawer from '@/components/Drawer';
+import { useShallow } from 'zustand/react/shallow';
 
 const environment = process.env.EXPO_PUBLIC_ENVIRONMENT;
 
@@ -21,21 +20,13 @@ export default function Chats() {
     }))
   );
 
-  const { userId } = useLoginStore(
-    useShallow((state) => ({
-      userId: state.user.id,
-    }))
-  );
-
   const { error } = useGuardStore(useShallow((state) => ({ error: state.error })));
 
   const { isDrawerOpen, toggleDrawer } = useDrawerStore();
 
   useAsyncEffect(async () => {
-    if (userId) {
-      await fetchUserData();
-    }
-  }, [fetchUserData, userId]);
+    await fetchUserData();
+  }, []);
 
   if (loading) {
     return <LoadingSpinner />;

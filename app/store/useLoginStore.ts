@@ -51,7 +51,6 @@ export const useLoginStore = create(
             state.user.id = userId;
           });
           setUserInStorage(userId);
-          router.replace('/chats');
         } else {
           throw new Error('No user id found');
         }

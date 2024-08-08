@@ -51,13 +51,15 @@ const Avatar = () => {
   };
 
   const handleLogout = async () => {
+    // TODO: reset drawer state for logout in app/components/Error.tsx
+    // TODO: apply dry to lougout logic
     await clearTokens();
     setUserInStorage(null);
     setUserId(null);
+    resetDrawerState();
     if (error) {
       Toast.error(error, 'top');
     }
-    resetDrawerState();
     handleClose();
   };
 

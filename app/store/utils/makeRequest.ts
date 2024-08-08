@@ -1,5 +1,5 @@
 import api, { ErrorCodes, IResponse, IResponseType } from '@/api';
-import axios, { AxiosError, AxiosResponse } from 'axios';
+import axios, { AxiosError } from 'axios';
 import { Toast } from 'toastify-react-native';
 import { useGuardStore } from '../useGuardStore';
 
@@ -88,8 +88,8 @@ const handleRequestError = (
   } else {
     const guardStore = useGuardStore.getState();
     guardStore.error = errorMessage;
-    if (errorCode === ErrorCodes.GUARD_FAILURE) {
-      guardStore.errorCode = ErrorCodes.GUARD_FAILURE;
+    if (errorCode) {
+      guardStore.errorCode = errorCode as ErrorCodes;
     }
   }
 };

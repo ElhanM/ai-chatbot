@@ -9,7 +9,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// JwtsRoute handles the /jwts/:userId endpoint.
 func JwtsRoute(r *gin.RouterGroup) {
 	r.GET("/jwts/:userId", func(c *gin.Context) {
 		userIdStr := c.Param("userId")

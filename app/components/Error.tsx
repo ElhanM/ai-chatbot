@@ -4,7 +4,7 @@ import React, { useEffect } from 'react';
 import { Text, View } from 'react-native';
 import { useShallow } from 'zustand/react/shallow';
 import Button, { ButtonSize } from './forms/Button';
-import { router } from 'expo-router';
+import { ErrorCodes } from '@/api';
 
 type Props = {
   error?: string | null;
@@ -22,10 +22,9 @@ const Error = ({ error }: Props) => {
   );
 
   useEffect(() => {
-    if (errorCode) {
+    if (errorCode === ErrorCodes.GUARD_FAILURE) {
       reset();
       onGuardFailure();
-      router.replace('/welcome');
     }
   }, [errorCode, onGuardFailure, reset]);
 
