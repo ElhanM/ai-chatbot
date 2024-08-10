@@ -1,17 +1,16 @@
 import { useConversationsStore } from '@/store/api/useConversationStore';
 import { useCreateConversationStore } from '@/store/api/useCreateConversationStore';
 import { useSelectedConversationStore } from '@/store/api/useSelectedConversationStore';
-import { useDrawerStore } from '@/store/useDrawerStore';
+import { useGuardStore } from '@/store/useGuardStore';
 import { MaterialIcons } from '@expo/vector-icons';
-import { router } from 'expo-router';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Animated, Dimensions, FlatList, Text, TouchableOpacity, View } from 'react-native';
 import { useShallow } from 'zustand/react/shallow';
+import BlockLoading from './BlockLoading';
+import ConversationItem from './chat/ConversationItem';
 import Error from './Error';
 import Button, { ButtonSize } from './forms/Button';
 import LoadingSpinner from './Loading';
-import { useGuardStore } from '@/store/useGuardStore';
-import BlockLoading from './BlockLoading';
 
 type Props = {
   onClose: () => void;
@@ -80,6 +79,8 @@ export default function Drawer({ onClose }: Props) {
     await createConversation();
   };
 
+  // TODO: add dark mode splash icon
+
   return (
     <View className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-75">
       <Animated.View
@@ -110,17 +111,14 @@ export default function Drawer({ onClose }: Props) {
                   data={data?.results}
                   keyExtractor={(item) => item.id}
                   renderItem={({ item }) => (
-                    // TODO: add dark mode splash icon
-                    // TODO: extract this to a separate component
-                    <Text
-                      className={`text-white p-2 mb-2 rounded ${conversation?.id === item.id && 'bg-gray-600'}`}
+                    <ConversationItem
+                      item={item}
+                      conversationId={conversation?.id as string}
                       onPress={() => {
                         setConversation(item);
                         onClose();
                       }}
-                    >
-                      {item.title || 'New Chat'}
-                    </Text>
+                    />
                   )}
                   onEndReached={
                     (data?.results?.length || 0) >= (data?.count || 0)
@@ -128,8 +126,6 @@ export default function Drawer({ onClose }: Props) {
                       : loadMoreConversations
                   }
                   onEndReachedThreshold={0.1}
-                  // ListFooterComponent={fetching && !loading ? <BlockLoading /> : null}
-                  // If the user scrolls to the bottom really fast, when I use the method above, the loading spinner will show after user reaches the end, and he will have to scroll down again to see the spinner.
                   ListFooterComponent={
                     (data?.results?.length || 0) >= (data?.count || 0) ? undefined : (
                       <BlockLoading />
