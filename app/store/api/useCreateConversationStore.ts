@@ -4,6 +4,8 @@ import { immer } from 'zustand/middleware/immer';
 import { Conversation } from './useConversationStore';
 import { makeRequest, RequestMethod } from '../utils/makeRequest';
 import { useSelectedConversationStore } from './useSelectedConversationStore';
+import { router } from 'expo-router';
+import { useDrawerStore } from '../useDrawerStore';
 
 interface CreateConversationState {
   data: IResponse<Conversation> | null;
@@ -27,15 +29,15 @@ export const useCreateConversationStore = create(
         set,
       });
 
-      set((state) => {
-        if (!state.data?.results?.id) {
-          return;
-        }
-      });
+      if (!useCreateConversationStore.getState().data?.results?.id) {
+        return;
+      }
       // We do it like this to avoid nested set((state) => { ... }) calls
       useSelectedConversationStore
         .getState()
         .setConversation(useCreateConversationStore.getState().data?.results as Conversation);
+      useDrawerStore.getState().reset();
+      router.replace('/chats');
     },
     reset: () => {
       set(() => ({

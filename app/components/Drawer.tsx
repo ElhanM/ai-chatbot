@@ -42,10 +42,6 @@ export default function Drawer({ onClose }: Props) {
     }))
   );
 
-  const { reset: resetDrawerState } = useDrawerStore(
-    useShallow((state) => ({ reset: state.reset }))
-  );
-
   const { setConversation, conversation } = useSelectedConversationStore(
     useShallow((state) => ({
       setConversation: state.setConversation,
@@ -80,8 +76,6 @@ export default function Drawer({ onClose }: Props) {
 
   const handleCreateConversation = async () => {
     await createConversation();
-    resetDrawerState();
-    router.replace('/chats');
   };
 
   return (
