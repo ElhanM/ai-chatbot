@@ -23,6 +23,6 @@ export const useClearTokensStore = create(
     },
     reset: () => {
       set(() => ({ ...initialState }));
-    }
+    },
   }))
 );
