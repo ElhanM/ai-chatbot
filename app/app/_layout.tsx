@@ -36,11 +36,6 @@ export default function RootLayout() {
     useShallow((state) => ({ toggleDrawer: state.toggleDrawer }))
   );
 
-  const devRoutes = environment === 'development' && [
-    <Stack.Screen name="health" options={{ title: 'Health' }} key="health" />,
-    <Stack.Screen name="protected" options={{ title: 'Protected' }} key="protected" />,
-  ];
-
   return (
     <LayoutWrapper headerRight={userId && !loading && <Avatar />}>
       <Stack.Screen name="index" options={{ headerShown: false }} />
@@ -68,7 +63,6 @@ export default function RootLayout() {
           title: 'Register',
         }}
       />
-      {devRoutes}
     </LayoutWrapper>
   );
 }
