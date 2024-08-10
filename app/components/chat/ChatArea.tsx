@@ -60,7 +60,7 @@ const ChatArea = (props: Props) => {
               data={data?.results}
               keyExtractor={(item) => item.id}
               renderItem={({ item }) => <Message message={item} />}
-              // inverted
+              inverted
               onEndReached={
                 (data?.results?.length || 0) >= (data?.count || 0) ? undefined : loadMoreMessages
               }

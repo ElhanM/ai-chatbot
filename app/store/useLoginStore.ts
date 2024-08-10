@@ -23,17 +23,22 @@ export interface LoginState {
   setUserId: (userId: string | null) => void;
   setUserDetails: (name: string, email: string) => void;
   onGuardFailure: () => void;
+  reset: () => void;
 }
+
+const initialState = {
+  data: null,
+  loading: false,
+  user: {
+    id: null,
+    name: null,
+    email: null,
+  },
+};
 
 export const useLoginStore = create(
   immer<LoginState>((set) => ({
-    data: null,
-    loading: false,
-    user: {
-      id: null,
-      name: null,
-      email: null,
-    },
+    ...initialState,
     login: async (email: string, password: string) => {
       await makeRequest({
         endpoint: '/auth/login',
@@ -72,6 +77,12 @@ export const useLoginStore = create(
         state.user.id = null;
         state.user.name = '';
         state.user.email = '';
+      });
+    },
+    reset: () => {
+      set((state) => {
+        state.data = null;
+        state.loading = false;
       });
     },
   }))

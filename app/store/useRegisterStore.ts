@@ -16,12 +16,17 @@ export interface RegisterState {
   data: IResponse<RegisterData> | null;
   loading: boolean;
   register: (name: string, email: string, password: string) => Promise<void>;
+  reset: () => void;
 }
+
+const initialState = {
+  data: null,
+  loading: false,
+};
 
 export const useRegisterStore = create(
   immer<RegisterState>((set) => ({
-    data: null,
-    loading: false,
+    ...initialState,
     register: async (name: string, email: string, password: string) => {
       await makeRequest({
         endpoint: '/auth/register',
@@ -29,8 +34,10 @@ export const useRegisterStore = create(
         data: { name, email, password },
         set,
       });
-
       router.replace('/login');
+    },
+    reset: () => {
+      set(() => ({ ...initialState }));
     },
   }))
 );

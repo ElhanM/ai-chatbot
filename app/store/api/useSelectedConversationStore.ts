@@ -5,6 +5,7 @@ import { Conversation } from './useConversationStore';
 interface SelectedConversationState {
   conversation: Conversation | null;
   setConversation: (conversation: Conversation) => void;
+  reset: () => void;
 }
 
 const initialState = {

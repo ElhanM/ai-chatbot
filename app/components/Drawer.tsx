@@ -63,10 +63,10 @@ export default function Drawer({ onClose }: Props) {
     if (initalMount) {
       setInitialMount(false);
       reset();
-      return;
-    }
-    if (offset === 0) {
-      fetchConversations(limit, offset);
+    } else {
+      if (offset === 0) {
+        fetchConversations(limit, offset);
+      }
     }
   }, [fetchConversations, limit, offset, reset, initalMount]);
 
@@ -110,6 +110,7 @@ export default function Drawer({ onClose }: Props) {
                   data={data?.results}
                   keyExtractor={(item) => item.id}
                   renderItem={({ item }) => (
+                    // TODO: add dark mode splash icon
                     // TODO: extract this to a separate component
                     <Text
                       className={`text-white p-2 mb-2 rounded ${conversation?.id === item.id && 'bg-gray-600'}`}

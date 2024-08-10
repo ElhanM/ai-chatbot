@@ -89,6 +89,7 @@ const handleRequestError = (
     const guardStore = useGuardStore.getState();
     guardStore.error = errorMessage;
     if (errorCode) {
+      Toast.error(errorMessage, 'top');
       guardStore.errorCode = errorCode as ErrorCodes;
     }
   }

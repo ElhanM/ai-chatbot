@@ -12,7 +12,6 @@ export const useGuardStore = create(
   immer<GuardState>((set) => ({
     errorCode: null,
     error: null,
-
     reset: () => {
       set((state) => {
         state.error = null;
