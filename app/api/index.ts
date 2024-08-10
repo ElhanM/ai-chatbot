@@ -21,6 +21,7 @@ const api = axios.create({
 
 api.interceptors.request.use((config) => {
   const userId = getUserFromStorage() ?? '';
+
   config.headers.Authorization = userId;
   return config;
 });

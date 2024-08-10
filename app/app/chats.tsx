@@ -42,11 +42,13 @@ export default function Chats() {
     if (!data?.results?.user?.id) {
       await fetchUserData();
     }
+  }, []);
 
-    if (!latestConversation?.results?.id) {
+  useAsyncEffect(async () => {
+    if (!latestConversation?.results?.id && data?.results?.user?.id) {
       await fetchLatestConversation();
     }
-  }, []);
+  }, [latestConversation?.results?.id, data?.results?.user?.id]);
 
   if (loading || loadingLatestConversation) {
     return <LoadingSpinner />;
