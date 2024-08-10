@@ -50,8 +50,6 @@ export const useLoginStore = create(
             state.user.id = userId;
           });
           setUserInStorage(userId);
-        } else {
-          throw new Error('No user id found');
         }
       });
     },

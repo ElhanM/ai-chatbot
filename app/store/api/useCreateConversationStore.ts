@@ -30,10 +30,8 @@ export const useCreateConversationStore = create(
       });
 
       if (!useCreateConversationStore.getState().data?.results?.id) {
-        console.log('Inside if');
         return;
       }
-      console.log('After return');
       // We do it like this to avoid nested set((state) => { ... }) calls
       useSelectedConversationStore
         .getState()

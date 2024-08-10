@@ -63,10 +63,14 @@ func SeedDatabase() error {
 			}
 
 			for k := 0; k < numMessages; k++ {
+				sender := "user"
+				if k%2 == 1 {
+					sender = "bot"
+				}
 				message := models.Message{
 					DBModel:        models.DBModel{ID: uuid.New()},
 					ConversationID: conversation.ID,
-					Sender:         "user",
+					Sender:         sender,
 					Content:        "Message" + strconv.Itoa(k) + " of Conversation" + strconv.Itoa(j) + " of User" + strconv.Itoa(i),
 				}
 				if err := db.Create(&message).Error; err != nil {

@@ -11,6 +11,7 @@ import Error from './Error';
 import Button, { ButtonSize } from './forms/Button';
 import LoadingSpinner from './Loading';
 import { useGuardStore } from '@/store/useGuardStore';
+import BlockLoading from './BlockLoading';
 
 type Props = {
   onClose: () => void;
@@ -102,30 +103,31 @@ export default function Drawer({ onClose }: Props) {
             {loading ? (
               <LoadingSpinner backgroundColor="bg-grayish" />
             ) : (
-              <FlatList
-                data={data?.results}
-                keyExtractor={(item) => item.id}
-                renderItem={({ item }) => (
-                  <Text
-                    className={`text-white mb-2 p-2 rounded ${conversation?.id === item.id ? 'bg-gray-600' : ''}`}
-                    onPress={() => {
-                      setConversation(item);
-                      onClose();
-                    }}
-                  >
-                    {item.title || 'New Chat'}
-                  </Text>
-                )}
-                onEndReached={
-                  (data?.results?.length || 0) >= (data?.count || 0)
-                    ? undefined
-                    : loadMoreConversations
-                }
-                onEndReachedThreshold={0.1}
-              />
-            )}
-            {fetching && !loading && (
-              <LoadingSpinner backgroundColor="bg-grayish" classNameProp="mt-1" />
+              <>
+                <FlatList
+                  data={data?.results}
+                  keyExtractor={(item) => item.id}
+                  renderItem={({ item }) => (
+                    // TODO: extract this to a separate component
+                    <Text
+                      className={`text-white mb-2 p-2 rounded ${conversation?.id === item.id ? 'bg-gray-600' : ''}`}
+                      onPress={() => {
+                        setConversation(item);
+                        onClose();
+                      }}
+                    >
+                      {item.title || 'New Chat'}
+                    </Text>
+                  )}
+                  onEndReached={
+                    (data?.results?.length || 0) >= (data?.count || 0)
+                      ? undefined
+                      : loadMoreConversations
+                  }
+                  onEndReachedThreshold={0.1}
+                />
+                {fetching && !loading && <BlockLoading />}
+              </>
             )}
           </>
         )}
