@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strconv"
 
+	"github.com/ElhanM/ai-chatbot/models"
 	"github.com/ElhanM/ai-chatbot/services"
 	"github.com/ElhanM/ai-chatbot/utils"
 	"github.com/ElhanM/ai-chatbot/utils/responses"
@@ -98,5 +100,42 @@ func AddMessage(c *gin.Context) {
 		errorResponse := responses.NewErrorResponse(utils.BuildError(err, "Failed to generate title").Error())
 		c.JSON(http.StatusInternalServerError, errorResponse)
 		return
+	}
+}
+
+func GetMessages(c *gin.Context) {
+	user, exists := c.Get("user")
+	if !exists {
+		response := responses.NewErrorResponse("Unauthorized")
+		c.JSON(http.StatusUnauthorized, response)
+		return
+	}
+
+	conversationIDParam := c.Param("conversationId")
+	conversationID, err := uuid.Parse(conversationIDParam)
+
+	if err != nil {
+		errorResponse := responses.NewErrorResponse(utils.BuildError(err, "Invalid conversation ID").Error())
+		c.JSON(http.StatusBadRequest, errorResponse)
+		return
+	}
+
+	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "10"))
+	offset, _ := strconv.Atoi(c.DefaultQuery("offset", "0"))
+
+	switch u := user.(type) {
+	case models.User:
+		messages, count, err := services.GetMessages(u.ID, conversationID, limit, offset)
+		if err != nil {
+			errorResponse := responses.NewErrorResponse(utils.BuildError(err, "Failed to get messages").Error())
+			c.JSON(http.StatusInternalServerError, errorResponse)
+			return
+		}
+
+		response := responses.NewServiceResponse(responses.Success, "Messages retrieved", messages, &count)
+		c.JSON(http.StatusOK, response)
+	default:
+		response := responses.NewErrorResponse("Unauthorized")
+		c.JSON(http.StatusUnauthorized, response)
 	}
 }

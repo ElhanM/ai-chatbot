@@ -131,3 +131,28 @@ func GenerateTitleIfEmpty(conversationID uuid.UUID, userMessage string) error {
 	}
 	return nil
 }
+
+func GetMessages(userID uuid.UUID, conversationID uuid.UUID, limit, offset int) ([]models.Message, int, error) {
+	// check if this conversation belongs to this user
+	var conversation models.Conversation
+	if err := gormDB.DB.First(&conversation, "id = ? AND user_id = ?", conversationID, userID).Error; err != nil {
+		return nil, 0, err
+	}
+
+	var messages []models.Message
+	var count int64
+
+	query := gormDB.DB.Model(&models.Message{}).Where("conversation_id = ?", conversationID).Order("created_at desc")
+	query.Count(&count)
+
+	if limit > 0 {
+		query = query.Limit(limit)
+	}
+	if offset > 0 {
+		query = query.Offset(offset)
+	}
+	if err := query.Find(&messages).Error; err != nil {
+		return nil, 0, err
+	}
+	return messages, int(count), nil
+}
