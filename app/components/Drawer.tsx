@@ -20,6 +20,7 @@ type Props = {
 export default function Drawer({ onClose }: Props) {
   const slideAnim = useRef(new Animated.Value(-Dimensions.get('window').width)).current;
   const [initalMount, setInitialMount] = useState(true);
+  const flatListRef = useRef<FlatList>(null);
 
   const { data, fetchConversations, loading, fetching, limit, offset, reset } =
     useConversationsStore(
@@ -105,12 +106,13 @@ export default function Drawer({ onClose }: Props) {
             ) : (
               <>
                 <FlatList
+                  ref={flatListRef}
                   data={data?.results}
                   keyExtractor={(item) => item.id}
                   renderItem={({ item }) => (
                     // TODO: extract this to a separate component
                     <Text
-                      className={`text-white mb-2 p-2 rounded ${conversation?.id === item.id ? 'bg-gray-600' : ''}`}
+                      className={`text-white p-2 mb-2 rounded ${conversation?.id === item.id && 'bg-gray-600'}`}
                       onPress={() => {
                         setConversation(item);
                         onClose();
@@ -125,8 +127,14 @@ export default function Drawer({ onClose }: Props) {
                       : loadMoreConversations
                   }
                   onEndReachedThreshold={0.1}
+                  // ListFooterComponent={fetching && !loading ? <BlockLoading /> : null}
+                  // If the user scrolls to the bottom really fast, when I use the method above, the loading spinner will show after user reaches the end, and he will have to scroll down again to see the spinner.
+                  ListFooterComponent={
+                    (data?.results?.length || 0) >= (data?.count || 0) ? undefined : (
+                      <BlockLoading />
+                    )
+                  }
                 />
-                {fetching && !loading && <BlockLoading />}
               </>
             )}
           </>

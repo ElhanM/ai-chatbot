@@ -35,12 +35,12 @@ export const useConversationsStore = create(
     ...initialState,
     fetchConversations: async (limit, offset) => {
       set((state) => {
-        state.fetching = true;
-        state.limit = limit;
-        state.offset = offset;
         if (offset === 0) {
           state.loading = true;
         }
+        state.fetching = true;
+        state.limit = limit;
+        state.offset = offset;
       });
 
       await makeRequest({

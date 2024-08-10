@@ -6,11 +6,11 @@
     "orientation": "portrait",
     "icon": "./assets/images/ai-logo.png",
     "scheme": "ai-chatbot",
-    "userInterfaceStyle": "automatic",
+    "userInterfaceStyle": "portrait",
     "splash": {
       "image": "./assets/images/ai-logo.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#000"
     },
     "ios": {
       "supportsTablet": true
@@ -18,7 +18,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/ai-logo.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#000"
       }
     },
     "web": {

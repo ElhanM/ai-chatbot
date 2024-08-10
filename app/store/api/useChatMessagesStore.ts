@@ -40,12 +40,12 @@ export const useChatMessagesStore = create(
     ...initialState,
     fetchMessages: async (conversationId, limit, offset) => {
       set((state) => {
-        state.fetching = true;
-        state.limit = limit;
-        state.offset = offset;
         if (offset === 0) {
           state.loading = true;
         }
+        state.fetching = true;
+        state.limit = limit;
+        state.offset = offset;
       });
 
       await makeRequest({
