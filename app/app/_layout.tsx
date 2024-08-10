@@ -50,7 +50,7 @@ export default function RootLayout() {
           title: `${conversation?.title ? conversation.title : conversation?.id ? 'New Chat' : ''}`,
           headerLeft: () => (
             <TouchableOpacity onPress={toggleDrawer}>
-              <MaterialIcons name="menu" color="white" size={24} />
+              {!loading && <MaterialIcons name="menu" color="white" size={24} />}
             </TouchableOpacity>
           ),
         }}

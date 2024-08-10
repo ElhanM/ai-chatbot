@@ -42,14 +42,10 @@ export default function Chats() {
     }))
   );
 
-  useEffect(() => {
-    console.log({ data });
-    console.log({ latestConversation });
-  }, [data, latestConversation]);
-
   useAsyncEffect(async () => {
     // TODO: reset this state on logout
     // TODO: on create convo error for already exists empty convo do not redirect
+    // TODO: remove clgs
     if (!data?.results?.user?.id) {
       await fetchUserData();
     }
