@@ -3,12 +3,10 @@ import Error from '@/components/Error';
 import Button from '@/components/forms/Button';
 import LoadingSpinner from '@/components/Loading';
 import { useGetLatestConversationStore } from '@/store/api/useGetLatestConversationStore';
-import { useSelectedConversationStore } from '@/store/api/useSelectedConversationStore';
 import { useDrawerStore } from '@/store/useDrawerStore';
 import { useGuardStore } from '@/store/useGuardStore';
 import { useUserStore } from '@/store/useUserStore';
 import { router } from 'expo-router';
-import { useEffect } from 'react';
 import { Text, View } from 'react-native';
 import { useAsyncEffect } from 'use-async-effect';
 import { useShallow } from 'zustand/react/shallow';
@@ -41,7 +39,6 @@ export default function Chats() {
   );
 
   useAsyncEffect(async () => {
-    // TODO: reset this state on logout
     if (!data?.results?.user?.id) {
       await fetchUserData();
     }

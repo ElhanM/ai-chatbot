@@ -8,12 +8,17 @@ interface UserState {
   data: IResponse<{ user: User }> | null;
   loading: boolean;
   fetchUserData: () => Promise<void>;
+  reset: () => void;
 }
+
+const initialState = {
+  data: null,
+  loading: false,
+};
 
 export const useUserStore = create(
   immer<UserState>((set) => ({
-    data: null,
-    loading: false,
+    ...initialState,
     fetchUserData: async () => {
       const userId = useLoginStore.getState().user.id;
 
@@ -35,6 +40,11 @@ export const useUserStore = create(
             state.data?.results?.user.email as string
           );
       });
+    },
+    reset: () => {
+      set(() => ({
+        ...initialState,
+      }));
     },
   }))
 );
