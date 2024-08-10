@@ -8,7 +8,6 @@ import { useSelectedConversationStore } from './useSelectedConversationStore';
 interface CreateConversationState {
   data: IResponse<Conversation> | null;
   loading: boolean;
-  error: string | null;
   createConversation: () => Promise<void>;
   reset: () => void;
 }
@@ -16,7 +15,6 @@ interface CreateConversationState {
 const initialState = {
   data: null,
   loading: false,
-  error: null,
 };
 
 export const useCreateConversationStore = create(
@@ -30,7 +28,7 @@ export const useCreateConversationStore = create(
       });
 
       set((state) => {
-        if (state.error || !state.data?.results?.id) {
+        if (!state.data?.results?.id) {
           return;
         }
       });

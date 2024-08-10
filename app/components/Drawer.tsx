@@ -10,6 +10,7 @@ import { useShallow } from 'zustand/react/shallow';
 import Error from './Error';
 import Button, { ButtonSize } from './forms/Button';
 import LoadingSpinner from './Loading';
+import { useGuardStore } from '@/store/useGuardStore';
 
 type Props = {
   onClose: () => void;
@@ -19,7 +20,7 @@ export default function Drawer({ onClose }: Props) {
   const slideAnim = useRef(new Animated.Value(-Dimensions.get('window').width)).current;
   const [initalMount, setInitialMount] = useState(true);
 
-  const { data, fetchConversations, loading, fetching, limit, offset, error, reset } =
+  const { data, fetchConversations, loading, fetching, limit, offset, reset } =
     useConversationsStore(
       useShallow((state) => ({
         data: state.data,
@@ -28,17 +29,16 @@ export default function Drawer({ onClose }: Props) {
         fetching: state.fetching,
         limit: state.limit,
         offset: state.offset,
-        error: state.error,
         reset: state.reset,
       }))
     );
+
+  const { error } = useGuardStore(useShallow((state) => ({ error: state.error })));
 
   const { createConversation, loading: creatingConversation } = useCreateConversationStore(
     useShallow((state) => ({
       createConversation: state.createConversation,
       loading: state.loading,
-      error: state.error,
-      data: state.data,
     }))
   );
 

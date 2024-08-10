@@ -8,7 +8,6 @@ import { useSelectedConversationStore } from './useSelectedConversationStore';
 interface GetLatestConversationState {
   data: IResponse<Conversation> | null;
   loading: boolean;
-  error: string | null;
   fetchLatestConversation: () => Promise<void>;
   reset: () => void;
 }
@@ -16,7 +15,6 @@ interface GetLatestConversationState {
 const initialState = {
   data: null,
   loading: false,
-  error: null,
 };
 
 export const useGetLatestConversationStore = create(

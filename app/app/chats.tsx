@@ -32,20 +32,16 @@ export default function Chats() {
     fetchLatestConversation,
     data: latestConversation,
     loading: loadingLatestConversation,
-    error: errorLatestConversation,
   } = useGetLatestConversationStore(
     useShallow((state) => ({
       fetchLatestConversation: state.fetchLatestConversation,
       data: state.data,
       loading: state.loading,
-      error: state.error,
     }))
   );
 
   useAsyncEffect(async () => {
     // TODO: reset this state on logout
-    // TODO: on create convo error for already exists empty convo do not redirect
-    // TODO: remove clgs
     if (!data?.results?.user?.id) {
       await fetchUserData();
     }
@@ -59,8 +55,8 @@ export default function Chats() {
     return <LoadingSpinner />;
   }
 
-  if (error || errorLatestConversation) {
-    return <Error error={error || errorLatestConversation} />;
+  if (error) {
+    return <Error error={error} />;
   }
 
   return (

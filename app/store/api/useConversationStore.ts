@@ -15,7 +15,6 @@ interface ConversationsState {
   data: IResponse<Conversation[]> | null;
   loading: boolean;
   fetching: boolean;
-  error: string | null;
   limit: number;
   offset: number;
   fetchConversations: (limit: number, offset: number) => Promise<void>;
@@ -27,8 +26,7 @@ const initialState = {
   data: null,
   loading: false,
   fetching: false,
-  error: null,
-  limit: 10,
+  limit: 15,
   offset: 0,
 };
 
