@@ -25,6 +25,7 @@ interface ChatMessagesState {
   offset: number;
   fetchMessages: (conversationId: string, limit: number, offset: number) => Promise<void>;
   reset: () => void;
+  addOptimisticMessage: (message: IMessage) => void;
 }
 
 const initialState = {
@@ -63,6 +64,17 @@ export const useChatMessagesStore = create(
       set(() => ({
         ...initialState,
       }));
+    },
+    addOptimisticMessage: (message) => {
+      set((state) => {
+        if (state.data) {
+          state.data.results.unshift(message);
+          state.offset += 1;
+          if (state.data.count) {
+            state.data.count += 1;
+          }
+        }
+      });
     },
   }))
 );

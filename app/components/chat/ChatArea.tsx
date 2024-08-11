@@ -9,6 +9,8 @@ import Message from './Message';
 import Error from '../Error';
 import { useGuardStore } from '@/store/useGuardStore';
 import { MaterialIcons } from '@expo/vector-icons';
+import { useAddMessageStore } from '@/store/api/useAddMessageStore';
+import { useStreamBotResponseStore } from '@/store/api/useStreamBotResponse';
 
 type Props = {};
 
@@ -29,6 +31,19 @@ const ChatArea = (props: Props) => {
       conversationId: state.conversation?.id,
     }))
   );
+  const { addMessage, loading: addMessageLoading } = useAddMessageStore(
+    useShallow((state) => ({
+      addMessage: state.addMessage,
+      loading: state.loading,
+    }))
+  );
+
+  const { streamBotResponse, loading: streamBotResponseLoading } = useStreamBotResponseStore(
+    useShallow((state) => ({
+      streamBotResponse: state.streamBotResponse,
+      loading: state.loading,
+    }))
+  );
 
   const { error } = useGuardStore(useShallow((state) => ({ error: state.error })));
 
@@ -46,11 +61,12 @@ const ChatArea = (props: Props) => {
     }
   }, [fetchMessages, conversationId, data?.results?.length, fetching, limit]);
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (newMessage.trim() !== '') {
       // Add your send message logic here
       setNewMessage((prev) => prev.trim());
-      console.log('Sending message:', newMessage);
+      await addMessage(newMessage, conversationId as string);
+      await streamBotResponse(conversationId as string, newMessage);
       setNewMessage('');
     }
   };
@@ -61,7 +77,7 @@ const ChatArea = (props: Props) => {
 
   return (
     <>
-      <View className="flex flex-col justify-center items-center">
+      <View className="flex flex-col justify-center items-cente w-full h-full">
         {loading ? (
           <LoadingSpinner />
         ) : (
@@ -89,17 +105,21 @@ const ChatArea = (props: Props) => {
                 placeholderTextColor={'#9b9b9b'}
                 style={{ backgroundColor: '#2f2f2f', color: 'white' }}
               />
-              <TouchableOpacity
-                onPress={handleSendMessage}
-                disabled={newMessage.trim() === ''}
-                className="ml-2"
-              >
-                <MaterialIcons
-                  name="send"
-                  color={newMessage.trim() === '' ? 'gray' : 'blue'}
-                  size={24}
-                />
-              </TouchableOpacity>
+              {addMessageLoading || streamBotResponseLoading ? (
+                <BlockLoading />
+              ) : (
+                <TouchableOpacity
+                  onPress={handleSendMessage}
+                  disabled={newMessage.trim() === ''}
+                  className="ml-2"
+                >
+                  <MaterialIcons
+                    name="send"
+                    color={newMessage.trim() === '' ? 'gray' : 'blue'}
+                    size={24}
+                  />
+                </TouchableOpacity>
+              )}
             </View>
           </View>
         )}

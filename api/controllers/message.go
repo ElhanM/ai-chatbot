@@ -76,13 +76,10 @@ func AddMessage(c *gin.Context) {
 }
 
 func StreamBotResponse(c *gin.Context) {
-	var req struct {
-		Content string `json:"content" binding:"required"`
-	}
-
-	if err := c.ShouldBindJSON(&req); err != nil {
+	userMessage := c.Query("content")
+	if userMessage == "" {
 		c.Writer.Write([]byte("<br /><br />"))
-		c.Writer.Write([]byte("**Error:** Invalid request format\n"))
+		c.Writer.Write([]byte("**Error:** Missing content parameter\n"))
 		return
 	}
 
@@ -101,8 +98,6 @@ func StreamBotResponse(c *gin.Context) {
 		return
 	}
 
-	userMessage := req.Content
-
 	// Generate bot response stream
 	stream, err := services.GenerateBotResponseStream(conversationID, userMessage)
 	if err != nil {
@@ -118,7 +113,6 @@ func StreamBotResponse(c *gin.Context) {
 	c.Writer.WriteHeader(http.StatusOK)
 
 	// Read the stream and collect the response
-	var botResponse string
 	for {
 		response, err := stream.Recv()
 		if err != nil {
@@ -131,7 +125,6 @@ func StreamBotResponse(c *gin.Context) {
 			return
 		}
 		chunk := response.Choices[0].Delta.Content
-		botResponse += chunk
 		c.Writer.Write([]byte(chunk))
 		c.Writer.(http.Flusher).Flush()
 	}

@@ -6,6 +6,7 @@ interface SelectedConversationState {
   conversation: Conversation | null;
   setConversation: (conversation: Conversation) => void;
   reset: () => void;
+  updateConversationTitle: (title?: string) => void;
 }
 
 const initialState = {
@@ -23,6 +24,13 @@ export const useSelectedConversationStore = create(
     setConversation: (conversation) => {
       set((state) => {
         state.conversation = conversation;
+      });
+    },
+    updateConversationTitle: (title?: string) => {
+      set((state) => {
+        if (!(state.conversation as Conversation).title) {
+          (state.conversation as Conversation).title = title as string;
+        }
       });
     },
   }))

@@ -60,7 +60,7 @@ func GenerateBotResponseStream(conversationID uuid.UUID, userMessage string) (*o
 	req := openai.ChatCompletionRequest{
 		Model:     model,
 		Messages:  chatMessages,
-		MaxTokens: 50,
+		MaxTokens: 200,
 		Stream:    true, // Enable streaming
 	}
 
@@ -83,7 +83,7 @@ func GenerateTitle(userMessage string) (string, error) {
 		Messages: []openai.ChatCompletionMessage{
 			{
 				Role:    "system",
-				Content: "Generate a short title for the following conversation:",
+				Content: "Generate a short title for the following conversation (you do not need to wrap the title in quotes):",
 			},
 			{
 				Role:    "user",
