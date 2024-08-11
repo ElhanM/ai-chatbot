@@ -65,7 +65,7 @@ const ChatArea = (props: Props) => {
     if (newMessage.trim() !== '') {
       // Add your send message logic here
       setNewMessage((prev) => prev.trim());
-      await addMessage(newMessage, conversationId as string);
+      // await addMessage(newMessage, conversationId as string);
       await streamBotResponse(conversationId as string, newMessage);
       setNewMessage('');
     }

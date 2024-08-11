@@ -61,8 +61,6 @@ func AddMessage(c *gin.Context) {
 		return
 	}
 
-	// return newConvoTitle and newUserMessage
-
 	responseData := struct {
 		NewConvoTitle  string         `json:"newConvoTitle"`
 		NewUserMessage models.Message `json:"newUserMessage"`
@@ -76,6 +74,10 @@ func AddMessage(c *gin.Context) {
 }
 
 func StreamBotResponse(c *gin.Context) {
+	// Set response headers for streaming
+	c.Writer.Header().Set("Content-Type", "text/plain")
+	c.Writer.Header().Set("Transfer-Encoding", "chunked")
+
 	userMessage := c.Query("content")
 	if userMessage == "" {
 		c.Writer.Write([]byte("<br /><br />"))
@@ -107,9 +109,6 @@ func StreamBotResponse(c *gin.Context) {
 	}
 	defer stream.Close()
 
-	// Set response headers for streaming
-	c.Writer.Header().Set("Content-Type", "application/json")
-	c.Writer.Header().Set("Transfer-Encoding", "chunked")
 	c.Writer.WriteHeader(http.StatusOK)
 
 	// Read the stream and collect the response
@@ -127,6 +126,7 @@ func StreamBotResponse(c *gin.Context) {
 		chunk := response.Choices[0].Delta.Content
 		c.Writer.Write([]byte(chunk))
 		c.Writer.(http.Flusher).Flush()
+		fmt.Printf("Sent chunk: %s\n", chunk) // Add logging to verify chunking
 	}
 }
 

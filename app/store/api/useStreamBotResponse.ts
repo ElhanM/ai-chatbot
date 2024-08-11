@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
-import axios from 'axios';
+import 'react-native-polyfill-globals/auto';
+import { fetch as fetchh } from 'react-native-fetch-api';
 
 interface StreamBotResponseState {
   loading: boolean;
@@ -17,37 +18,34 @@ export const useStreamBotResponseStore = create(
   immer<StreamBotResponseState>((set) => ({
     ...initialState,
     streamBotResponse: async (conversationId: string, content: string) => {
-      set({ loading: true, data: null });
-
-      try {
-        const response = await axios({
-          method: 'get',
-          url: `${process.env.EXPO_PUBLIC_API_URL}/api/v1/protected/chats/message/stream/${conversationId}?content=${content}`,
+      const response = await fetchh(
+        `${process.env.EXPO_PUBLIC_API_URL}/api/v1/protected/chats/message/stream/${conversationId}?content=${content}`,
+        {
           headers: {
-            Authorization: '7c725b1d-f6c9-4407-aa51-f18ebdd3ba7a',
+            Authorization: '632133e6-c400-43fe-b4c9-357d05cde8ee',
           },
-          responseType: 'stream',
-        });
-
-        console.log({ response: JSON.stringify(response) });
-
-        const reader = response.data.getReader();
-        const decoder = new TextDecoder();
-        let result = '';
-
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-          result += decoder.decode(value, { stream: true });
-          set((state) => {
-            state.data = result;
-          });
+          reactNative: { textStreaming: true },
         }
+      );
 
-        set({ loading: false });
-      } catch (error) {
-        console.error('Error streaming response:', error);
-        set({ loading: false });
+      async function* streamAsyncIterator(stream: ReadableStream) {
+        const reader = stream.getReader();
+        try {
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) {
+              break;
+            }
+            yield value;
+          }
+        } finally {
+          reader.releaseLock();
+        }
+      }
+
+      for await (const chunk of streamAsyncIterator(response.body)) {
+        const str = new TextDecoder().decode(chunk);
+        console.log('Received chunk:', { str });
       }
     },
     reset: () => {
