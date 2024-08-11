@@ -60,7 +60,7 @@ func GenerateBotResponseStream(conversationID uuid.UUID, userMessage string) (*o
 	req := openai.ChatCompletionRequest{
 		Model:     model,
 		Messages:  chatMessages,
-		MaxTokens: 200,
+		MaxTokens: 50,
 		Stream:    true, // Enable streaming
 	}
 
@@ -113,23 +113,23 @@ func SaveBotResponse(conversationID uuid.UUID, botResponse string) (*models.Mess
 	return AddMessage(conversationID, "bot", botResponse)
 }
 
-func GenerateTitleIfEmpty(conversationID uuid.UUID, userMessage string) error {
+func GenerateTitleIfEmpty(conversationID uuid.UUID, userMessage string) (*string, error) {
 	var conversation models.Conversation
 	if err := gormDB.DB.First(&conversation, "id = ?", conversationID).Error; err != nil {
-		return err
+		return nil, err
 	}
 
 	if conversation.Title == "" {
 		title, err := GenerateTitle(userMessage)
 		if err != nil {
-			return err
+			return nil, err
 		}
 		conversation.Title = title
 		if err := gormDB.DB.Save(&conversation).Error; err != nil {
-			return err
+			return nil, err
 		}
 	}
-	return nil
+	return &conversation.Title, nil
 }
 
 func GetMessages(userID uuid.UUID, conversationID uuid.UUID, limit, offset int) ([]models.Message, int, error) {
