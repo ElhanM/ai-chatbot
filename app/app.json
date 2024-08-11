@@ -4,27 +4,27 @@
     "slug": "ai-chatbot",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/ai-logo.png",
+    "icon": "./assets/images/ai-logo-dark.png",
     "scheme": "ai-chatbot",
-    "userInterfaceStyle": "portrait",
+    "userInterfaceStyle": "dark",
     "splash": {
-      "image": "./assets/images/ai-logo.png",
+      "image": "./assets/images/ai-logo-dark.png",
       "resizeMode": "contain",
-      "backgroundColor": "#000"
+      "backgroundColor": "#000000"
     },
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/ai-logo.png",
-        "backgroundColor": "#000"
+        "foregroundImage": "./assets/images/ai-logo-dark.png",
+        "backgroundColor": "#000000"
       }
     },
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/ai-logo.png"
+      "favicon": "./assets/images/ai-logo-dark.png"
     },
     "plugins": ["expo-router"],
     "experiments": {
