@@ -2,6 +2,8 @@
 
 An AI Chatbot app built with React Native, TypeScript, Tailwind, and Zustand on the frontend, and Golang, Gin, and Gorm on the backend. The app leverages the OpenAI API to generate streamed responses to user input.
 
+The app contains tests for both the frontend and backend, which run automatically via GitHub Actions whenever you push your code to the repository.
+
 ## Getting Started
 
 ### Installation
@@ -29,7 +31,7 @@ An AI Chatbot app built with React Native, TypeScript, Tailwind, and Zustand on 
 
 ### Running the Project
 
-Run the entire project with a single command from the root directory (make sure Docker is running on your machine):
+Run the entire project with a single command from the root directory (make sure Docker is running on your machine and envs are set):
 
 ```bash
 make ai-chatbot
@@ -40,8 +42,3 @@ This command will:
 - Start the React Native frontend, viewable on your device or emulator using the Expo Go app.
 - Start the Golang backend server, accessible at http://localhost:5019.
 - Launch the Postgres database inside a Docker container.
-
-## Quality Assurance
-
-- I used Test-Driven Development (TDD) while building this project.
-- The tests run automatically when you push your code to the repository via GitHub Actions.
