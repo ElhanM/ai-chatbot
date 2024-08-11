@@ -1,13 +1,14 @@
 import LoadingSpinner from '@/components/Loading';
 import { useChatMessagesStore } from '@/store/api/useChatMessagesStore';
 import { useSelectedConversationStore } from '@/store/api/useSelectedConversationStore';
-import React, { useCallback, useEffect, useRef } from 'react';
-import { FlatList, View } from 'react-native';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { FlatList, View, TextInput, TouchableOpacity } from 'react-native';
 import { useShallow } from 'zustand/react/shallow';
 import BlockLoading from '../BlockLoading';
 import Message from './Message';
 import Error from '../Error';
 import { useGuardStore } from '@/store/useGuardStore';
+import { MaterialIcons } from '@expo/vector-icons';
 
 type Props = {};
 
@@ -32,6 +33,7 @@ const ChatArea = (props: Props) => {
   const { error } = useGuardStore(useShallow((state) => ({ error: state.error })));
 
   const flatListRef = useRef<FlatList>(null);
+  const [newMessage, setNewMessage] = useState('');
 
   useEffect(() => {
     reset();
@@ -43,6 +45,15 @@ const ChatArea = (props: Props) => {
       fetchMessages(conversationId as string, limit, data?.results?.length || 0);
     }
   }, [fetchMessages, conversationId, data?.results?.length, fetching, limit]);
+
+  const handleSendMessage = () => {
+    if (newMessage.trim() !== '') {
+      // Add your send message logic here
+      setNewMessage((prev) => prev.trim());
+      console.log('Sending message:', newMessage);
+      setNewMessage('');
+    }
+  };
 
   if (error) {
     return <Error error={error} />;
@@ -69,6 +80,27 @@ const ChatArea = (props: Props) => {
                 (data?.results?.length || 0) >= (data?.count || 0) ? undefined : <BlockLoading />
               }
             />
+            <View className="flex flex-row items-center p-2">
+              <TextInput
+                value={newMessage}
+                onChangeText={setNewMessage}
+                placeholder="Message AI"
+                className="flex-1 border rounded p-2"
+                placeholderTextColor={'#9b9b9b'}
+                style={{ backgroundColor: '#2f2f2f', color: 'white' }}
+              />
+              <TouchableOpacity
+                onPress={handleSendMessage}
+                disabled={newMessage.trim() === ''}
+                className="ml-2"
+              >
+                <MaterialIcons
+                  name="send"
+                  color={newMessage.trim() === '' ? 'gray' : 'blue'}
+                  size={24}
+                />
+              </TouchableOpacity>
+            </View>
           </View>
         )}
       </View>

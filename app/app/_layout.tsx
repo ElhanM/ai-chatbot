@@ -9,8 +9,6 @@ import { Stack } from 'expo-router';
 import { TouchableOpacity } from 'react-native';
 import { useShallow } from 'zustand/react/shallow';
 
-const environment = process.env.EXPO_PUBLIC_ENVIRONMENT;
-
 export default function RootLayout() {
   const {
     user: { id: userId },
@@ -36,13 +34,24 @@ export default function RootLayout() {
     useShallow((state) => ({ toggleDrawer: state.toggleDrawer }))
   );
 
+  const truncateTitle = (title: string, maxLength: number) => {
+    if (title.length > maxLength) {
+      return title.substring(0, maxLength) + '...';
+    }
+    return title;
+  };
+
   return (
     <LayoutWrapper headerRight={userId && !loading && <Avatar />}>
       <Stack.Screen name="index" options={{ headerShown: false }} />
       <Stack.Screen
         name="chats"
         options={{
-          title: `${conversation?.title ? conversation.title : conversation?.id ? 'New Chat' : ''}`,
+          title: conversation?.title
+            ? truncateTitle(conversation.title, 25)
+            : conversation?.id
+              ? 'New Chat'
+              : '',
           headerLeft: () => (
             <TouchableOpacity onPress={toggleDrawer}>
               {!loading && <MaterialIcons name="menu" color="white" size={24} />}
