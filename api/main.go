@@ -7,6 +7,7 @@ import (
 	"github.com/ElhanM/ai-chatbot/envs"
 	"github.com/ElhanM/ai-chatbot/migrations"
 	"github.com/ElhanM/ai-chatbot/routes"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	_ "github.com/joho/godotenv/autoload" // autoload package to load .env file
 	"gorm.io/driver/postgres"
@@ -36,6 +37,9 @@ func init() {
 
 func setupRouter() *gin.Engine {
 	r := gin.Default()
+
+	// Allow all origins using CORS
+	r.Use(cors.Default())
 
 	// Setup routes using the routes package
 	routes.SetupRouter(r)

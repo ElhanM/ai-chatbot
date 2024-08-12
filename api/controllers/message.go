@@ -126,7 +126,6 @@ func StreamBotResponse(c *gin.Context) {
 		chunk := response.Choices[0].Delta.Content
 		c.Writer.Write([]byte(chunk))
 		c.Writer.(http.Flusher).Flush()
-		fmt.Printf("Sent chunk: %s\n", chunk) // Add logging to verify chunking
 	}
 }
 

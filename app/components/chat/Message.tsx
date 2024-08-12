@@ -21,7 +21,9 @@ const Message = ({ message }: Props) => {
   const firstLetter = name?.charAt(0).toUpperCase();
 
   return (
-    <View className={`flex flex-row my-2 ${isUser ? 'self-end ml-4' : 'self-start mr-4'}`}>
+    <View
+      className={`flex flex-row my-2 ${isUser ? 'self-end ml-4' : 'self-start mr-4'} max-w-[80%]`}
+    >
       {!isUser && (
         <View className="mr-2">
           <View className="w-8 h-8 bg-white rounded-full flex items-center justify-center">

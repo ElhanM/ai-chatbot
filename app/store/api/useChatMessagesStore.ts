@@ -2,6 +2,7 @@ import { IResponse } from '@/api';
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import { makeRequest, RequestMethod } from '../utils/makeRequest';
+import { useSelectedConversationStore } from './useSelectedConversationStore';
 
 export enum Sender {
   User = 'user',
@@ -26,6 +27,8 @@ interface ChatMessagesState {
   fetchMessages: (conversationId: string, limit: number, offset: number) => Promise<void>;
   reset: () => void;
   addOptimisticMessage: (message: IMessage) => void;
+  createNewBotMessage: () => void;
+  updateBotMessage: (content: string) => void;
 }
 
 const initialState = {
@@ -73,6 +76,31 @@ export const useChatMessagesStore = create(
           if (state.data.count) {
             state.data.count += 1;
           }
+        }
+      });
+    },
+    createNewBotMessage: () => {
+      set((state) => {
+        if (state.data) {
+          state.data.results.unshift({
+            id: 'bot',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            conversationId: useSelectedConversationStore.getState().conversation?.id as string,
+            sender: Sender.Bot,
+            content: '',
+          });
+          state.offset += 1;
+          if (state.data.count) {
+            state.data.count += 1;
+          }
+        }
+      });
+    },
+    updateBotMessage: (content: string) => {
+      set((state) => {
+        if (state.data) {
+          state.data.results[0].content += content;
         }
       });
     },
