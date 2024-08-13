@@ -76,32 +76,39 @@ func StreamBotResponse(c *gin.Context) {
 	c.Writer.Header().Set("Transfer-Encoding", "chunked")
 
 	userMessage := c.Query("content")
+	fmt.Println("userMessage: ", userMessage)
 	if userMessage == "" {
-		c.Writer.Write([]byte("<br /><br />"))
+		c.Writer.Write([]byte("\n\n"))
 		c.Writer.Write([]byte("**Error:** Missing content parameter\n"))
+    c.Writer.(http.Flusher).Flush()
 		return
 	}
 
 	_, exists := c.Get("user")
 	if !exists {
-		c.Writer.Write([]byte("<br /><br />"))
+		c.Writer.Write([]byte("\n\n"))
 		c.Writer.Write([]byte("**Error:** Unauthorized\n"))
+    c.Writer.(http.Flusher).Flush()
 		return
 	}
 
 	conversationIDParam := c.Param("conversationId")
 	conversationID, err := uuid.Parse(conversationIDParam)
 	if err != nil {
-		c.Writer.Write([]byte("<br /><br />"))
+		c.Writer.Write([]byte("\n\n"))
 		c.Writer.Write([]byte(fmt.Sprintf("**Error:** Invalid conversation ID - %v\n", err)))
+		c.Writer.(http.Flusher).Flush()
+
 		return
 	}
 
 	// Generate bot response stream
 	stream, err := services.GenerateBotResponseStream(conversationID, userMessage)
 	if err != nil {
-		c.Writer.Write([]byte("<br /><br />"))
+		c.Writer.Write([]byte("\n\n"))
 		c.Writer.Write([]byte(fmt.Sprintf("**Error:** Failed to generate bot response - %v\n", err)))
+		c.Writer.(http.Flusher).Flush()
+
 		return
 	}
 	defer stream.Close()
@@ -118,8 +125,10 @@ func StreamBotResponse(c *gin.Context) {
 				break
 			}
 			// Handle error internally without returning a NewErrorResponse
-			c.Writer.Write([]byte("<br /><br />"))
+			c.Writer.Write([]byte("\n\n"))
 			c.Writer.Write([]byte(fmt.Sprintf("**Error:** Failed to generate stream response: %v", err)))
+			c.Writer.(http.Flusher).Flush()
+
 			return
 		}
 		chunk := response.Choices[0].Delta.Content
@@ -130,8 +139,9 @@ func StreamBotResponse(c *gin.Context) {
 
 	err = SaveBotResponse(fullBotResponse, conversationID)
 	if err != nil {
-		c.Writer.Write([]byte("<br /><br />"))
+		c.Writer.Write([]byte("\n\n"))
 		c.Writer.Write([]byte(fmt.Sprintf("**Error:** Failed to save bot response: %v", err)))
+		c.Writer.(http.Flusher).Flush()
 		return
 	}
 }

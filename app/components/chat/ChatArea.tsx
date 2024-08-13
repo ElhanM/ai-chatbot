@@ -71,27 +71,28 @@ const ChatArea = (props: Props) => {
 
   const handleSendMessage = async () => {
     if (newMessage.trim() !== '') {
-      setNewMessage((prev) => prev.trim());
       Keyboard.dismiss();
+      const processedMessage = newMessage.trim().replace(/\n/g, '<br />');
       await addMessage(newMessage, conversationId as string);
       createNewBotMessage();
-      getStreamData();
+      getStreamData(processedMessage);
       setNewMessage('');
     }
   };
 
   // TODO: refactor (code splitting)
-  const getStreamData = () => {
+  // JavaScript * syntax: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/AsyncGenerator
+  const getStreamData = (processedMessage: string) => {
     const injectScript = `
     (async()=>{
-      const response = await fetch('${process.env.EXPO_PUBLIC_API_URL}/api/v1/protected/chats/message/stream/${conversationId}?content=${newMessage}', {
+      const response = await fetch('${process.env.EXPO_PUBLIC_API_URL}/api/v1/protected/chats/message/stream/${conversationId}?content=${processedMessage}', {
           method: 'GET',
           responseType: 'stream',
           headers: {
             'Authorization': '${userId}'
           }
       });
-
+  
       async function *streamAsyncIterable(stream) {
           const reader = stream.getReader()
           try {
@@ -106,7 +107,7 @@ const ChatArea = (props: Props) => {
               reader.releaseLock()
           }
       }
-
+  
       for await(const chunk of streamAsyncIterable(response?.body)) {
           const str = new TextDecoder().decode(chunk, {stream: true});
           window.ReactNativeWebView.postMessage(str);
@@ -157,10 +158,9 @@ const ChatArea = (props: Props) => {
                   value={newMessage}
                   onChangeText={setNewMessage}
                   placeholder="Message AI"
-                  className="flex-1 border rounded p-2"
+                  className="flex-1 border rounded p-2 bg-[#2f2f2f] text-white"
                   placeholderTextColor={'#9b9b9b'}
-                  style={{ backgroundColor: '#2f2f2f', color: 'white' }}
-                  // TODO: multiline
+                  multiline
                 />
                 {addMessageLoading ? (
                   <BlockLoading />

@@ -79,8 +79,6 @@ export default function Drawer({ onClose }: Props) {
     await createConversation();
   };
 
-  // TODO: add dark mode splash icon
-
   return (
     <View className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-75">
       <Animated.View
