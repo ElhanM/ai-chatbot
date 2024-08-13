@@ -3,15 +3,15 @@ import { useAddMessageStore } from '@/store/api/useAddMessageStore';
 import { useChatMessagesStore } from '@/store/api/useChatMessagesStore';
 import { useSelectedConversationStore } from '@/store/api/useSelectedConversationStore';
 import { useGuardStore } from '@/store/useGuardStore';
+import { getUserFromStorage } from '@/utils/user';
 import { MaterialIcons } from '@expo/vector-icons';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Button, FlatList, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { FlatList, TextInput, TouchableOpacity, View } from 'react-native';
 import { WebView, WebViewMessageEvent } from 'react-native-webview';
 import { useShallow } from 'zustand/react/shallow';
 import BlockLoading from '../BlockLoading';
 import Error from '../Error';
 import Message from './Message';
-import { getUserFromStorage } from '@/utils/user';
 
 type Props = {};
 
@@ -79,6 +79,7 @@ const ChatArea = (props: Props) => {
     }
   };
 
+  // TODO: refactor (code splitting)
   const getStreamData = () => {
     const injectScript = `
     (async()=>{
@@ -109,7 +110,6 @@ const ChatArea = (props: Props) => {
           const str = new TextDecoder().decode(chunk, {stream: true});
           window.ReactNativeWebView.postMessage(str);
       }
-
     })()
     `;
     webviewRef?.current?.injectJavaScript(injectScript);
@@ -129,10 +129,6 @@ const ChatArea = (props: Props) => {
       <WebView
         ref={webviewRef}
         source={{ uri: `${process.env.EXPO_PUBLIC_API_URL}/api/v1/health` }}
-        style={{
-          height: 80,
-          width: '100%',
-        }}
         onMessage={handleMessage}
       />
       <View className="flex flex-col justify-center items-cente w-full h-full">

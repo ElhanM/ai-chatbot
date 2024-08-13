@@ -111,6 +111,8 @@ func StreamBotResponse(c *gin.Context) {
 
 	c.Writer.WriteHeader(http.StatusOK)
 
+	fullBotResponse := ""
+
 	// Read the stream and collect the response
 	for {
 		response, err := stream.Recv()
@@ -124,56 +126,28 @@ func StreamBotResponse(c *gin.Context) {
 			return
 		}
 		chunk := response.Choices[0].Delta.Content
+		fullBotResponse += chunk
 		c.Writer.Write([]byte(chunk))
 		c.Writer.(http.Flusher).Flush()
 	}
+
+	err = SaveBotResponse(fullBotResponse, conversationID)
+	if err != nil {
+		c.Writer.Write([]byte("<br /><br />"))
+		c.Writer.Write([]byte(fmt.Sprintf("**Error:** Failed to save bot response: %v", err)))
+		return
+	}
 }
 
-func SaveBotResponse(c *gin.Context) {
-	var req struct {
-		Content string `json:"content" binding:"required"`
-	}
-
-	if err := c.ShouldBindJSON(&req); err != nil {
-		errorResponse := responses.NewErrorResponse(utils.BuildError(err, "Invalid request").Error())
-		c.JSON(http.StatusBadRequest, errorResponse)
-		return
-	}
-
-	_, exists := c.Get("user")
-	if !exists {
-		response := responses.NewErrorResponse("Unauthorized")
-		c.JSON(http.StatusUnauthorized, response)
-		return
-	}
-
-	conversationIDParam := c.Param("conversationId")
-	conversationID, err := uuid.Parse(conversationIDParam)
-	if err != nil {
-		errorResponse := responses.NewErrorResponse(utils.BuildError(err, "Invalid conversation ID").Error())
-		c.JSON(http.StatusBadRequest, errorResponse)
-		return
-	}
-
-	botResponse := req.Content
-
+func SaveBotResponse(content string, conversationID uuid.UUID) error {
 	// Save bot response to the database
-	_, err = services.SaveBotResponse(conversationID, botResponse)
+	_, err := services.SaveBotResponse(conversationID, content)
 	if err != nil {
-		errorResponse := responses.NewErrorResponse(utils.BuildError(err, "Failed to save bot response").Error())
-		c.JSON(http.StatusInternalServerError, errorResponse)
-		return
+		errorResponse := utils.BuildError(err, "Failed to save bot response")
+		return errorResponse
 	}
 
-	responseData := struct {
-		BotResponse string `json:"botResponse"`
-	}{
-		BotResponse: botResponse,
-	}
-
-	// Success response
-	response := responses.NewServiceResponse(responses.Success, "Bot response saved", responseData, nil)
-	c.JSON(http.StatusOK, response)
+	return nil
 }
 
 func GetMessages(c *gin.Context) {
