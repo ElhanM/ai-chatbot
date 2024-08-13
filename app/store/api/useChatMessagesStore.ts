@@ -3,6 +3,7 @@ import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import { makeRequest, RequestMethod } from '../utils/makeRequest';
 import { useSelectedConversationStore } from './useSelectedConversationStore';
+import { v4 as uuidv4 } from 'uuid';
 
 export enum Sender {
   User = 'user',
@@ -83,7 +84,7 @@ export const useChatMessagesStore = create(
       set((state) => {
         if (state.data) {
           state.data.results.unshift({
-            id: 'bot',
+            id: uuidv4(),
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
             conversationId: useSelectedConversationStore.getState().conversation?.id as string,

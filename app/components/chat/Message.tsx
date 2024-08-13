@@ -3,6 +3,7 @@ import { useLoginStore } from '@/store/useLoginStore';
 import React from 'react';
 import { Text, View, Image } from 'react-native';
 import { useShallow } from 'zustand/react/shallow';
+import Markdown from '@ronradtke/react-native-markdown-display';
 
 type Props = {
   message: IMessage;
@@ -32,7 +33,8 @@ const Message = ({ message }: Props) => {
         </View>
       )}
       <View className={`p-2 rounded ${isUser ? 'bg-[#2f2f2f]' : 'bg-[#2f2f2f78]'}`}>
-        <Text className="text-base text-white">{message.content || '...'}</Text>
+        {/* <Text className="text-base text-white">{message.content || '...'}</Text> */}
+        <Markdown style={{ body: { color: 'white' } }}>{message.content || '...'}</Markdown>
         <Text className="text-xs text-gray-400 text-right">
           {new Date(message.createdAt).toLocaleTimeString()}
         </Text>

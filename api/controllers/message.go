@@ -14,9 +14,6 @@ import (
 	"github.com/google/uuid"
 )
 
-// TODO: add code blocks and markdown to frontend
-// TODO: error handling for errors after stream
-// TODO: Error handling UX - do we still save bot response if it fails halfway?
 func AddMessage(c *gin.Context) {
 	var req struct {
 		Content string `json:"content" binding:"required"`

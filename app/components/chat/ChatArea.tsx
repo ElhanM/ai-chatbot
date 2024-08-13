@@ -6,7 +6,7 @@ import { useGuardStore } from '@/store/useGuardStore';
 import { getUserFromStorage } from '@/utils/user';
 import { MaterialIcons } from '@expo/vector-icons';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { FlatList, TextInput, TouchableOpacity, View } from 'react-native';
+import { FlatList, Keyboard, TextInput, TouchableOpacity, View } from 'react-native';
 import { WebView, WebViewMessageEvent } from 'react-native-webview';
 import { useShallow } from 'zustand/react/shallow';
 import BlockLoading from '../BlockLoading';
@@ -72,6 +72,7 @@ const ChatArea = (props: Props) => {
   const handleSendMessage = async () => {
     if (newMessage.trim() !== '') {
       setNewMessage((prev) => prev.trim());
+      Keyboard.dismiss();
       await addMessage(newMessage, conversationId as string);
       createNewBotMessage();
       getStreamData();
@@ -159,6 +160,7 @@ const ChatArea = (props: Props) => {
                   className="flex-1 border rounded p-2"
                   placeholderTextColor={'#9b9b9b'}
                   style={{ backgroundColor: '#2f2f2f', color: 'white' }}
+                  // TODO: multiline
                 />
                 {addMessageLoading ? (
                   <BlockLoading />
