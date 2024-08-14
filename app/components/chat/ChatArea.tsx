@@ -80,7 +80,6 @@ const ChatArea = (props: Props) => {
     }
   };
 
-  // TODO: refactor (code splitting)
   // JavaScript * syntax: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/AsyncGenerator
   const getStreamData = (processedMessage: string) => {
     const injectScript = `

@@ -34,7 +34,8 @@ func GenerateBotResponseStream(conversationID uuid.UUID, userMessage string) (*o
 
 	// Fetch previous messages in the conversation
 	var messages []models.Message
-	if err := gormDB.DB.Where("conversation_id = ?", conversationID).Order("created_at asc").Find(&messages).Error; err != nil {
+
+	if err := gormDB.DB.Where("conversation_id = ?", conversationID).Order("created_at asc").Limit(10).Find(&messages).Error; err != nil {
 		return nil, err
 	}
 
