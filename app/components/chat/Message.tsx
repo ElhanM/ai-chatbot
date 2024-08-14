@@ -1,9 +1,10 @@
 import { IMessage, Sender } from '@/store/api/useChatMessagesStore';
 import { useLoginStore } from '@/store/useLoginStore';
 import React from 'react';
-import { Text, View, Image } from 'react-native';
+import { View } from 'react-native';
 import { useShallow } from 'zustand/react/shallow';
-import Markdown from '@ronradtke/react-native-markdown-display';
+import MessageContent from './message/MessageContent';
+import UserAvatar from './message/UserAvatar';
 
 type Props = {
   message: IMessage;
@@ -27,23 +28,13 @@ const Message = ({ message }: Props) => {
     >
       {!isUser && (
         <View className="mr-2">
-          <View className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-            <Image source={require('@/assets/images/ai-logo.png')} className="w-6 h-6" />
-          </View>
+          <UserAvatar isUser={false} />
         </View>
       )}
-      <View className={`p-2 rounded ${isUser ? 'bg-[#2f2f2f]' : 'bg-[#2f2f2f78]'}`}>
-        {/* <Text className="text-base text-white">{message.content || '...'}</Text> */}
-        <Markdown style={{ body: { color: 'white' } }}>{message.content || '...'}</Markdown>
-        <Text className="text-xs text-gray-400 text-right">
-          {new Date(message.createdAt).toLocaleTimeString()}
-        </Text>
-      </View>
+      <MessageContent message={message} isUser={isUser} />
       {isUser && (
         <View className="ml-2">
-          <View className="w-8 h-8 bg-light-black rounded-full flex items-center justify-center">
-            <Text className="text-white text-lg">{firstLetter}</Text>
-          </View>
+          <UserAvatar isUser={true} firstLetter={firstLetter} />
         </View>
       )}
     </View>

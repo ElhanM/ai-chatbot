@@ -57,13 +57,6 @@ func GenerateBotResponseStream(conversationID uuid.UUID, userMessage string) (*o
 		Content: userMessage,
 	})
 
-	chatMessages = append([]openai.ChatCompletionMessage{
-		{
-			Role:    "system",
-			Content: "Do not wrap the response in markdown code blocks. You can use markdown syntax in the response if needed.",
-		},
-	}, chatMessages...)
-
 	// https://platform.openai.com/docs/api-referenc  e/streaming
 	req := openai.ChatCompletionRequest{
 		Model:     model,
