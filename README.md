@@ -4,6 +4,9 @@ An AI Chatbot app built with React Native, TypeScript, Tailwind, and Zustand on 
 
 The app contains tests for both the frontend and backend, which run automatically via GitHub Actions whenever you push your code to the repository.
 
+## Video of the Project
+Uploading AI Chatbot Project.mp4…
+
 ## Getting Started
 
 ### Installation
