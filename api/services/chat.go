@@ -84,7 +84,7 @@ func GenerateTitle(userMessage string) (string, error) {
 		Messages: []openai.ChatCompletionMessage{
 			{
 				Role:    "system",
-				Content: "Generate a short title for the following conversation (you do not need to wrap the title in quotes):",
+				Content: "Generate a short title for the following conversation:",
 			},
 			{
 				Role:    "user",
