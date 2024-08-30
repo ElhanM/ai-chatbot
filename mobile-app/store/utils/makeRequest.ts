@@ -1,4 +1,4 @@
-import api, { ErrorCodes, IResponse, IResponseType } from '@/api';
+import api, { ErrorCodes, IResponse, IResponseType } from '@/api-client';
 import axios, { AxiosError } from 'axios';
 import { Toast } from 'toastify-react-native';
 import { useGuardStore } from '../useGuardStore';

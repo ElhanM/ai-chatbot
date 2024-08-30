@@ -1,4 +1,4 @@
-import { IResponse } from '@/api';
+import { IResponse } from '@/api-client';
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import { makeRequest, RequestMethod } from '../utils/makeRequest';

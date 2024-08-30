@@ -1,4 +1,4 @@
-import { IResponse } from '@/api';
+import { IResponse } from '@/api-client';
 import { setUserInStorage } from '@/utils/user';
 import { router } from 'expo-router';
 import { create } from 'zustand';

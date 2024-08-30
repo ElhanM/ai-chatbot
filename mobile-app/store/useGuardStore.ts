@@ -1,4 +1,4 @@
-import { ErrorCodes } from '@/api';
+import { ErrorCodes } from '@/api-client';
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 

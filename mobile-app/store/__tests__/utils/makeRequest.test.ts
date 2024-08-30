@@ -1,5 +1,5 @@
 import { makeRequest, RequestMethod } from '@/store/utils/makeRequest';
-import api from '@/api';
+import api from '@/api-client';
 import { useGuardStore } from '@/store/useGuardStore';
 import { AxiosError } from 'axios';
 

@@ -1,4 +1,4 @@
-import { ErrorCodes } from '@/api';
+import { ErrorCodes } from '@/api-client';
 import { useResetHandlers } from '@/hooks/useResetHandlers';
 import { useGuardStore } from '@/store/useGuardStore';
 import React, { useEffect } from 'react';

@@ -1,4 +1,4 @@
-import { IResponse } from '@/api';
+import { IResponse } from '@/api-client';
 import { setUserInStorage } from '@/utils/user';
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
