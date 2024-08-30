@@ -5,7 +5,7 @@ import { AxiosError } from 'axios';
 
 const set = jest.fn((fn) => fn({ loading: false }));
 
-jest.mock('@/api');
+jest.mock('@/api-client');
 
 describe('makeRequest', () => {
   afterEach(() => {
