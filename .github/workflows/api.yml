@@ -17,6 +17,10 @@ jobs:
         with:
           go-version: "1.22.4"
 
+      - name: Check Go formatting
+        run: |
+          find . -name '*.go' -not -path "./vendor/*" -exec gofmt -l {} \; | tee /dev/stderr | (! read)
+
       - name: Build Go
         working-directory: golang-api
         run: go build
