@@ -80,7 +80,7 @@ func StreamBotResponse(c *gin.Context) {
 	if userMessage == "" {
 		c.Writer.Write([]byte("\n\n"))
 		c.Writer.Write([]byte("**Error:** Missing content parameter\n"))
-    c.Writer.(http.Flusher).Flush()
+		c.Writer.(http.Flusher).Flush()
 		return
 	}
 
@@ -88,7 +88,7 @@ func StreamBotResponse(c *gin.Context) {
 	if !exists {
 		c.Writer.Write([]byte("\n\n"))
 		c.Writer.Write([]byte("**Error:** Unauthorized\n"))
-    c.Writer.(http.Flusher).Flush()
+		c.Writer.(http.Flusher).Flush()
 		return
 	}
 
