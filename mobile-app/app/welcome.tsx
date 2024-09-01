@@ -1,7 +1,7 @@
 import Button from '@/components/forms/Button';
 import LoadingSpinner from '@/components/Loading';
 import { useUserStore } from '@/store/useUserStore';
-import { router } from 'expo-router';
+import { Href, router } from 'expo-router';
 import React from 'react';
 import { Text, View } from 'react-native';
 import { useShallow } from 'zustand/react/shallow';
@@ -19,7 +19,7 @@ const Welcome = () => {
     return <LoadingSpinner />;
   }
 
-  const handleNavigation = (path: string) => () => {
+  const handleNavigation = (path: Href<string>) => () => {
     router.push(path);
   };
 
@@ -36,7 +36,7 @@ const Welcome = () => {
         <Button
           key={path}
           title={title}
-          onPress={handleNavigation(path)}
+          onPress={handleNavigation(path as Href<string>)}
           classNameProp="self-stretch"
         />
       ))}
