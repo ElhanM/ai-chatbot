@@ -1,5 +1,6 @@
 import { WebView } from 'react-native-webview';
 
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*
 const getStreamData = (
   processedMessage: string,
   conversationId: string,
