@@ -76,3 +76,11 @@ func GetOpenAIKey() string {
 	}
 	return openAIKey
 }
+
+func GetExpiredToken() string {
+  expiredToken := os.Getenv("EXPIRED_TOKEN")
+  if expiredToken == "" {
+    panic("EXPIRED_TOKEN environment variable is not set")
+  }
+  return expiredToken
+}

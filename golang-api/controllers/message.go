@@ -78,16 +78,24 @@ func StreamBotResponse(c *gin.Context) {
 	userMessage := c.Query("content")
 	fmt.Println("userMessage: ", userMessage)
 	if userMessage == "" {
-		c.Writer.Write([]byte("\n\n"))
-		c.Writer.Write([]byte("**Error:** Missing content parameter\n"))
+		if _, err := c.Writer.Write([]byte("\n\n")); err != nil {
+			fmt.Printf("Failed to write response: %v\n", err)
+		}
+		if _, err := c.Writer.Write([]byte("**Error:** Missing content parameter\n")); err != nil {
+			fmt.Printf("Failed to write response: %v\n", err)
+		}
 		c.Writer.(http.Flusher).Flush()
 		return
 	}
 
 	_, exists := c.Get("user")
 	if !exists {
-		c.Writer.Write([]byte("\n\n"))
-		c.Writer.Write([]byte("**Error:** Unauthorized\n"))
+		if _, err := c.Writer.Write([]byte("\n\n")); err != nil {
+			fmt.Printf("Failed to write response: %v\n", err)
+		}
+		if _, err := c.Writer.Write([]byte("**Error:** Unauthorized\n")); err != nil {
+			fmt.Printf("Failed to write response: %v\n", err)
+		}
 		c.Writer.(http.Flusher).Flush()
 		return
 	}
@@ -95,20 +103,26 @@ func StreamBotResponse(c *gin.Context) {
 	conversationIDParam := c.Param("conversationId")
 	conversationID, err := uuid.Parse(conversationIDParam)
 	if err != nil {
-		c.Writer.Write([]byte("\n\n"))
-		c.Writer.Write([]byte(fmt.Sprintf("**Error:** Invalid conversation ID - %v\n", err)))
+		if _, err := c.Writer.Write([]byte("\n\n")); err != nil {
+			fmt.Printf("Failed to write response: %v\n", err)
+		}
+		if _, err := c.Writer.Write([]byte(fmt.Sprintf("**Error:** Invalid conversation ID - %v\n", err))); err != nil {
+			fmt.Printf("Failed to write response: %v\n", err)
+		}
 		c.Writer.(http.Flusher).Flush()
-
 		return
 	}
 
 	// Generate bot response stream
 	stream, err := services.GenerateBotResponseStream(conversationID, userMessage)
 	if err != nil {
-		c.Writer.Write([]byte("\n\n"))
-		c.Writer.Write([]byte(fmt.Sprintf("**Error:** Failed to generate bot response - %v\n", err)))
+		if _, err := c.Writer.Write([]byte("\n\n")); err != nil {
+			fmt.Printf("Failed to write response: %v\n", err)
+		}
+		if _, err := c.Writer.Write([]byte(fmt.Sprintf("**Error:** Failed to generate bot response - %v\n", err))); err != nil {
+			fmt.Printf("Failed to write response: %v\n", err)
+		}
 		c.Writer.(http.Flusher).Flush()
-
 		return
 	}
 	defer stream.Close()
@@ -125,22 +139,31 @@ func StreamBotResponse(c *gin.Context) {
 				break
 			}
 			// Handle error internally without returning a NewErrorResponse
-			c.Writer.Write([]byte("\n\n"))
-			c.Writer.Write([]byte(fmt.Sprintf("**Error:** Failed to generate stream response: %v", err)))
+			if _, err := c.Writer.Write([]byte("\n\n")); err != nil {
+				fmt.Printf("Failed to write response: %v\n", err)
+			}
+			if _, err := c.Writer.Write([]byte(fmt.Sprintf("**Error:** Failed to generate stream response: %v", err))); err != nil {
+				fmt.Printf("Failed to write response: %v\n", err)
+			}
 			c.Writer.(http.Flusher).Flush()
-
 			return
 		}
 		chunk := response.Choices[0].Delta.Content
 		fullBotResponse += chunk
-		c.Writer.Write([]byte(chunk))
+		if _, err := c.Writer.Write([]byte(chunk)); err != nil {
+			fmt.Printf("Failed to write response: %v\n", err)
+		}
 		c.Writer.(http.Flusher).Flush()
 	}
 
 	err = SaveBotResponse(fullBotResponse, conversationID)
 	if err != nil {
-		c.Writer.Write([]byte("\n\n"))
-		c.Writer.Write([]byte(fmt.Sprintf("**Error:** Failed to save bot response: %v", err)))
+		if _, err := c.Writer.Write([]byte("\n\n")); err != nil {
+			fmt.Printf("Failed to write response: %v\n", err)
+		}
+		if _, err := c.Writer.Write([]byte(fmt.Sprintf("**Error:** Failed to save bot response: %v", err))); err != nil {
+			fmt.Printf("Failed to write response: %v\n", err)
+		}
 		c.Writer.(http.Flusher).Flush()
 		return
 	}
@@ -167,7 +190,6 @@ func GetMessages(c *gin.Context) {
 
 	conversationIDParam := c.Param("conversationId")
 	conversationID, err := uuid.Parse(conversationIDParam)
-
 	if err != nil {
 		errorResponse := responses.NewErrorResponse(utils.BuildError(err, "Invalid conversation ID").Error())
 		c.JSON(http.StatusBadRequest, errorResponse)

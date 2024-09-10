@@ -51,5 +51,7 @@ func main() {
 	port := envs.GetPort()
 
 	r := setupRouter()
-	r.Run(":" + port)
+	if err := r.Run(":" + port); err != nil {
+		fmt.Printf("Failed to run server: %v\n", err)
+	}
 }

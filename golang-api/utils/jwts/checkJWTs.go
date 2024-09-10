@@ -109,7 +109,10 @@ func handleExpiredAccessToken(accessToken *string, refreshToken string, userId u
 	*isValidAccessToken = valid
 	*accessTokenExp = expiration
 
-	SetAccessToken(*accessToken, userId)
+	err = SetAccessToken(*accessToken, userId)
+	if err != nil {
+		return utils.BuildError(err, "failed to set access token")
+	}
 
 	return nil
 }

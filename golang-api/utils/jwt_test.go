@@ -3,6 +3,7 @@ package utils
 import (
 	"testing"
 
+	"github.com/ElhanM/ai-chatbot/envs"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 )
@@ -40,7 +41,7 @@ func TestParseToken(t *testing.T) {
 	refreshToken, _ := GenerateRefreshToken(userID)
 
 	dummyUUID := "8e3d56ca-a0d5-4048-8498-3602b606774d"
-	expiredToken := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjEwNTc4MTUsInN1YiI6IjhlM2Q1NmNhLWEwZDUtNDA0OC04NDk4LTM2MDJiNjA2Nzc0ZCJ9.q3WtxCfgSCpmEaMYlTjGXzUmJFoLlPQ60FN6BQm7JhQ"
+	expiredToken := envs.GetExpiredToken()
 
 	tests := []struct {
 		tokenString   string

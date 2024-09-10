@@ -20,7 +20,7 @@ jobs:
 
       - name: Check Go formatting
         run: |
-          find . -name '*.go' -not -path "./vendor/*" -exec gofmt -l {} \; | tee /dev/stderr | (! read)
+          find . -name '*.go' -not -path "./vendor/*" -exec gofmt -l {} \; | tee /dev/stderr | (! read -r)
 
       - name: Build Go
         working-directory: golang-api
