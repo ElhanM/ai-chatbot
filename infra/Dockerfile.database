@@ -1,5 +1,5 @@
 # Use the official PostgreSQL image as a base
-FROM postgres:14.1
+FROM postgres:16.4
 
 # Copy initialization scripts
 COPY ./postgres-init /docker-entrypoint-initdb.d
