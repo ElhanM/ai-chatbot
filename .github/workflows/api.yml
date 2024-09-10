@@ -6,8 +6,6 @@ on:
     types: [opened, synchronize]
   push:
     branches: ["main"]
-  # enable manual trigger
-  workflow_dispatch:
 
 jobs:
   checks:
