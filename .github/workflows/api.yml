@@ -22,10 +22,12 @@ jobs:
         run: |
           find . -name '*.go' -not -path "./vendor/*" -exec gofmt -l {} \; | tee /dev/stderr | (! read -r)
 
+      - name: Install golangci-lint
+        run: go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.42.1
+
       - name: Run golangci-lint
-        uses: golangci/golangci-lint-action@v3
-        with:
-          version: v1.42.1
+        working-directory: golang-api
+        run: golangci-lint run
 
       - name: Build Go
         working-directory: golang-api
