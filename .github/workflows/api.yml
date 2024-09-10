@@ -22,11 +22,10 @@ jobs:
         run: |
           find . -name '*.go' -not -path "./vendor/*" -exec gofmt -l {} \; | tee /dev/stderr | (! read -r)
 
-      - name: Install golangci-lint
-        run: curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s v1.42.1
-
       - name: Run golangci-lint
-        run: golangci-lint run
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: v1.42.1
 
       - name: Build Go
         working-directory: golang-api
