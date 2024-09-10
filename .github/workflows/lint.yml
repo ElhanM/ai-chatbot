@@ -29,6 +29,7 @@ jobs:
         run: |
           yamllint **/*.yml
 
+      # https://stackoverflow.com/a/58469603/19018940
       - name: Install hadolint
         run: |
           sudo wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v2.6.0/hadolint-Linux-x86_64
