@@ -1,0 +1,22 @@
+name: Super Linter
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+  push:
+    branches: ["main"]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Lint Code Base
+        uses: github/super-linter@v4
+        env:
+          DEFAULT_BRANCH: main
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VALIDATE_ALL_CODEBASE: true
+          IGNORE_GITIGNORED_FILES: true
